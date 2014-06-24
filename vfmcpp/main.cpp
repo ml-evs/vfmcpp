@@ -1,7 +1,7 @@
+#include "mesh.h"
+#include "vel.h"
 #include <iostream>
 #include <cmath>
-#include <vector>
-#include "mesh.h"
 
 using namespace std;
 
@@ -46,16 +46,19 @@ int main(){
 		}
 	}
 
-	for(int r=0; r<N; r++){
+/*	for(int r=0; r<N; r++){
 		cout << "ring element r = " << r << "is:: (" << Ring[r][0] << ",  " << Ring[r][1] << ",  " << Ring[r][2] << ")." << endl;
-	}
+	}*/
 
 	vector <double> FilLength = MeshLengths(Ring);
 
 
-	for(int r=0; r<N; r++){
+/*	for(int r=0; r<N; r++){
 		cout << "ring element r = " << r << "is:: (" << FilLength[r] << endl;
-	}
+	}*/
+
+	vector <vector <double> > SPrime = Velocity(Ring, Ring);
+	cout << SPrime.size();
 	return 0;
 
 }
