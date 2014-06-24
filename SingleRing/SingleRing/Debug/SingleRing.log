@@ -1,0 +1,18 @@
+﻿Build started 24/06/2014 14:49:17.
+     1>Project "C:\Users\Helium\Documents\VortexFilamentCode\Single Ring\SingleRing\SingleRing\SingleRing.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\SingleRing.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /Zi /clr /nologo /W3 /WX- /Od /Oy- /D _MBCS /Gm- /EHa /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Core.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Data.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Drawing.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Windows.Forms.dll" /FU"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.Xml.dll" /analyze- /errorReport:prompt main.cpp
+         main.cpp
+     1>c:\program files (x86)\reference assemblies\microsoft\framework\.netframework\v4.0\system.core.dll : warning C4945: 'ExtensionAttribute' : cannot import symbol from 'c:\program files (x86)\reference assemblies\microsoft\framework\.netframework\v4.0\system.core.dll': as 'System::Runtime::CompilerServices::ExtensionAttribute' has already been imported from another assembly 'mscorlib'
+                 c:\windows\microsoft.net\framework\v4.0.30319\mscorlib.dll : see declaration of 'System::Runtime::CompilerServices::ExtensionAttribute'
+                 first seen type is used; re-order imported assemblies to use the current type
+                 This diagnostic occurred while importing type 'System.Runtime.CompilerServices.ExtensionAttribute' from assembly 'System.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089'.
+     1>main.cpp(53): error C2065: 'res' : undeclared identifier
+     1>main.cpp(53): error C3861: 'mean': identifier not found
+     1>Done Building Project "C:\Users\Helium\Documents\VortexFilamentCode\Single Ring\SingleRing\SingleRing\SingleRing.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.52
