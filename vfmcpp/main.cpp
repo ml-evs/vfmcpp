@@ -58,7 +58,15 @@ int main(){
 	}*/
 
 	vector <vector <double> > SPrime = Velocity(Ring, Ring);
-	cout << SPrime.size();
+	cout << "s' = " << endl;
+	for(int r=0; r<N; r++){
+		cout << "(" << SPrime[r][0] << ", " << SPrime[r][1] << ", " << SPrime[r][2] << ")" << endl;	
+	}
+	vector <vector <double> > S2Prime = CalcS2Prime(Ring, MeshLengths(Ring));
+	cout << "s'' =" << endl;
+	for(int r=0; r<N; r++){
+		cout << "(" << S2Prime[r][0] << ", " << S2Prime[r][1] << ", " << S2Prime[r][2] << ")" << endl;	
+	}
 	return 0;
 
 }
