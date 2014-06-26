@@ -1,65 +1,56 @@
-// Calculate velocities of points on each ring
+// Calculate velocities of points on each mPos
 // Adapted from CalcVelMaster.m by Paul Walmsley
 
+#include "filament.h"
 #include "vel.h"
-#include "mesh.h"
 #include <iostream>
-#include <iomanip>
 
 using namespace std;
 
-vector <vector <double> > CalcVelocity(vector <vector <double> > Ring1, vector <vector <double> > Ring2){
+void Filament::CalcVelocity(){
 
 	// circulation quantum, core radius, ..., mutual friction
-	double		kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0, alpha=0, prefactor;
+	double	kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0, alpha=0, prefactor;
 	
-	vector <vector <double> > SPrime = CalcSPrime(Ring1, MeshLengths(Ring1));
-	vector <vector <double> > S2Prime = CalcS2Prime(Ring1, MeshLengths(Ring1));
-	vector <vector <double> > Velocity;
+	mVel.resize(mN);
 
-	vector <double> blank;
-	blank.push_back(0.0); blank.push_back(0.0); blank.push_back(0.0);
-
+	CalcSPrime(); CalcS2Prime();
+	
 	prefactor = kappa * -log(a1) / (4*M_PI);
 	int j;
-
-	for(int i(0);i<Ring1.size();i++){
-		Velocity.push_back(blank);
-		Velocity[i][0] = (SPrime[i][1]*S2Prime[i][2] - SPrime[i][2]*S2Prime[i][1]);
-		Velocity[i][1] = (SPrime[i][2]*S2Prime[i][0] - SPrime[i][0]*S2Prime[i][2]);
-		Velocity[i][2] = (SPrime[i][0]*S2Prime[i][1] - SPrime[i][1]*S2Prime[i][0]);
-		if(i==Ring1.size()-1){j=-1;}
+	cout << "Velocity of points on filament:" << endl;
+	for(int i=0;i<mN;i++){
+		mVel[i].resize(3);
+		mVel[i][0] = (mSPrime[i][1]*mS2Prime[i][2] - mSPrime[i][2]*mS2Prime[i][1]);
+		mVel[i][1] = (mSPrime[i][2]*mS2Prime[i][0] - mSPrime[i][0]*mS2Prime[i][2]);
+		mVel[i][2] = (mSPrime[i][0]*mS2Prime[i][1] - mSPrime[i][1]*mS2Prime[i][0]);
+		if(i==mPos.size()-1){j=-1;}
 		else{j=i;}
-		Velocity[i][0] = prefactor*log(sqrt(MeshLengths(Ring1)[i]*MeshLengths(Ring1)[j+1]))*Velocity[i][0];
-		Velocity[i][1] = prefactor*log(sqrt(MeshLengths(Ring1)[i]*MeshLengths(Ring1)[j+1]))*Velocity[i][1];
-		Velocity[i][2] = prefactor*log(sqrt(MeshLengths(Ring1)[i]*MeshLengths(Ring1)[j+1]))*Velocity[i][2];
-
+		mVel[i][0] = prefactor*mVel[i][0]*log(sqrt(mSegLengths[i]*mSegLengths[j+1]));
+		mVel[i][1] = prefactor*mVel[i][1]*log(sqrt(mSegLengths[i]*mSegLengths[j+1]));
+		mVel[i][2] = prefactor*mVel[i][2]*log(sqrt(mSegLengths[i]*mSegLengths[j+1]));
+		cout << mVel[i][0] << ", " << mVel[i][1] << ", " << mVel[i][2] << endl;
 	}
-
-	return Velocity;
 
 }
 
 // Calculate s' from coefficients from Baggaley & Barenghi JLT 2012 166:3-20
-vector <vector <double> > CalcSPrime(vector <vector <double> > Ring, vector <double> L){
+void Filament::CalcSPrime(){
 	
-	vector <double> A, B, C, D, E, blank;
-	blank.push_back(0.0); blank.push_back(0.0); blank.push_back(0.0);
-	vector <vector <double> > SPrime;
-
+	mSPrime.resize(mN);
+	vector <double> A, B, C, D, E;
+	A.resize(mN); B = A; C=A; D=A; E=A;
 	// Funky for loop to generate correct indices for orderered array of lengths
 	// Produces (98,99,0,1,2) -> (97,98,99,0,1) for N=100.
 	int j,k,l,m;
-	for(int i=0;i<Ring.size();i++){
-		A.push_back(0.0); B.push_back(0.0); C.push_back(0.0); 
-		D.push_back(0.0); E.push_back(0.0);
+	for(int i=0;i<mN;i++){
 		j = i; k = i; l = i; m = i;
-		if(j-2==-1){j=Ring.size()+1;}
-		if(j-2==-2){j=Ring.size();}
-		if(k-1==-1){k=Ring.size();}
-		if(l+1==Ring.size()){l=-1;}
-		if(m+1==Ring.size()){m=-1;}
-		if(m+2==Ring.size()){m=-2;}
+		if(j-2==-1){j=mN+1;}
+		if(j-2==-2){j=mN;}
+		if(k-1==-1){k=mN;}
+		if(l+1==mN){l=-1;}
+		if(m+1==mN){m=-1;}
+		if(m+2==mN){m=-2;}
 		//cout << "(" << j-2 << ", " << k-1 << ", " << i << ", " << l+1 << ", " << m+2 << ")\n";
 
 /*		A[i] = L[i]*L[l+1]*L[l+1]+L[i]*L[l+1]*L[m+2];
@@ -74,34 +65,43 @@ vector <vector <double> > CalcSPrime(vector <vector <double> > Ring, vector <dou
 		E[i] = -L[l+1]*L[i]*L[i]-L[k-1]*L[i]*L[l+1];
 		E[i] = E[i] / L[m+2]*(L[l+1]+L[m+2])*(L[i]+L[i+1]+L[i+2])*(L[k-1]+L[i]+L[l+1]+L[m+2]);*/
 
-		A[i] = 1  /(12*L[i]);
-		B[i] = -8 /(12*L[i]);
-		D[i] = 8  /(12*L[i]);
-		E[i] = -1 /(12*L[i]);
+		A[i] = 1  /(12*mSegLengths[i]);
+		B[i] = -8 /(12*mSegLengths[i]);
+		D[i] = 8  /(12*mSegLengths[i]);
+		E[i] = -1 /(12*mSegLengths[i]);
 
-		C[i] = 0;//-(A[i] + B[i] + D[i] + E[i]);		
+		C[i] = -(A[i] + B[i] + D[i] + E[i]);		
+		
 	}
 	// Calculate s' using FindFlag to handle disordered array and PBCs
-	for(int p=0;p<Ring.size();p++){
-		SPrime.push_back(blank);
+	for(int p=0;p<mN;p++){
+		mSPrime[p].resize(3);
+		j = p; k = p; l = p; m = p;
+		if(j-2==-1){j=mN+1;}
+		if(j-2==-2){j=mN;}
+		if(k-1==-1){k=mN;}
+		if(l+1==mN){l=-1;}
+		if(m+1==mN){m=-1;}
+		if(m+2==mN){m=-2;}
 		for(int q=0;q<3;q++){
-			SPrime[p][q] += A[p]*FindFlag(Ring,p-2)[q];
-			SPrime[p][q] += B[p]*FindFlag(Ring,p-1)[q];
-			SPrime[p][q] += C[p]*FindFlag(Ring,p)[q];
-			SPrime[p][q] += D[p]*FindFlag(Ring,p+1)[q];
-			SPrime[p][q] += E[p]*FindFlag(Ring,p+2)[q];
+			mSPrime[p][q] = A[p]*mPos[j-2][q];
+			mSPrime[p][q] += B[p]*mPos[k-1][q];
+			mSPrime[p][q] += C[p]*mPos[p][q];
+			mSPrime[p][q] += D[p]*mPos[l+1][q];
+			mSPrime[p][q] += E[p]*mPos[m+2][q];
 		}
 	}
-	return SPrime;
+	//cout << "In SPrime calculation: " << mSPrime[0][2] << endl;
 }
 
 // Return the position of a given flag value from array of positions
-vector <double> FindFlag(vector <vector <double> > Ring, int f){
+vector <double> FindFlag(vector <vector <double> > Positions, int f){
 	vector <vector <double> >::iterator begin, current, end, wanted;
-	begin = Ring.begin(); end = Ring.end();
-	if(f < 0){f = Ring.size()+f;}
-	if(f == Ring.size()){f = Ring.size()-f;}
-	if(f > Ring.size()){f = Ring.size()-f+1;}
+	int N = Positions.size();
+	begin = Positions.begin(); end = Positions.end();
+	if(f < 0){f = N+f;}
+	if(f == N){f = N-f;}
+	if(f > N){f = N-f+1;}
 	for(current=begin;current!=end;current++){
 		if(int((*current)[3]+0.1)==f){wanted = current; current = end-1;}
 	}
@@ -109,25 +109,23 @@ vector <double> FindFlag(vector <vector <double> > Ring, int f){
 }
 
 
-vector <vector <double> > CalcS2Prime(vector <vector <double> > Ring, vector <double> L){
+void Filament::CalcS2Prime(){
 	
-	vector <double> A2, B2, C2, D2, E2, blank;
-	blank.push_back(0.0); blank.push_back(0.0); blank.push_back(0.0);
-	vector <vector <double> > S2Prime;
-
+	mS2Prime.resize(mN);
+	vector <double> A2, B2, C2, D2, E2;
+	A2.resize(mN,0); B2 = A2; C2=A2; D2=A2; E2=A2;
+	
 	// Funky for loop to generate correct indices for orderered array of lengths
 	// Produces (98,99,0,1,2) -> (97,98,99,0,1) for N=100.
 	int j,k,l,m;
-	for(int i=0;i<Ring.size();i++){
-		A2.push_back(0.0); B2.push_back(0.0); C2.push_back(0.0); 
-		D2.push_back(0.0); E2.push_back(0.0);
+	for(int i=0;i<mN;i++){
 		j = i; k = i; l = i; m = i;
-		if(j-2==-1){j=Ring.size()+1;}
-		if(j-2==-2){j=Ring.size();}
-		if(k-1==-1){k=Ring.size();}
-		if(l+1==Ring.size()){l=-1;}
-		if(m+1==Ring.size()){m=-1;}
-		if(m+2==Ring.size()){m=-2;}
+		if(j-2==-1){j=mN+1;}
+		if(j-2==-2){j=mN;}
+		if(k-1==-1){k=mN;}
+		if(l+1==mN){l=-1;}
+		if(m+1==mN){m=-1;}
+		if(m+2==mN){m=-2;}
 		//cout << "(" << j-2 << ", " << k-1 << ", " << i << ", " << l+1 << ", " << m+2 << ")\n";
 
 /*		A2[i] = 2*(-2*L[i]*L[l+1]+L[l+1]*L[l+1]+L[l+1]*L[l+1]-L[i]*L[m+2]+L[l+1]*L[m+2]);
@@ -142,26 +140,31 @@ vector <vector <double> > CalcS2Prime(vector <vector <double> > Ring, vector <do
 		E2[i] = 2*(L[k-1]*L[i]+L[i]*L[i]-L[k-1]*L[l+1]-2*L[i]*L[l+1]);
 		E2[i] = E2[i] / L[m+2]*(L[l+1]+L[m+2])*(L[i]+L[i+1]+L[i+2])*(L[k-1]+L[i]+L[l+1]+L[m+2]);
 */
-		A2[i] = -1 /(12*pow(L[i],2));
-		B2[i] = 16 /(12*pow(L[i],2));
-		D2[i] = 16 /(12*pow(L[i],2));
-		E2[i] = -1 /(12*pow(L[i],2));
+		A2[i] = -1 /(12*pow(mSegLengths[i],2));
+		B2[i] = 16/(12*pow(mSegLengths[i],2));
+		D2[i] = 16/(12*pow(mSegLengths[i],2));
+		E2[i] = -1 /(12*pow(mSegLengths[i],2));
 		
 		C2[i] = -(A2[i] + B2[i] + D2[i] + E2[i]);		
-
 	}
 	// Calculate s'' using FindFlag to handle disordered array and PBCs
-	for(int p=0;p<Ring.size();p++){
-		S2Prime.push_back(blank);
+	for(int p=0;p<mN;p++){
+		mS2Prime[p].resize(3);
+		j = p; k = p; l = p; m = p;
+		if(j-2==-1){j=mN+1;}
+		if(j-2==-2){j=mN;}
+		if(k-1==-1){k=mN;}
+		if(l+1==mN){l=-1;}
+		if(m+1==mN){m=-1;}
+		if(m+2==mN){m=-2;}
 		for(int q=0;q<3;q++){
-			S2Prime[p][q] += A2[p]*FindFlag(Ring,p-2)[q];
-			S2Prime[p][q] += B2[p]*FindFlag(Ring,p-1)[q];
-			S2Prime[p][q] += C2[p]*FindFlag(Ring,p)[q];
-			S2Prime[p][q] += D2[p]*FindFlag(Ring,p+1)[q];
-			S2Prime[p][q] += E2[p]*FindFlag(Ring,p+2)[q];
+			mS2Prime[p][q] = A2[p]*mPos[j-2][q];
+			mS2Prime[p][q] += B2[p]*mPos[k-1][q];
+			mS2Prime[p][q] += C2[p]*mPos[p][q];
+			mS2Prime[p][q] += D2[p]*mPos[l+1][q];
+			mS2Prime[p][q] += E2[p]*mPos[m+2][q];
 		}
 	}
-	return S2Prime;
 }
 
 

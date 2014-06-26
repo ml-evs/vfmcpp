@@ -20,6 +20,7 @@ public:
 	~Filament(){};
 	void CalcMeshLengths();
 	vector <double> GetMeshLengths(){return mSegLengths;}
+	vector <vector <double> > GetSPrime(){return mSPrime;}
 	void CalcVelocity();
 	void CalcSPrime();
 	void CalcS2Prime();
@@ -56,7 +57,6 @@ public:
 			mPos[i][1]=mCentre[0]+mRadius0*cos(i*(2*M_PI)/mN);
 			mPos[i][2]=mCentre[2];
 			mPos[i][3]=i;
-			cout << mPos[i][0] << ", " << mPos[i][1] << ", " << mPos[i][2] << endl;
 		}
 		CalcMeshLengths();
 
