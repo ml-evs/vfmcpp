@@ -8,7 +8,7 @@ using namespace std;
 	// circulation quantum, core radius, ..., mutual friction
 	double		kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0, alpha=0;
 	const int	N = 100; // number of points on ring
-	double		r0=1e-6; // initial ring radius
+	double		r0=0.5e-6; // initial ring radius
 
 
 int main(){
@@ -46,26 +46,21 @@ int main(){
 		}
 	}
 
-/*	for(int r=0; r<N; r++){
-		cout << "ring element r = " << r << "is:: (" << Ring[r][0] << ",  " << Ring[r][1] << ",  " << Ring[r][2] << ")." << endl;
-	}*/
-
-	vector <double> FilLength = MeshLengths(Ring);
-
-
-/*	for(int r=0; r<N; r++){
-		cout << "ring element r = " << r << "is:: (" << FilLength[r] << endl;
-	}*/
-
-	vector <vector <double> > SPrime = Velocity(Ring, Ring);
+	vector <vector <double> > SPrime = CalcSPrime(Ring, MeshLengths(Ring));
 	cout << "s' = " << endl;
-	for(int r=0; r<N; r++){
+	for(int r=0; r<1; r++){
 		cout << "(" << SPrime[r][0] << ", " << SPrime[r][1] << ", " << SPrime[r][2] << ")" << endl;	
 	}
 	vector <vector <double> > S2Prime = CalcS2Prime(Ring, MeshLengths(Ring));
-	cout << "s'' =" << endl;
-	for(int r=0; r<N; r++){
+	cout << "s'' = " << endl;
+	for(int r=0; r<1; r++){
 		cout << "(" << S2Prime[r][0] << ", " << S2Prime[r][1] << ", " << S2Prime[r][2] << ")" << endl;	
+	}
+
+	vector <vector <double> > vel = CalcVelocity(Ring, Ring);
+	cout << "vel =" << endl;
+	for(int r=0; r<1; r++){
+		cout << "(" << vel[r][0] << ", " << vel[r][1] << ", " << vel[r][2] << ")" << endl;	
 	}
 	return 0;
 

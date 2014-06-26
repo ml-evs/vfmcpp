@@ -4,14 +4,39 @@
 #include "vel.h"
 #include "mesh.h"
 #include <iostream>
+#include <iomanip>
 
 using namespace std;
 
-vector <vector <double> > Velocity(vector <vector <double> > Ring1, vector <vector <double> > Ring2){
-	// Length of filaments in each ring
-	//FilLength1 = MeshLengths(Ring1); FilLength2 = MeshLengths(Ring2);
+vector <vector <double> > CalcVelocity(vector <vector <double> > Ring1, vector <vector <double> > Ring2){
+
+	// circulation quantum, core radius, ..., mutual friction
+	double		kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0, alpha=0, prefactor;
+	
 	vector <vector <double> > SPrime = CalcSPrime(Ring1, MeshLengths(Ring1));
-	return SPrime;
+	vector <vector <double> > S2Prime = CalcS2Prime(Ring1, MeshLengths(Ring1));
+	vector <vector <double> > Velocity;
+
+	vector <double> blank;
+	blank.push_back(0.0); blank.push_back(0.0); blank.push_back(0.0);
+
+	prefactor = kappa * -log(a1) / (4*M_PI);
+	int j;
+
+	for(int i(0);i<Ring1.size();i++){
+		Velocity.push_back(blank);
+		Velocity[i][0] = (SPrime[i][1]*S2Prime[i][2] - SPrime[i][2]*S2Prime[i][1]);
+		Velocity[i][1] = (SPrime[i][2]*S2Prime[i][0] - SPrime[i][0]*S2Prime[i][2]);
+		Velocity[i][2] = (SPrime[i][0]*S2Prime[i][1] - SPrime[i][1]*S2Prime[i][0]);
+		if(i==Ring1.size()-1){j=-1;}
+		else{j=i;}
+		Velocity[i][0] = prefactor*log(sqrt(MeshLengths(Ring1)[i]*MeshLengths(Ring1)[j+1]))*Velocity[i][0];
+		Velocity[i][1] = prefactor*log(sqrt(MeshLengths(Ring1)[i]*MeshLengths(Ring1)[j+1]))*Velocity[i][1];
+		Velocity[i][2] = prefactor*log(sqrt(MeshLengths(Ring1)[i]*MeshLengths(Ring1)[j+1]))*Velocity[i][2];
+
+	}
+
+	return Velocity;
 
 }
 
@@ -32,12 +57,13 @@ vector <vector <double> > CalcSPrime(vector <vector <double> > Ring, vector <dou
 		if(j-2==-1){j=Ring.size()+1;}
 		if(j-2==-2){j=Ring.size();}
 		if(k-1==-1){k=Ring.size();}
+		if(l+1==Ring.size()){l=-1;}
 		if(m+1==Ring.size()){m=-1;}
 		if(m+2==Ring.size()){m=-2;}
 		//cout << "(" << j-2 << ", " << k-1 << ", " << i << ", " << l+1 << ", " << m+2 << ")\n";
 
-		A[i] = L[i]*L[l+1]*L[l+1]+L[i]*L[l+1]*L[m+2];
-		A[i] = A[i] / (L[k-1]*(L[k-1]+L[i])*(L[k-1]+L[i]+L[l+1])*(L[i]+L[l+1]+L[m+2]));
+/*		A[i] = L[i]*L[l+1]*L[l+1]+L[i]*L[l+1]*L[m+2];
+		A[i] = A[i] / (L[k-1]*(L[k-1]+L[i])*(L[k-1]+L[i]+L[l+1])*(L[k-1]+L[i]+L[l+1]+L[m+2]));
 		
 		B[i] = -L[k-1]*L[l+1]*L[l+1]-L[i]*L[l+1]*L[l+1]-L[k-1]*L[l+1]*L[m+2];
 		B[i] = B[i] / L[k-1]*L[i]*(L[i]+L[l+1])*(L[i]+L[l+1]+L[m+2]);
@@ -46,9 +72,14 @@ vector <vector <double> > CalcSPrime(vector <vector <double> > Ring, vector <dou
 		D[i] = D[i] / L[l+1]*L[m+2]*(L[i]+L[l+1])*(L[k-1]+L[i]+L[l+1]);
 
 		E[i] = -L[l+1]*L[i]*L[i]-L[k-1]*L[i]*L[l+1];
-		E[i] = E[i] / L[m+2]*(L[l+1]+L[m+2])*(L[i]+L[i+1]+L[i+2])*(L[k-1]+L[i]+L[l+1]+L[m+2]);
+		E[i] = E[i] / L[m+2]*(L[l+1]+L[m+2])*(L[i]+L[i+1]+L[i+2])*(L[k-1]+L[i]+L[l+1]+L[m+2]);*/
 
-		C[i] = -(A[i] + B[i] + D[i] + E[i]);		
+		A[i] = 1  /(12*L[i]);
+		B[i] = -8 /(12*L[i]);
+		D[i] = 8  /(12*L[i]);
+		E[i] = -1 /(12*L[i]);
+
+		C[i] = 0;//-(A[i] + B[i] + D[i] + E[i]);		
 	}
 	// Calculate s' using FindFlag to handle disordered array and PBCs
 	for(int p=0;p<Ring.size();p++){
@@ -94,14 +125,14 @@ vector <vector <double> > CalcS2Prime(vector <vector <double> > Ring, vector <do
 		if(j-2==-1){j=Ring.size()+1;}
 		if(j-2==-2){j=Ring.size();}
 		if(k-1==-1){k=Ring.size();}
-		if(l+1==100){l=-1;}
-		if(m+1==100){m=-1;}
-		if(m+2==100){m=-2;}
+		if(l+1==Ring.size()){l=-1;}
+		if(m+1==Ring.size()){m=-1;}
+		if(m+2==Ring.size()){m=-2;}
 		//cout << "(" << j-2 << ", " << k-1 << ", " << i << ", " << l+1 << ", " << m+2 << ")\n";
 
-		A2[i] = 2*(-2*L[i]*L[l+1]+L[l+1]*L[l+1]+L[l+1]*L[l+1]-L[i]*L[m+2]+L[l+1]*L[m+2]);
-		A2[i] = A2[i] / (L[k-1]*(L[k-1]+L[i])*(L[k-1]+L[i]+L[l+1])*(L[i]+L[l+1]+L[m+2]));
-		
+/*		A2[i] = 2*(-2*L[i]*L[l+1]+L[l+1]*L[l+1]+L[l+1]*L[l+1]-L[i]*L[m+2]+L[l+1]*L[m+2]);
+		A2[i] = A2[i] / (L[k-1]*(L[k-1]+L[i])*(L[k-1]+L[i]+L[l+1])*(L[k-1]+L[i]+L[l+1]+L[m+2]));
+
 		B2[i] = 2*(2*L[k-1]+2*L[i]*L[l+1]-L[l+1]*L[l+1]+L[k-1]*L[m+2]+L[i]*L[i+2]-L[l+1]*L[m+2]);
 		B2[i] = B2[i] / L[k-1]*L[i]*(L[i]+L[l+1])*(L[i]+L[l+1]+L[m+2]);
 
@@ -110,8 +141,14 @@ vector <vector <double> > CalcS2Prime(vector <vector <double> > Ring, vector <do
 
 		E2[i] = 2*(L[k-1]*L[i]+L[i]*L[i]-L[k-1]*L[l+1]-2*L[i]*L[l+1]);
 		E2[i] = E2[i] / L[m+2]*(L[l+1]+L[m+2])*(L[i]+L[i+1]+L[i+2])*(L[k-1]+L[i]+L[l+1]+L[m+2]);
-
+*/
+		A2[i] = -1 /(12*pow(L[i],2));
+		B2[i] = 16 /(12*pow(L[i],2));
+		D2[i] = 16 /(12*pow(L[i],2));
+		E2[i] = -1 /(12*pow(L[i],2));
+		
 		C2[i] = -(A2[i] + B2[i] + D2[i] + E2[i]);		
+
 	}
 	// Calculate s'' using FindFlag to handle disordered array and PBCs
 	for(int p=0;p<Ring.size();p++){
