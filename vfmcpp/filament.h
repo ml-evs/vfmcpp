@@ -44,7 +44,6 @@ public:
 			mPos[i][3]=i;
 		}
 		CalcMeshLengths();
-
 	}
 	Ring(double r, int N, double x, double y, double z){
 		mRadius0 = r; mN = N;
@@ -59,7 +58,6 @@ public:
 			mPos[i][3]=i;
 		}
 		CalcMeshLengths();
-
 	}
 };
 

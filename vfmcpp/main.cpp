@@ -11,7 +11,7 @@ using namespace std;
 
 int main(){
 
-	Ring Ring1;
+	Ring Ring1(r0,N,0,0,2e-6);
 
 	double t, dt, dr;
 	// Set spatial resolution

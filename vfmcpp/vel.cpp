@@ -2,7 +2,6 @@
 // Adapted from CalcVelMaster.m by Paul Walmsley
 
 #include "filament.h"
-#include "vel.h"
 #include <iostream>
 
 using namespace std;
@@ -18,7 +17,6 @@ void Filament::CalcVelocity(){
 	
 	prefactor = kappa * -log(a1) / (4*M_PI);
 	int j;
-	cout << "Velocity of points on filament:" << endl;
 	for(int i=0;i<mN;i++){
 		mVel[i].resize(3);
 		mVel[i][0] = (mSPrime[i][1]*mS2Prime[i][2] - mSPrime[i][2]*mS2Prime[i][1]);
@@ -31,6 +29,7 @@ void Filament::CalcVelocity(){
 		mVel[i][2] = prefactor*mVel[i][2]*log(sqrt(mSegLengths[i]*mSegLengths[j+1]));
 		cout << mVel[i][0] << ", " << mVel[i][1] << ", " << mVel[i][2] << endl;
 	}
+
 
 }
 
@@ -93,21 +92,6 @@ void Filament::CalcSPrime(){
 	}
 	//cout << "In SPrime calculation: " << mSPrime[0][2] << endl;
 }
-
-// Return the position of a given flag value from array of positions
-vector <double> FindFlag(vector <vector <double> > Positions, int f){
-	vector <vector <double> >::iterator begin, current, end, wanted;
-	int N = Positions.size();
-	begin = Positions.begin(); end = Positions.end();
-	if(f < 0){f = N+f;}
-	if(f == N){f = N-f;}
-	if(f > N){f = N-f+1;}
-	for(current=begin;current!=end;current++){
-		if(int((*current)[3]+0.1)==f){wanted = current; current = end-1;}
-	}
-	return (*wanted);
-}
-
 
 void Filament::CalcS2Prime(){
 	
