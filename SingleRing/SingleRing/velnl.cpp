@@ -15,11 +15,12 @@ using namespace std;
 vector <vector <double> > VelocityNL(vector <vector <double> > Ring){
 	
 	int L = Ring.size();
-	vector <vector  <double> > velnl(L);
+	vector <vector  <double> > velnl(L), blank_temp(3);
 	vector <double> blank(3);
-	vector <vector <double> > cross, A,B,C,D, velnl_temp;
 
 	for (int k=0;k<L;k++){
+		vector < vector <double> > cross, velnl_temp, A,B,C,D,A_temp,B_temp,C_temp,D_temp;;
+//		vector < vector < vector <double> > > A_temp,B_temp,C_temp,D_temp;
 		vector < vector <double> > p; // p = s_l - s_k
 		vector < vector <double> > q; // q = s_l+1 - s_l
 		
@@ -27,7 +28,7 @@ vector <vector <double> > VelocityNL(vector <vector <double> > Ring){
 			for(int l=1;l<L;l++){ 
 				//cout << "p:		" << k << ", " << l << endl;
 				p.push_back(blank);
-				for(int m=0;m<3;m++){p[l-1][m] = (Ring[l][m]-Ring[k][m]);
+				for(int m=0;m<3;m++){p[k][m] = (Ring[l][m]-Ring[k][m]);
 				}
 			}
 		}
@@ -35,13 +36,13 @@ vector <vector <double> > VelocityNL(vector <vector <double> > Ring){
 		else{	for(int l=0;l<k;l++){
 					//cout << "p:		" << k << ", " << l << endl;
 					p.push_back(blank);
-					for(int m=0;m<3;m++){p[l][m] = (Ring[l][m]-Ring[k][m]);
+					for(int m=0;m<3;m++){p[k][m] = (Ring[l][m]-Ring[k][m]);
 					}
 				}
 				for(int l=k+1;l<L;l++){
 					//cout << "p:		" << k << ", " << l << endl;
 					p.push_back(blank);
-					for(int m=0;m<3;m++){p[l-1][m] = (Ring[l][m]-Ring[k][m]);
+					for(int m=0;m<3;m++){p[k][m] = (Ring[l][m]-Ring[k][m]);
 					}
 				}
 		} // End filling p
@@ -49,20 +50,22 @@ vector <vector <double> > VelocityNL(vector <vector <double> > Ring){
 		if(k==L-1)	for(int l=0;l<L-1;l++){
 						//cout << "q:		" << k << ", " << l << endl;
 						q.push_back(blank);
-						for(int m=0;m<3;m++){q[l][m] = (Ring[l][m]-Ring[k][m]);
+						for(int m=0;m<3;m++){q[k][m] = (Ring[l+2][m]-Ring[k][m]);
 						}
 					}
 
-		else if(k==0)for(int l=1;l<L;l++){
+		else if(k==0) for(int l=1;l<L;l++){
 						// cout << "q:		" << k << ", " << l << endl;
 						q.push_back(blank);
-						for(int m=0;m<3;m++){q[l-1][m] = (Ring[l][m]-Ring[k][m]);
+						for(int m=0;m<3;m++){q[k][m] = (Ring[l][m]-Ring[l-1][m]);
+						cout << "q" << k << "from " << l << " is	" << q[k][m] << endl;
 						}
 					}
 
 		else{	for(int l=0;l<k;l++){
 					//cout << "q:		" << k << ", " << l << endl;
 					q.push_back(blank);
+					cout << "Below k is not good" << endl;
 					for(int m=0;m<3;m++){q[l][m] = (Ring[l][m]-Ring[k][m]);
 					}
 				}
@@ -70,6 +73,7 @@ vector <vector <double> > VelocityNL(vector <vector <double> > Ring){
 				for(int l=k+1;l<L;l++){
 					//cout << "q:		" << k << ", " << l << endl;
 					q.push_back(blank);
+					cout << "Above k is good" << endl;
 					for(int m=0;m<3;m++){q[l-1][m] = (Ring[l][m]-Ring[k][m]);
 					}
 				}
@@ -84,16 +88,28 @@ vector <vector <double> > VelocityNL(vector <vector <double> > Ring){
 
 	// Calculate coefficients: A=|p|, B=p.q, C=|q|
 				A.push_back(blank); B.push_back(blank); C.push_back(blank); D.push_back(blank);
-				for(int j=0;j<3;j++){
-					A[k][j] = p[k][j]*p[k][j];
-					A[k][j] = sqrt(A[k][j]);
-					B[k][j] = p[k][j]*q[k][j];
-					C[k][j] = q[k][j]*q[k][j];
-					C[k][j] = sqrt(C[k][j]);
+				A_temp.push_back(blank); B_temp.push_back(blank); C_temp.push_back(blank); D_temp.push_back(blank);
+
+				for(int l=0;l<L;l++){
+					for(int j=0;j<3;j++){
+						A_temp[l][j] = p[l][j]*p[l][j];
+						A_temp[l][j] = sqrt(A_temp[l][j]);
+						B_temp[l][j] = p[l][j]*q[l][j];
+						C_temp[l][j] = q[l][j]*q[l][j];
+						C_temp[l][j] = sqrt(C_temp[l][j]);
+
+						cout << "k, l:	" << k << l << "; " << "A_temp, B_temp, C_temp:	" << A_temp[l][j] << ", " << B_temp[l][j] << ", " << C_temp[l][j] << endl;
+						
+						// The total contribution at point k is found by summing over all other points, l
+						A[k][j]=A[k][j]+A_temp[l][j];
+						B[k][j]=B[k][j]+B_temp[l][j];
+						C[k][j]=C[k][j]+C_temp[l][j];
+
 					cout << "A, B, C:	" << A[k][j] << "	" << B[k][j] << "	" << C[k][j] << endl;
 
 	// Expression for coefficient D given by Samuels in Barenghi et al, Quantized Vortex Dynamics and Superfluid Turbulence, Springer (2001)
 					D[k][j] = (kappa/(4*pi))*((A[k][j]+C[k][j])/(A[k][j]*C[k][j]*(A[k][j]*C[k][j]+B[k][j])));
+					}
 				}
 
 	// Calculate the cross product of p and q
