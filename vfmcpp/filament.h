@@ -11,7 +11,10 @@ class Filament{
 protected:
 	int 						mN;
 	vector <vector <double> > 	mPos;
-	vector <vector <double> > 	mVel;
+	vector <vector <double> > 	mVel; 	// current velocity
+	vector <vector <double> > 	mVel1;	// stores velocity last time step
+	vector <vector <double> > 	mVel2;  // stores velocity 2 time steps ago
+	vector <vector <double> >	mVelNL;
 	vector <vector <double> > 	mSPrime;
 	vector <vector <double> > 	mS2Prime;
 	vector <double> 			mSegLengths;
@@ -21,9 +24,15 @@ public:
 	void CalcMeshLengths();
 	vector <double> GetMeshLengths(){return mSegLengths;}
 	vector <vector <double> > GetSPrime(){return mSPrime;}
+	
 	void CalcVelocity();
 	void CalcSPrime();
 	void CalcS2Prime();
+	void CalcVelocityNL();
+
+	void PropagatePosAB3(double & dt);
+	//void PropagatePosRK4(double & dt);
+
 };
 
 class Ring : public Filament{
