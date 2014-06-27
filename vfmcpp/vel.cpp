@@ -9,21 +9,22 @@ using namespace std;
 void Filament::CalcVelocity(){
 
 	// circulation quantum, core radius, ..., mutual friction
-	double	kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0, alpha=0, prefactor;
+	double	kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0;
 	
 	mVel.resize(mN);
 
 	CalcSPrime(); CalcS2Prime();
 	
 	int j;
+
 	for(int i=0;i<mN;i++){
 		mVel[i].resize(3);
 		mVel[i][0] = (mSPrime[i][1]*mS2Prime[i][2] - mSPrime[i][2]*mS2Prime[i][1]);
 		mVel[i][1] = (mSPrime[i][2]*mS2Prime[i][0] - mSPrime[i][0]*mS2Prime[i][2]);
 		mVel[i][2] = (mSPrime[i][0]*mS2Prime[i][1] - mSPrime[i][1]*mS2Prime[i][0]);
-		if(i==mPos.size()-1){j=-1;}
+		if(i==mN-1){j=-1;}
 		else{j=i;}
-		for(int q=0;q<3;q++){mVel[i][q] *= kappa*log(sqrt(mSegLengths[i]*mSegLengths[j+1])/a1)/(4*M_PI);}
+		for(int q=0;q<3;q++){mVel[i][q] *= kappa*log(2*sqrt(mSegLengths[i]*mSegLengths[j+1])/a1)/(4*M_PI);}
 		cout << i << ": (" << mVel[i][0] << ", " << mVel[i][1] << ", " << mVel[i][2] << ")" << endl;
 	}
 

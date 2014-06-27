@@ -13,7 +13,7 @@ int main(){
 
 	Ring Ring1(r0,N,0,0,0);
 
-	double t, dt, dr;
+	double t(0), dt, dr;
 	// Set spatial resolution
 	for(int i(0);i<N;i++){
 		dr += Ring1.GetMeshLengths()[i];
