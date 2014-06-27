@@ -15,7 +15,6 @@ void Filament::CalcVelocity(){
 
 	CalcSPrime(); CalcS2Prime();
 	
-	prefactor = kappa * -log(a1) / (4*M_PI);
 	int j;
 	for(int i=0;i<mN;i++){
 		mVel[i].resize(3);
@@ -24,10 +23,8 @@ void Filament::CalcVelocity(){
 		mVel[i][2] = (mSPrime[i][0]*mS2Prime[i][1] - mSPrime[i][1]*mS2Prime[i][0]);
 		if(i==mPos.size()-1){j=-1;}
 		else{j=i;}
-		mVel[i][0] = prefactor*mVel[i][0]*log(sqrt(mSegLengths[i]*mSegLengths[j+1]));
-		mVel[i][1] = prefactor*mVel[i][1]*log(sqrt(mSegLengths[i]*mSegLengths[j+1]));
-		mVel[i][2] = prefactor*mVel[i][2]*log(sqrt(mSegLengths[i]*mSegLengths[j+1]));
-		cout << mVel[i][0] << ", " << mVel[i][1] << ", " << mVel[i][2] << endl;
+		for(int q=0;q<3;q++){mVel[i][q] *= kappa*log(sqrt(mSegLengths[i]*mSegLengths[j+1])/a1)/(4*M_PI);}
+		cout << i << ": (" << mVel[i][0] << ", " << mVel[i][1] << ", " << mVel[i][2] << ")" << endl;
 	}
 
 
@@ -38,6 +35,7 @@ void Filament::CalcSPrime(){
 	
 	mSPrime.resize(mN);
 	vector <double> A, B, C, D, E;
+	vector <double> &L = mSegLengths;
 	A.resize(mN); B = A; C=A; D=A; E=A;
 	// Funky for loop to generate correct indices for orderered array of lengths
 	// Produces (98,99,0,1,2) -> (97,98,99,0,1) for N=100.
@@ -52,22 +50,17 @@ void Filament::CalcSPrime(){
 		if(m+2==mN){m=-2;}
 		//cout << "(" << j-2 << ", " << k-1 << ", " << i << ", " << l+1 << ", " << m+2 << ")\n";
 
-/*		A[i] = L[i]*L[l+1]*L[l+1]+L[i]*L[l+1]*L[m+2];
+		A[i] = L[i]*L[l+1]*L[l+1]+L[i]*L[l+1]*L[m+2];
 		A[i] = A[i] / (L[k-1]*(L[k-1]+L[i])*(L[k-1]+L[i]+L[l+1])*(L[k-1]+L[i]+L[l+1]+L[m+2]));
 		
-		B[i] = -L[k-1]*L[l+1]*L[l+1]-L[i]*L[l+1]*L[l+1]-L[k-1]*L[l+1]*L[m+2];
-		B[i] = B[i] / L[k-1]*L[i]*(L[i]+L[l+1])*(L[i]+L[l+1]+L[m+2]);
+		B[i] = -L[k-1]*L[l+1]*L[l+1] - L[i]*L[l+1]*L[l+1] - L[k-1]*L[l+1]*L[m+2] - L[i]*L[l+1]*L[m+2];
+		B[i] = B[i] / (L[k-1]*L[i]*(L[i]+L[l+1])*(L[i]+L[l+1]+L[m+2]));
 
 		D[i] = L[k-1]*L[i]*L[l+1]+L[i]*L[i]*L[l+1]+L[k-1]*L[i]*L[m+2]+L[i]*L[i]*L[m+2];
-		D[i] = D[i] / L[l+1]*L[m+2]*(L[i]+L[l+1])*(L[k-1]+L[i]+L[l+1]);
+		D[i] = D[i] / (L[l+1]*L[m+2]*(L[i]+L[l+1])*(L[k-1]+L[i]+L[l+1]));
 
-		E[i] = -L[l+1]*L[i]*L[i]-L[k-1]*L[i]*L[l+1];
-		E[i] = E[i] / L[m+2]*(L[l+1]+L[m+2])*(L[i]+L[i+1]+L[i+2])*(L[k-1]+L[i]+L[l+1]+L[m+2]);*/
-
-		A[i] = 1  /(12*mSegLengths[i]);
-		B[i] = -8 /(12*mSegLengths[i]);
-		D[i] = 8  /(12*mSegLengths[i]);
-		E[i] = -1 /(12*mSegLengths[i]);
+		E[i] = -L[l+1]*L[i]*L[i] - L[k-1]*L[i]*L[l+1];
+		E[i] = E[i] / (L[m+2]*(L[l+1] + L[m+2]) * (L[i]+L[l+1]+L[m+2])*(L[k-1]+L[i]+L[l+1]+L[m+2]));
 
 		C[i] = -(A[i] + B[i] + D[i] + E[i]);		
 		
@@ -97,6 +90,7 @@ void Filament::CalcS2Prime(){
 	
 	mS2Prime.resize(mN);
 	vector <double> A2, B2, C2, D2, E2;
+	vector <double> &L = mSegLengths;
 	A2.resize(mN,0); B2 = A2; C2=A2; D2=A2; E2=A2;
 	
 	// Funky for loop to generate correct indices for orderered array of lengths
@@ -111,25 +105,20 @@ void Filament::CalcS2Prime(){
 		if(m+1==mN){m=-1;}
 		if(m+2==mN){m=-2;}
 		//cout << "(" << j-2 << ", " << k-1 << ", " << i << ", " << l+1 << ", " << m+2 << ")\n";
-
-/*		A2[i] = 2*(-2*L[i]*L[l+1]+L[l+1]*L[l+1]+L[l+1]*L[l+1]-L[i]*L[m+2]+L[l+1]*L[m+2]);
+			
+		A2[i] = 2*(-2*L[i]*L[l+1] + L[l+1]*L[l+1] - L[i]*L[m+2] + L[l+1]*L[m+2]);
 		A2[i] = A2[i] / (L[k-1]*(L[k-1]+L[i])*(L[k-1]+L[i]+L[l+1])*(L[k-1]+L[i]+L[l+1]+L[m+2]));
-
-		B2[i] = 2*(2*L[k-1]+2*L[i]*L[l+1]-L[l+1]*L[l+1]+L[k-1]*L[m+2]+L[i]*L[i+2]-L[l+1]*L[m+2]);
-		B2[i] = B2[i] / L[k-1]*L[i]*(L[i]+L[l+1])*(L[i]+L[l+1]+L[m+2]);
-
-		D2[i] = 2*(-L[k-1]*L[i]-L[i]*L[i]+L[k-1]*L[l+1]+2*L[i]*L[l+1]+L[k-1]*L[m+2]+2*L[i]*L[m+2]);
-		D2[i] = D2[i] / L[l+1]*L[m+2]*(L[i]+L[l+1])*(L[k-1]+L[i]+L[l+1]);
-
-		E2[i] = 2*(L[k-1]*L[i]+L[i]*L[i]-L[k-1]*L[l+1]-2*L[i]*L[l+1]);
-		E2[i] = E2[i] / L[m+2]*(L[l+1]+L[m+2])*(L[i]+L[i+1]+L[i+2])*(L[k-1]+L[i]+L[l+1]+L[m+2]);
-*/
-		A2[i] = -1 /(12*pow(mSegLengths[i],2));
-		B2[i] = 16/(12*pow(mSegLengths[i],2));
-		D2[i] = 16/(12*pow(mSegLengths[i],2));
-		E2[i] = -1 /(12*pow(mSegLengths[i],2));
 		
-		C2[i] = -(A2[i] + B2[i] + D2[i] + E2[i]);		
+		B2[i] = 2*(2*L[k-1]*L[l+1] + 2*L[i]*L[l+1] - L[l+1]*L[l+1] + L[k-1]*L[m+2] + L[i]*L[m+2] - L[l+1]*L[m+2]);
+		B2[i] = B2[i] / (L[k-1]*L[i]*(L[i] + L[l+1])*(L[i] + L[l+1]+L[m+2]));
+
+		D2[i] = 2*(-L[k-1]*L[i] - L[i]*L[i] + L[k-1]*L[l+1] + 2*L[i]*L[l+1] + L[k-1]*L[m+2] + 2*L[i]*L[m+2]);
+		D2[i] = D2[i] / (L[l+1]*L[m+2]*(L[i]+L[l+1])*(L[k-1]+L[i]+L[l+1]));
+
+		E2[i] = 2*(L[k-1]*L[i] + L[i]*L[i] - L[k-1]*L[l+1] - 2*L[i]*L[l+1]);
+		E2[i] = E2[i] / (L[m+2] * (L[l+1]+L[m+2]) * (L[i]+L[l+1]+L[m+2]) * (L[k-1]+L[i]+L[l+1]+L[m+2]));
+		
+		C2[i] = -(A2[i] + B2[i] + D2[i] + E2[i]);
 	}
 	// Calculate s'' using FindFlag to handle disordered array and PBCs
 	for(int p=0;p<mN;p++){
@@ -141,6 +130,7 @@ void Filament::CalcS2Prime(){
 		if(l+1==mN){l=-1;}
 		if(m+1==mN){m=-1;}
 		if(m+2==mN){m=-2;}
+		//cout << "(" << j-2 << ", " << k-1 << ", " << p << ", " << l+1 << ", " << m+2 << ")\n";
 		for(int q=0;q<3;q++){
 			mS2Prime[p][q] = A2[p]*mPos[j-2][q];
 			mS2Prime[p][q] += B2[p]*mPos[k-1][q];

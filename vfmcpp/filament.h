@@ -43,6 +43,7 @@ public:
 			mPos[i][2]=mCentre[2];
 			mPos[i][3]=i;
 		}
+
 		CalcMeshLengths();
 	}
 	Ring(double r, int N, double x, double y, double z){
