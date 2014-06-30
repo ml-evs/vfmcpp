@@ -29,76 +29,64 @@ vector <vector <double> > VelocityNL(vector <vector <double> > Ring){
 				p.push_back(blank);
 					for(int m=0;m<3;m++){
 					p[l-1][m] = (Ring[l][m]-Ring[k][m]);
-				}
+					}
+					cout << "k:	" << k << ", l:	" << l << " has been filled;	p has size " << p.size() << " and p[l-1][0] is " << p[l-1][0] << endl;
 			}
 		}
 
-		//else{	for(int l=1;l<L;l++){
-		//			p.push_back(blank);
-		//			if(l==k){ cout << l << ",	" << k << endl;
-		//			}
-		//			else{
-		//			//cout << "k:	" << k << ", l: " << l << endl;
-		//			
-		//			for(int m=0;m<3;m++){
-		//				p[l-1][m] = (Ring[l][m]-Ring[k][m]);
-		//			//	cout << k << ", " << l << ", " << m << "	" << p[l][m] << endl;
-		//			}
-		//			}
-		//		}
+		else{	for(int l=1;l<L;l++){
+					p.push_back(blank);
+					if(l==k){ cout << "k: " << k << ",	l: " << l << " has been skipped;	p has size " << p.size() << " and p[l][0] is " << p[l-1][0] << endl;
+					}
+					else{
+					for(int m=0;m<3;m++){
+						p[l-1][m] = (Ring[l][m]-Ring[k][m]);
+					}
+					cout << "k: " << k << ",	l: " << l << " has been filled;	p has size " << p.size() << " and p[l][0] is " << p[l-1][0] << endl;
+					}
+				}
 				/*for(int l=k+1;l<L;l++)
-					//cout << "p:		" << k << ", " << l << endl;
+					cout << "p:		" << k << ", " << l << endl;
 					p.push_back(blank);
 					for(int m=0;m<3;m++){
 						p[k][m] = (Ring[l][m]-Ring[k][m]);
 					}
 				}*/
-		//} // End filling p
+		} // End filling p
 		
-		for(int l=0;l<L;l++){
-		cout << "k: " << k << ",	l: " << l << ",	p[l][0]: " << p[l][0] << ",	p.size(): " << p.size() << endl;
-		}
-	}
 
-		//if(k==L-1)	for(int l=0;l<L-1;l++){
-		//				//cout << "q:		" << k << ", " << l << endl;
-		//				q.push_back(blank);
-		//				for(int m=0;m<3;m++){q[k][m] = (Ring[l+1][m]-Ring[l][m]);
-		//				
-		//				}
-		//			}
+		if(k==L-1)	for(int l=0;l<L-1;l++){
+						q.push_back(blank);
+						for(int m=0;m<3;m++){q[k][m] = (Ring[l+1][m]-Ring[l][m]);						
+						}
+						cout << "k:	" << k << ", l: " << l << " has been filled; q has size " << q.size() << " and q[l][0] is " << q[l-1][0] << endl;
+					}
 
-		//else if(k==0) for(int l=1;l<L;l++){
-		//				// cout << "q:		" << k << ", " << l << endl;
-		//				q.push_back(blank);
-		//				for(int m=0;m<3;m++){q[k][m] = (Ring[l][m]-Ring[l-1][m]);		
-		//				}
-		//			}
+		else if(k==0) for(int l=1;l<L;l++){
+						q.push_back(blank);
+						for(int m=0;m<3;m++){q[k][m] = (Ring[l][m]-Ring[l-1][m]);		
+						}
+						cout << "k:	" << k << ", l: " << l << " has been filled; q has size " << q.size() << " and q[l][0] is " << q[l-1][0] << endl;
+					}
 
-		//else{	for(int l=0;l<k;l++){
-		//			//cout << "q:		" << k << ", " << l << endl;
-		//			q.push_back(blank);
-		//			cout << q[k].size();
-		//			cout << k << l << endl;
-		//			for(int m=0;m<3;m++){q[k][m] = (Ring[l][m]-Ring[l-1][m]);
-		//			cout << "q" << k << "from " << l << " is	" << q[k][m] << endl;
-		//			}
-		//		}
+		else{	for(int l=0;l<k;l++){
+					q.push_back(blank);
+					cout << q[k].size();
+					cout << k << l << endl;
+					for(int m=0;m<3;m++){q[k][m] = (Ring[l][m]-Ring[l-1][m]);
+					}
+					cout << "k:	" << k << ", l: " << l << " has been filled; q has size " << q.size() << " and q[l][0] is " << q[l-1][0] << endl;
+				}
 
-		//		for(int l=k+1;l<L;l++){
-		//			//cout << "q:		" << k << ", " << l << endl;
-		//			q.push_back(blank);
-		//			cout << "Above k is good" << endl;
-		//			for(int m=0;m<3;m++){q[l-1][m] = (Ring[l][m]-Ring[k][m]);
-		//			}
-		//		}
+				for(int l=k+1;l<L;l++){
+					q.push_back(blank);
+					for(int m=0;m<3;m++){q[l-1][m] = (Ring[l][m]-Ring[k][m]);
+					}
+					cout << "k:	" << k << ", l: " << l << " has been filled; q has size " << q.size() << " and q[l][0] is " << q[l-1][0] << endl;
+				}
+				
+		} // End filling q
 
-		//		//	for(int m=0;m<3;m++){q[0][m] = (Ring[0][m]-Ring[k][m]);}
-
-		//		
-		//} // End filling q
-
-		//	cout << "Point " << k << " finished." << endl;
 	
 
 	// Calculate coefficients: A=|p|, B=p.q, C=|q|
@@ -159,4 +147,6 @@ vector <vector <double> > VelocityNL(vector <vector <double> > Ring){
 		//}
 
 	return velnl;
+
+	}
 }
