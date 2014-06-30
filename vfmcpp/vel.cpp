@@ -13,7 +13,7 @@ void Filament::CalcVelocity(){
 	mVel1 = mVel;
 	mVel2 = mVel1;
 	mVel.resize(mN);
-	CalcSPrime(); CalcS2Prime();
+	CalcSPrime(); CalcS2Prime(); CalcVelocitySelfNL();
 	int j;
 	for(int i=0;i<mN;i++){
 		mVel[i].resize(3);
@@ -22,11 +22,16 @@ void Filament::CalcVelocity(){
 		mVel[i][2] = (mSPrime[i][0]*mS2Prime[i][1] - mSPrime[i][1]*mS2Prime[i][0]);
 		if(i==mN-1){j=-1;}
 		else{j=i;}
-		for(int q=0;q<3;q++){mVel[i][q] *= kappa*log(2*sqrt(mSegLengths[i]*mSegLengths[j+1])/a1)/(4*M_PI);}
+		for(int q=0;q<3;q++){
+			mVel[i][q] *= kappa*log(2*sqrt(mSegLengths[i]*mSegLengths[j+1])/a1)/(4*M_PI);
+			mVel[i][q] += mVelNL[i][q];
+			mVelNL[i][q] = 0;
+		}
 	}
 	cout << "v_0 = (" << mVel[0][0] << ", " << mVel[0][1] << ", " << mVel[0][2] << ")" << endl;
 	if(mVel1.empty()){mVel1=mVel;}
 	if(mVel2.empty()){mVel2=mVel1;}
+
 }
 
 // calculate s' using coefficients from Baggaley & Barenghi JLT 166:3-20 (2012)

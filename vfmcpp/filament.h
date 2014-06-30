@@ -24,11 +24,11 @@ public:
 	void CalcMeshLengths();
 	vector <double> GetMeshLengths(){return mSegLengths;}
 	vector <vector <double> > GetSPrime(){return mSPrime;}
-	
+	vector <vector <double> > GetPos(){return mPos;}
 	void CalcVelocity();
 	void CalcSPrime();
 	void CalcS2Prime();
-	void CalcVelocityNL();
+	void CalcVelocitySelfNL();
 
 	void PropagatePosAB3(double & dt);
 	//void PropagatePosRK4(double & dt);
@@ -47,8 +47,8 @@ public:
 		mPos.resize(mN); 
 		for(int i=0; i<mN; i++){
 			mPos[i].resize(4);
-			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
-			mPos[i][1]=mCentre[0]+mRadius0*cos(i*(2*M_PI)/mN);
+			mPos[i][0]=mCentre[0]+mRadius0*sin(-i*(2*M_PI)/mN);
+			mPos[i][1]=mCentre[0]+mRadius0*cos(-i*(2*M_PI)/mN);
 			mPos[i][2]=mCentre[2];
 			mPos[i][3]=i;
 		}
@@ -62,8 +62,8 @@ public:
 		mPos.resize(mN);
 		for(int i=0; i<mN; i++){
 			mPos[i].resize(4);
-			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
-			mPos[i][1]=mCentre[0]+mRadius0*cos(i*(2*M_PI)/mN);
+			mPos[i][0]=mCentre[0]+mRadius0*sin(-i*(2*M_PI)/mN);
+			mPos[i][1]=mCentre[0]+mRadius0*cos(-i*(2*M_PI)/mN);
 			mPos[i][2]=mCentre[2];
 			mPos[i][3]=i;
 		}

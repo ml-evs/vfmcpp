@@ -10,12 +10,12 @@ using namespace std;
 int main(){
 
 	// create filaments
-	Ring Ring1(r0,N,0,0,2e-6);
+	Ring Ring1(r0,100,0,0,2e-6);
 
 	double t(0), dt, dr;
 	
 	// set number of timesteps
-	int N_t(100);
+	int N_t(10000);
 
 	// set spatial resolution
 	for(int i(0);i<N;i++){
@@ -25,15 +25,16 @@ int main(){
 	
 	// set temporal resolution
 	dt = pow((dr/2),2)/(kappa*log(dr/(2*M_PI*a0)));
-	dt = dt/25; // Baggaley, Barenghi PRB 2010
+	dt = dt/50; // Baggaley, Barenghi PRB 2010
 	
 	//Ring1.CalcVelocity();
-	Ring1.CalcVelocityNL();
-	/*for(int i(0); i<N_t; i++){
+	for(int i(0); i<N_t; i++){
 		Ring1.CalcVelocity();
 		Ring1.PropagatePosAB3(dt);
-		cout << "t = " << t+i*dt << " s." << endl;
-	}*/
+		cout << "t = " << i << " steps." << endl;
+	}
+	//cout << "timestep = " << dt;
+	
 
 
 	return 0;
