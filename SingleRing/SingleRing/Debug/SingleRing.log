@@ -1,4 +1,4 @@
-﻿Build started 26/06/2014 19:01:45.
+﻿Build started 27/06/2014 18:36:57.
      1>Project "C:\Users\Helium\Documents\VortexFilamentCode\SingleRing\SingleRing\SingleRing.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\SingleRing.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -21,4 +21,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.31
+Time Elapsed 00:00:01.83
