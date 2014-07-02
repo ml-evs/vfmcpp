@@ -1,4 +1,7 @@
 #include "filament.h"
+#include <fstream>
+#include <string>
+#include <iomanip>
 
 using namespace std;
 
@@ -14,8 +17,9 @@ int main(){
 
 	double dt, dr;
 	
-	// set number of timesteps
-	int N_t(10000);
+	// set number of timesteps and number of steps per save
+	int N_t(1);
+	int N_f(50);
 
 	// set spatial resolution
 	for(int i(0);i<N;i++){
@@ -27,18 +31,26 @@ int main(){
 	// set temporal resolution
 	dt = pow((dr/2),2)/(kappa*log(dr/(2*M_PI*a0)));
 	dt = dt/25; // Baggaley, Barenghi PRB 2010
-	
+	cout << dt << endl;
+	string filename = "dat/data_";
+
 	for(int i(0); i<N_t; i++){
 		Ring1.CalcVelocity();
 		Ring1.PropagatePosAB3(dt);
 		//cout << "t = " << i << " steps." << endl;
+		if(i%N_f==0){
+			string ith_filename = filename + to_string(i) + (".dat");
+			ofstream outfile(ith_filename);
+			outfile.width(10); outfile.precision(6);
+			for(int j(0); j<N; j++){
+				outfile << Ring1.GetPos()[j][0] << "\t";
+				outfile << Ring1.GetPos()[j][1] << "\t";
+				outfile << Ring1.GetPos()[j][2] << "\n";
+			}
+			cout << "Wrote timestep " << i << " to file." << endl;
+			outfile.close();
+		}
 	}
-	for(int i(0); i<N; i++) cout << "v_" << i << "= (" << Ring1.GetVel()[i][0] << ", " << Ring1.GetVel()[i][1] << ", " << Ring1.GetVel()[i][2] << ")" << endl;
-	//cout << "timestep = " << dt;
-	
-
-
 	return 0;
-
 }
 
