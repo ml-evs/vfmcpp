@@ -25,6 +25,7 @@ public:
 	vector <double> GetMeshLengths(){return mSegLengths;}
 	vector <vector <double> > GetSPrime(){return mSPrime;}
 	vector <vector <double> > GetPos(){return mPos;}
+	vector <vector <double> > GetVel(){return mVel;}
 	void CalcVelocity();
 	void CalcSPrime();
 	void CalcS2Prime();
@@ -46,13 +47,11 @@ public:
 		mCentre.resize(3,0);
 		mPos.resize(mN); 
 		for(int i=0; i<mN; i++){
-			mPos[i].resize(4);
-			mPos[i][0]=mCentre[0]+mRadius0*sin(-i*(2*M_PI)/mN);
-			mPos[i][1]=mCentre[0]+mRadius0*cos(-i*(2*M_PI)/mN);
+			mPos[i].resize(3);
+			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
+			mPos[i][1]=mCentre[0]+mRadius0*cos(i*(2*M_PI)/mN);
 			mPos[i][2]=mCentre[2];
-			mPos[i][3]=i;
 		}
-
 		CalcMeshLengths();
 	}
 	Ring(double r, int N, double x, double y, double z){
@@ -61,11 +60,10 @@ public:
 		mCentre[0] = x; mCentre[1] = y; mCentre[2] = z;
 		mPos.resize(mN);
 		for(int i=0; i<mN; i++){
-			mPos[i].resize(4);
-			mPos[i][0]=mCentre[0]+mRadius0*sin(-i*(2*M_PI)/mN);
-			mPos[i][1]=mCentre[0]+mRadius0*cos(-i*(2*M_PI)/mN);
+			mPos[i].resize(3);
+			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
+			mPos[i][1]=mCentre[0]+mRadius0*cos(i*(2*M_PI)/mN);
 			mPos[i][2]=mCentre[2];
-			mPos[i][3]=i;
 		}
 		CalcMeshLengths();
 	}

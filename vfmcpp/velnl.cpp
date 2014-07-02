@@ -2,7 +2,7 @@
 // Adapted from CalcNonmNocalVel.m by Paul Walmsley
 
 #include "filament.h"
-#include "tangle.h"
+//#include "tangle.h"
 
 using namespace std;
 
@@ -32,7 +32,7 @@ void Filament::CalcVelocitySelfNL(){
 					else{g=l;}
 					for(int m=0;m<3;m++){
 						p[l-s][m] = (mPos[l][m]-mPos[k][m]);
-						q[l-s][m] = (mPos[l][m]-mPos[g+1][m]);
+						q[l-s][m] = (mPos[g+1][m]-mPos[l][m]);
 					}
 				}
 			}

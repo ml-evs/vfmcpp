@@ -10,10 +10,10 @@ using namespace std;
 void Filament::CalcVelocity(){
 	// circulation quantum, core radius, ..., mutual friction
 	double	kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0;
-	mVel1 = mVel;
 	mVel2 = mVel1;
+	mVel1 = mVel;
 	mVel.resize(mN);
-	CalcSPrime(); CalcS2Prime(); CalcVelocitySelfNL();
+	CalcSPrime(); CalcS2Prime(); CalcVelocitySelfNL(); CalcMeshLengths();
 	int j;
 	for(int i=0;i<mN;i++){
 		mVel[i].resize(3);
@@ -28,7 +28,6 @@ void Filament::CalcVelocity(){
 			mVelNL[i][q] = 0;
 		}
 	}
-	cout << "v_0 = (" << mVel[0][0] << ", " << mVel[0][1] << ", " << mVel[0][2] << ")" << endl;
 	if(mVel1.empty()){mVel1=mVel;}
 	if(mVel2.empty()){mVel2=mVel1;}
 
