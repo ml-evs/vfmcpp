@@ -43,10 +43,10 @@ int main(){
 	clock_t t;
 	t=clock();
 	for(int i(0); i<N_t; i++){
-		Ring1.CalcVelocity();
-		Ring2.CalcVelocity();
 		Ring1.CalcVelocityNL_OF(Ring2.GetPos());
 		Ring2.CalcVelocityNL_OF(Ring1.GetPos());
+		Ring1.CalcVelocity();
+		Ring2.CalcVelocity();
 		Ring1.PropagatePosAB3(dt);
 		Ring2.PropagatePosAB3(dt);
 		percent = (100*i/N_t);

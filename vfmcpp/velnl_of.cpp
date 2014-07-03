@@ -12,6 +12,7 @@ using namespace std;
 void Filament::CalcVelocityNL_OF(vector <vector <double> > PosOtherRing){
 
 	int N = PosOtherRing.size();
+	mVelNL.resize(mN);
 	vector <vector <double> > q(N); // q = s_l+1 - s_l
 	vector <vector <double> > p; // p = s_l - s_k
 	vector <double> A, B, C, D;
@@ -31,6 +32,7 @@ void Filament::CalcVelocityNL_OF(vector <vector <double> > PosOtherRing){
 	} // End q calculation
 
 	for (int k=0;k<mN;k++){
+		mVelNL[k].resize(3);
 		for(int l=0;l<N;l++){
 			//cout << l << endl;
 			p[l].resize(3);
