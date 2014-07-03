@@ -55,10 +55,8 @@ void Filament::CalcVelocityNL_OF(vector <vector <double> > PosOtherRing){
 
 			// Total nonlocal contribution at point k is found by summing over all elements l, D.(p x q)
 			for(int m=0;m<3;m++){
-				mVel[k][m] += (kappa*(((2*C[l])+B[l])/(sqrt(A[l]+B[l]+C[l])) - B[l]/sqrt(A[l])) * pxq[l][m])/(2*M_PI*(4*A[l]*C[l]-B[l]*B[l]));	
+				mVelNL[k][m] += (kappa*(((2*C[l])+B[l])/(sqrt(A[l]+B[l]+C[l])) - B[l]/sqrt(A[l])) * pxq[l][m])/(2*M_PI*(4*A[l]*C[l]-B[l]*B[l]));	
 			}
 		}
-		//cout << "Contribution to point " << k << " calculated." << endl;
 	}
-	//cout << "Filament finished." << endl;
 }

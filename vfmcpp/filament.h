@@ -26,11 +26,12 @@ public:
 	vector <vector <double> > GetSPrime(){return mSPrime;}
 	vector <vector <double> > GetPos(){return mPos;}
 	vector <vector <double> > GetVel(){return mVel;}
+	int GetN(){return mN;}
 	void CalcVelocity();
 	void CalcSPrime();
 	void CalcS2Prime();
 	void CalcVelocitySelfNL();
-
+	void CalcVelocityNL_OF(vector <vector <double> > PosOtherRing);
 	void PropagatePosAB3(double & dt);
 	//void PropagatePosRK4(double & dt);
 
