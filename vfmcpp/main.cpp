@@ -1,7 +1,9 @@
 #include "filament.h"
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <iomanip>
+#include <ctime>
 
 using namespace std;
 
@@ -14,14 +16,10 @@ int main(){
 
 	// create filaments
 	Ring Ring1(r0,N,0,0,0);
-	Ring Ring2(r0,N,0,0,0.5e-6);
+	Ring Ring2(r0,N,0,1e-6,5e-7);
 
 	double dt, dr;
 	
-	// set number of timesteps and number of steps per save
-	int N_t(1000000);
-	int N_f(500);
-
 	// set spatial resolution
 	for(int i(0);i<N;i++){
 		dr += Ring1.GetMeshLengths()[i];
@@ -32,8 +30,18 @@ int main(){
 	// set temporal resolution
 	dt = pow((dr/2),2)/(kappa*log(dr/(2*M_PI*a0)));
 	dt = dt/25; // Baggaley, Barenghi PRB 2010
-	string filename = "dat/data_";
 
+
+	// set number of timesteps and number of steps per save
+	int N_t(1e-3/dt);
+	cout << "Number of time steps required: " << N_t << endl;
+	int N_f(5000);
+
+	string filename = "dat/data_";
+	double percent;
+
+	clock_t t;
+	t=clock();
 	for(int i(0); i<N_t; i++){
 		Ring1.CalcVelocity();
 		Ring2.CalcVelocity();
@@ -41,25 +49,29 @@ int main(){
 		Ring2.CalcVelocityNL_OF(Ring1.GetPos());
 		Ring1.PropagatePosAB3(dt);
 		Ring2.PropagatePosAB3(dt);
-
-		cout << "t = " << i << " steps." << endl;
-		
+		percent = (100*i/N_t);
+		printf("\r %4.1f %%",percent);
 		if(i%N_f==0){
 			string ith_filename = filename + to_string(i) + (".dat");
 			ofstream outfile(ith_filename);
 			outfile.width(10); outfile.precision(6);
-			for(int j(0); j<N; j++){
+			for(int j(0); j<Ring1.GetN(); j++){
 				outfile << Ring1.GetPos()[j][0] << "\t";
 				outfile << Ring1.GetPos()[j][1] << "\t";
 				outfile << Ring1.GetPos()[j][2] << "\n";
+			}
+			for(int j(0); j<Ring2.GetN(); j++){
 				outfile << Ring2.GetPos()[j][0] << "\t";
 				outfile << Ring2.GetPos()[j][1] << "\t";
 				outfile << Ring2.GetPos()[j][2] << "\n";
 			}
-			cout << "Wrote timestep " << i << " to file." << endl;
+		//	cout << "!!!!!!\t Wrote timestep " << i << " to file. \t!!!!!!" << endl;
 			outfile.close();
 		}
 	}
+	t = clock()-t;
+	ofstream timefile(filename+("time.dat"));
+	timefile << "Total time = " << ((float)t)/CLOCKS_PER_SEC << " s.";
 	return 0;
 }
 

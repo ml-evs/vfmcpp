@@ -50,7 +50,7 @@ public:
 		for(int i=0; i<mN; i++){
 			mPos[i].resize(3);
 			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
-			mPos[i][1]=mCentre[0]+mRadius0*cos(i*(2*M_PI)/mN);
+			mPos[i][1]=mCentre[1]+mRadius0*cos(i*(2*M_PI)/mN);
 			mPos[i][2]=mCentre[2];
 		}
 		CalcMeshLengths();
@@ -63,7 +63,7 @@ public:
 		for(int i=0; i<mN; i++){
 			mPos[i].resize(3);
 			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
-			mPos[i][1]=mCentre[0]+mRadius0*cos(i*(2*M_PI)/mN);
+			mPos[i][1]=mCentre[1]+mRadius0*cos(i*(2*M_PI)/mN);
 			mPos[i][2]=mCentre[2];
 		}
 		CalcMeshLengths();

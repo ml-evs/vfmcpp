@@ -30,12 +30,6 @@ def animate(i):
 	file = open(files[i], 'r')
 	line = file.readline()
 	data = []
-	x1 = np.zeros((101))
-	x2 = np.zeros((101))
-	y1 = np.zeros((101))
-	y2 = np.zeros((101))
-	z1 = np.zeros((101))
-	z2 = np.zeros((101))
 	while line:
 		data.append(line)
 		line = file.readline()
@@ -43,48 +37,38 @@ def animate(i):
 	r = np.zeros((len(data),3))
 	for j in range(len(data)):
 		r[j] = data[j].split()
-	for n in range(100):	
-		x1[n] =  r[n,0]
-		y1[n] =  r[n,1]
-		z1[n] = -r[n,2]
-		x2[n] =  r[n+100,0]
-		y2[n] =  r[n+100,1]
-		z2[n] = -r[n+100,2]
-	x1[-1] = x1[0]
-	x2[-1] = x2[0]
-	y1[-1] = y1[0]
-	y2[-1] = y2[0]
-	z2[-1] = z2[0]
-	z1[-1] = z1[0]
+	x = r[:,0]
+	y = r[:,1]
+	z = -r[:,2]
 
-	rings[0].set_data(x1, y1)
-	rings[0].set_3d_properties(z1)
-	rings[1].set_data(x2, y2)
-	rings[1].set_3d_properties(z2)
+	for ring in rings:
+		ring.set_data(x, y)
+		ring.set_3d_properties(z)
 
-	ax.view_init(10, 0.3 * i)
-	time_text.set_text('time = %.1f' % (1e9*i*N_f*dt)+ ' ns / %.1f' % (len(files)*1e9*N_f*dt) +' ns')
+	#ax.view_init(10, 0.3 * i)
+	time_text.set_text('time = %.1f' % (1e9*i*N_f*dt) + ' ns / %.1f' % (len(files)*1e9*N_f*dt) +' ns')
 	fig.canvas.draw()
 	plt.draw()
 	return rings, time_text
 
-N_f = 5000
+N_f = 2000
 dt = 9.1e-11
 files = getfiles(N_f)
 fig = plt.figure(facecolor='w',figsize=(10,10))
 ax = fig.add_subplot(111, 
-	xlim=(-4.0e-6,4.0e-6), ylim=(-4.0e-6,4.0e-6), zlim=(-5e-5,5e-5), 
+	xlim=(-2.0e-6,2.0e-6), ylim=(-2.0e-6,2.0e-6), zlim=(0,1e-5), 
 	aspect='equal',
-	xticks=[0], yticks=[0], zticks=[0],
+	xticks=[], yticks=[],
+	zticks=[0,1e-5],
+	zticklabels=[0,10],
 	projection='3d')
 
 rings = []
-rings += ax.plot([],[],[], 'g-', markersize=2, linewidth=2, alpha=0.5)
-rings += ax.plot([],[],[], 'b-', markersize=2, linewidth=2, alpha=0.5)
-time_text = ax.text(0.0, 0.0, 0, '', transform=ax.transAxes)
-ax.set_xlim3d((-2.0e-6,2.0e-6))
-ax.set_ylim3d((-2.0e-6,2.0e-6))
-ax.set_zlim3d((0,5e-5))
+rings += ax.plot([],[],[], 'b.', markersize=4)
+time_text = ax.text(0.0, 0.0, 0.0, '', transform=ax.transAxes)
+# ax.set_xlim3d((-2.0e-6,2.0e-6))
+# ax.set_ylim3d((-2.0e-6,2.0e-6))
+# ax.set_zlim3d((0,1e-5))
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('z (um)')
@@ -92,3 +76,8 @@ ax.view_init(10,0)
 print len(files)
 ani = animation.FuncAnimation(fig, animate, init_func = init, frames = len(files), interval = 10, blit=False)
 plt.show()
+
+		
+	
+
+
