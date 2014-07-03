@@ -7,6 +7,8 @@
 
 using namespace std;
 
+const double M_PI = 3.14159265359;
+
 class Filament{
 protected:
 	int 						mN;
@@ -22,6 +24,7 @@ public:
 	Filament(){};
 	~Filament(){};
 	void CalcMeshLengths();
+	void AdjMeshLengths(double dr);
 	vector <double> GetMeshLengths(){return mSegLengths;}
 	vector <vector <double> > GetSPrime(){return mSPrime;}
 	vector <vector <double> > GetPos(){return mPos;}
@@ -52,6 +55,14 @@ public:
 			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
 			mPos[i][1]=mCentre[0]+mRadius0*cos(i*(2*M_PI)/mN);
 			mPos[i][2]=mCentre[2];
+			if (i == mN - 1){
+				mPos[i].push_back(3);
+				mPos[i][3] = 0;
+			}
+			else{
+				mPos[i].push_back(3);
+				mPos[i][3] = i + 1;
+			}
 		}
 		CalcMeshLengths();
 	}
@@ -65,6 +76,14 @@ public:
 			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
 			mPos[i][1]=mCentre[0]+mRadius0*cos(i*(2*M_PI)/mN);
 			mPos[i][2]=mCentre[2];
+			if (i == mN - 1){
+				mPos[i].push_back(3);
+				mPos[i][3] = 0;
+			}
+			else{
+				mPos[i].push_back(3);
+				mPos[i][3] = i + 1;
+			}
 		}
 		CalcMeshLengths();
 	}
