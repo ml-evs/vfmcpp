@@ -2,8 +2,7 @@
 // Adapted from CalcNonLocalVel_OtherFilament.m by Paul Walmsley
 
 #include "tangle.h"
-#include <vector>
-#include <cmath>
+
 
 using namespace std;
 

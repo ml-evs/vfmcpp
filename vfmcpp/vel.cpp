@@ -2,7 +2,6 @@
 // adapted from CalcVelMaster.m by Paul Walmsley
 
 #include "filament.h"
-#include <iostream>
 
 using namespace std;
 

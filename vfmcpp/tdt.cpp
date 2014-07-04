@@ -2,8 +2,6 @@
 // adapted from CalcVelMaster.m by Paul Walmsley
 
 #include "filament.h"
-#include <iostream>
-
 using namespace std;
 
 // propagate positions using Adams-Bashforth
@@ -14,9 +12,7 @@ void Filament::PropagatePosAB3(double & dt){
 		}
 	}
 }
-/*void Filament::PropagatePosRK4(double & dt){
-	
-}*/
+
 
 
 

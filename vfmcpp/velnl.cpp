@@ -2,7 +2,6 @@
 // Adapted from CalcNonmNocalVel.m by Paul Walmsley
 
 #include "filament.h"
-//#include "tangle.h"
 
 using namespace std;
 

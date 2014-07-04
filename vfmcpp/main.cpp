@@ -24,7 +24,7 @@ int main(){
 	Tangle Tangle(Ring1, Ring2); //Ring3);
 
 	// set resolutions
-	double dt, dr;
+	double dt, dr(0);
 	vector <Filament>::iterator begin, current, end;
 	begin = (Tangle.mTangle).begin();
 	end = (Tangle.mTangle).end();
@@ -38,37 +38,23 @@ int main(){
 
 
 	// set number of timesteps and number of steps per save
-	int N_t(1000);//1e-3/dt); 	// Number of time steps
+	int N_t(100000);//1e-3/dt); 	// Number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
-	int N_f(100); 		// Number of time steps per save
+	int N_f(10000); 			// Number of time steps per save
 
-	string filename = "dat3_rings_diff/data_";
+	string filename = "dat_timing/data_";
 	double percent;
 	
-	// prepare to time calculations
-	clock_t t;
-	t=clock();
-
-	float t_vel_total;
-	float t_write_total;
-	float t_nl_of_total;
-
 	for(int i(0); i<N_t; i++){
-		clock_t t_nl_of = clock();
 		Tangle.CalcVelocityNL_OF();
-		t_nl_of = clock() - t_nl_of;
-		t_nl_of_total += (float)t_nl_of;
-		clock_t t_vel = clock();
+
 		for(current=begin; current!=end; current++){
 			current->CalcVelocity();
 			current->PropagatePosAB3(dt);
 		}
-		t_vel = clock() - t_vel;
-		t_vel_total += (float)t_vel;
 		
 		percent = (100*i/N_t);
 		printf("\r %4.1f %%",percent);
-		clock_t t_write = clock();
 		if(i%N_f==0){
 			string ith_filename = filename + to_string(i) + (".dat");
 			ofstream outfile(ith_filename);
@@ -84,15 +70,7 @@ int main(){
 			cout << "!!!!!!\t Wrote timestep " << i << " to file. \t!!!!!!" << endl;
 			outfile.close();
 		}
-		t_write = clock() - t_write;
-		t_write_total += (float)t_write;
 	}
-	t = clock()-t;
-	ofstream timefile(filename+("time.dat"));
-	timefile << "Total time taken to iterate " << N_t << " time steps = " << ((float)t)/CLOCKS_PER_SEC << " s." << endl;
-	timefile << "Time taken to calculate non-local vel contrib. from other filaments = " << ((float)t_nl_of_total)/CLOCKS_PER_SEC << " s." << endl;
-	timefile << "Time taken to calculate self-induced vel = " << ((float)t_vel_total)/CLOCKS_PER_SEC << " s." << endl;
-	timefile << "Time taken to write data to file = " << ((float)t_write_total)/CLOCKS_PER_SEC << " s." << endl;
 	return 0;
 }
 

@@ -8,7 +8,7 @@
 using namespace std;
 
 class Filament{
-protected:
+public:
 	int 						mN;
 	vector <vector <double> > 	mPos;
 	vector <vector <double> > 	mVel; 	// current velocity
@@ -18,7 +18,6 @@ protected:
 	vector <vector <double> > 	mSPrime;
 	vector <vector <double> > 	mS2Prime;
 	vector <double> 			mSegLengths;
-public:
 	Filament(){};
 	~Filament(){};
 	void CalcMeshLengths();
@@ -31,7 +30,6 @@ public:
 	void CalcSPrime();
 	void CalcS2Prime();
 	void CalcVelocitySelfNL();
-	void CalcVelocityNL_OF(vector <vector <double> > PosOtherRing);
 	void PropagatePosAB3(double & dt);
 	//void PropagatePosRK4(double & dt);
 
