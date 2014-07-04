@@ -61,8 +61,6 @@ void Filament::CalcVelocitySelfNL(){
 					p[i][m] = mPos[j][m] - mPos[k][m];
 					if(g+2>=mN){g=k-g-1;}
 					if(h==k-1){h=k-h-1;}
-					/*cout << "p = " << j << " - "<< k << ", "; 
-					cout << "q = " <<g+1 << " - "<< h << endl;*/
 					q[i][m] = mPos[g+1][m] - mPos[h][m];
 				} 
 				i++;
@@ -88,15 +86,3 @@ void Filament::CalcVelocitySelfNL(){
 		}
 	}
 }
-	
-/*void Filament::CalcVelocityNL(Tangle tangle){
-	vector <Filament>::iterator begin, current, end;
-	for(current=begin; current!=end; current++){
-		if(tangle.mTangle
-	}
-	for (int k=0; k<mN; k++){
-
-	}
-
-
-}*/
