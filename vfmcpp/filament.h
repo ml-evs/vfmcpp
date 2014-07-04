@@ -10,7 +10,7 @@ using namespace std;
 const double M_PI = 3.14159265359;
 
 class Filament{
-protected:
+public:
 	int 						mN;
 	vector <vector <double> > 	mPos;
 	vector <vector <double> > 	mVel; 	// current velocity
@@ -20,7 +20,6 @@ protected:
 	vector <vector <double> > 	mSPrime;
 	vector <vector <double> > 	mS2Prime;
 	vector <double> 			mSegLengths;
-public:
 	Filament(){};
 	~Filament(){};
 	void CalcMeshLengths();
@@ -34,7 +33,6 @@ public:
 	void CalcSPrime();
 	void CalcS2Prime();
 	void CalcVelocitySelfNL();
-	void CalcVelocityNL_OF(vector <vector <double> > PosOtherRing);
 	void PropagatePosAB3(double & dt);
 	//void PropagatePosRK4(double & dt);
 
@@ -53,7 +51,7 @@ public:
 		for(int i=0; i<mN; i++){
 			mPos[i].resize(3);
 			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
-			mPos[i][1]=mCentre[0]+mRadius0*cos(i*(2*M_PI)/mN);
+			mPos[i][1]=mCentre[1]+mRadius0*cos(i*(2*M_PI)/mN);
 			mPos[i][2]=mCentre[2];
 			if (i == mN - 1){
 				mPos[i].push_back(3);
@@ -74,7 +72,7 @@ public:
 		for(int i=0; i<mN; i++){
 			mPos[i].resize(3);
 			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
-			mPos[i][1]=mCentre[0]+mRadius0*cos(i*(2*M_PI)/mN);
+			mPos[i][1]=mCentre[1]+mRadius0*cos(i*(2*M_PI)/mN);
 			mPos[i][2]=mCentre[2];
 			if (i == mN - 1){
 				mPos[i].push_back(3);
