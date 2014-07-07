@@ -4,27 +4,28 @@
 #include <vector>
 #include <cmath>
 #include <iostream>
-#include <list>
 
 using namespace std;
 
 class Filament{
 public:
-	/* member data */
-	int 										mN; 				// number of points 
-	list <vector <double> >	mPos;				// positions of each point
-	vector <vector <double> > 			mVel; 			// current velocity
-	vector <vector <double> > 			mVel1;			// velocity last time step
-	vector <vector <double> > 			mVel2;  			// velocity 2 time steps ago
-	vector <vector <double> >			mVelNL; 			// non-local velocity
-	vector <vector <double> >		 	mSPrime;			// tangent at point
-	vector <vector <double> > 			mS2Prime;		// binormal at point
-	vector <double> 						mSegLengths;	// distance from ith to (i-1)th point
-	/* constructors and destructors */
+	int 						mN;
+	vector <vector <double> > 	mPos;
+	vector <vector <double> > 	mVel; 	// current velocity
+	vector <vector <double> > 	mVel1;	// stores velocity last time step
+	vector <vector <double> > 	mVel2;  // stores velocity 2 time steps ago
+	vector <vector <double> >	mVelNL;
+	vector <vector <double> > 	mSPrime;
+	vector <vector <double> > 	mS2Prime;
+	vector <double> 			mSegLengths;
 	Filament(){};
 	~Filament(){};
-	/* member functions */
 	void CalcMeshLengths();
+	vector <double> GetMeshLengths(){return mSegLengths;}
+	vector <vector <double> > GetSPrime(){return mSPrime;}
+	vector <vector <double> > GetPos(){return mPos;}
+	vector <vector <double> > GetVel(){return mVel;}
+	int GetN(){return mN;}
 	void CalcVelocity();
 	void CalcSPrime();
 	void CalcS2Prime();
@@ -44,15 +45,11 @@ public:
 		mN = 100;
 		mCentre.resize(3,0);
 		mPos.resize(mN); 
-		int i(0);
-		list <vector <double> >::iterator b, c, e;
-		b = mPos.begin(); e = mPos.end();
-		for(c=b;c!=e;c++){
-			c->resize(3);
-			(*c)[0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
-			(*c)[1]=mCentre[1]+mRadius0*cos(i*(2*M_PI)/mN);
-			(*c)[2]=mCentre[2];
-			i++;
+		for(int i=0; i<mN; i++){
+			mPos[i].resize(3);
+			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
+			mPos[i][1]=mCentre[1]+mRadius0*cos(i*(2*M_PI)/mN);
+			mPos[i][2]=mCentre[2];
 		}
 		CalcMeshLengths();
 	}
@@ -61,15 +58,11 @@ public:
 		mCentre.resize(3);
 		mCentre[0] = x; mCentre[1] = y; mCentre[2] = z;
 		mPos.resize(mN);
-		int i(0);
-		list <vector <double> >::iterator b, c, e;
-		b = mPos.begin(); e = mPos.end();
-		for(c=b;c!=e;c++){
-			c->resize(3);
-			(*c)[0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
-			(*c)[1]=mCentre[1]+mRadius0*cos(i*(2*M_PI)/mN);
-			(*c)[2]=mCentre[2];
-			i++;
+		for(int i=0; i<mN; i++){
+			mPos[i].resize(3);
+			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
+			mPos[i][1]=mCentre[1]+mRadius0*cos(i*(2*M_PI)/mN);
+			mPos[i][2]=mCentre[2];
 		}
 		CalcMeshLengths();
 	}

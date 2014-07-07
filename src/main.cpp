@@ -1,6 +1,7 @@
 #include "filament.h"
 #include "tangle.h"
 #include <fstream>
+#include <iostream>
 #include <string>
 #include <iomanip>
 #include <ctime>
@@ -15,8 +16,8 @@ using namespace std;
 int main(){
 
 	// create filaments
-	Ring Ring1(0.2*r0,N,0,0,5e-6);
-	Ring Ring2(r0,N,0,0.05e-6,0);
+	Ring Ring1(r0,N,0,0,5e-6);
+	Ring Ring2(0.9*r0,N,0,0.05e-6,0);
 	//Ring Ring3(r0,N,0,0,1.1e-6);
 
 	// add filaments to tangle
@@ -24,31 +25,25 @@ int main(){
 
 	// set resolutions
 	double dt, dr(0);
-	int N(0);
-
-	// define required iterators
 	vector <Filament>::iterator begin, current, end;
 	begin = (Tangle.mTangle).begin();
 	end = (Tangle.mTangle).end();
-	list <vector <double> >::iterator bpos, cpos, epos;
-
 	for(current=begin; current!=end; current++){
 		for(int j(0); j<current->mN; j++){
 			dr += current->mSegLengths[j];
-			N += current->mN;
 		}
 	}
-	dr /= N;
+	dr /= 200;
 	dt = pow((dr/2),2)/(kappa*log(dr/(2*M_PI*a0)));
 	dt = dt/25; 		// Baggaley, Barenghi PRB 2010
 	cout << dr << ", " << dt << endl;
 
 	// set number of timesteps and number of steps per save
-	int N_t(1); 	// Number of time steps
+	int N_t(1e-3/dt); 	// Number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	int N_f(10000); 	// Number of time steps per save
 
-	string filename = "data/race_data_test/data_";
+	string filename = "dat_race/data_";
 	double percent;
 	
 
@@ -57,11 +52,11 @@ int main(){
   	t=clock();
 
 	for(int i(0); i<N_t; i++){
-		/*Tangle.CalcVelocityNL_OF();
+		Tangle.CalcVelocityNL_OF();
 		for(current=begin; current!=end; current++){
 			current->CalcVelocity();
 			current->PropagatePosAB3(dt);
-		}*/
+		}
 		
 		percent = (100*i/N_t);
 		printf("\r %4.1f %%",percent);
@@ -70,10 +65,9 @@ int main(){
 			ofstream outfile(ith_filename);
 			outfile.precision(8);
 			for(current=begin; current!=end; current++){
-				bpos = current->mPos.begin(); epos = current->mPos.end();
-				for(cpos=bpos; cpos!=epos; cpos++){
+				for(int j(0); j<current->mN; j++){
 					for(int m(0); m<3; m++){
-						outfile << (*cpos)[m] << "\t";
+						outfile << current->mPos[j][m] << "\t";
 					}
 					outfile << "\n";
 				}
