@@ -28,11 +28,11 @@ int main(){
 	vector <Filament>::iterator begin, current, end;
 	begin = (Tangle.mTangle).begin();
 	end = (Tangle.mTangle).end();
-	for(current=begin; current!=end; current++){
+	/*for(current=begin; current!=end; current++){
 		for(int j(0); j<current->mN; j++){
-			dr += current->mSegLengths[j];
+			dr += current->mPoints[j].mSegLength;
 		}
-	}
+	}*/
 	dr /= 200;
 	dt = pow((dr/2),2)/(kappa*log(dr/(2*M_PI*a0)));
 	dt = dt/25; 		// Baggaley, Barenghi PRB 2010
@@ -52,22 +52,22 @@ int main(){
   	t=clock();
 
 	for(int i(0); i<N_t; i++){
-		Tangle.CalcVelocityNL_OF();
+/*		Tangle.CalcVelocityNL_OF();
 		for(current=begin; current!=end; current++){
 			current->CalcVelocity();
 			current->PropagatePosAB3(dt);
-		}
+		}*/
 		
 		percent = (100*i/N_t);
 		printf("\r %4.1f %%",percent);
-		if(i%N_f==0){
+		/*if(i%N_f==0){
 			string ith_filename = filename + to_string(i) + (".dat");
 			ofstream outfile(ith_filename);
 			outfile.precision(8);
 			for(current=begin; current!=end; current++){
 				for(int j(0); j<current->mN; j++){
 					for(int m(0); m<3; m++){
-						outfile << current->mPos[j][m] << "\t";
+						outfile << current->mPoints[j].mPos[m] << "\t";
 					}
 					outfile << "\n";
 				}
@@ -75,7 +75,7 @@ int main(){
 			}
 			cout << "!!!!!!\t Wrote timestep " << i << " to file. \t!!!!!!" << endl;
 			outfile.close();
-		}
+		}*/
 
 	}
 	t = clock()-t;

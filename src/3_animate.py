@@ -14,7 +14,7 @@ def init():
 def getfiles(N_f):
 	files = list()
 	i = 0
-	base_filename = '../bin/data/dat3_rings_diff/data_'
+	base_filename = 'dat3_rings_diff/data_'
 	end = False
 	while(end==False):
 		filename = base_filename + str(i) + '.dat'

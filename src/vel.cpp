@@ -6,7 +6,7 @@
 using namespace std;
 
 // calculate velocity at each point from s' and s'' eq(2) from Hanninen and Baggaley PNAS 111 p4667 (2014)
-void Filament::CalcVelocity(){
+/*void Filament::CalcVelocity(){
 	// circulation quantum, core radius, ..., mutual friction
 	double	kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0;
 	mVel2 = mVel1;
@@ -132,3 +132,4 @@ void Filament::CalcS2Prime(){
 }
 
 
+*/

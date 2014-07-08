@@ -1,6 +1,7 @@
 #ifndef GUARD_FILAMENT_H
 #define GUARD_FILAMENT_H
 
+#include "point.h"
 #include <vector>
 #include <cmath>
 #include <iostream>
@@ -9,30 +10,18 @@ using namespace std;
 
 class Filament{
 public:
-	int 						mN;
-	vector <vector <double> > 	mPos;
-	vector <vector <double> > 	mVel; 	// current velocity
-	vector <vector <double> > 	mVel1;	// stores velocity last time step
-	vector <vector <double> > 	mVel2;  // stores velocity 2 time steps ago
-	vector <vector <double> >	mVelNL;
-	vector <vector <double> > 	mSPrime;
-	vector <vector <double> > 	mS2Prime;
-	vector <double> 			mSegLengths;
+	/* member data */
+	int mN;
+	vector <Point*> 	mPoints;
+	/* member functions */
 	Filament(){};
 	~Filament(){};
-	void CalcMeshLengths();
-	vector <double> GetMeshLengths(){return mSegLengths;}
-	vector <vector <double> > GetSPrime(){return mSPrime;}
-	vector <vector <double> > GetPos(){return mPos;}
-	vector <vector <double> > GetVel(){return mVel;}
-	int GetN(){return mN;}
-	void CalcVelocity();
+	//void CalcMeshLengths();
+/*	void CalcVelocity();
 	void CalcSPrime();
 	void CalcS2Prime();
 	void CalcVelocitySelfNL();
-	void PropagatePosAB3(double & dt);
-	//void PropagatePosRK4(double & dt);
-
+	void PropagatePosAB3(double & dt);*/
 };
 
 class Ring : public Filament{
@@ -44,27 +33,32 @@ public:
 		mRadius0 = 1e-6; 
 		mN = 100;
 		mCentre.resize(3,0);
-		mPos.resize(mN); 
 		for(int i=0; i<mN; i++){
-			mPos[i].resize(3);
-			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
-			mPos[i][1]=mCentre[1]+mRadius0*cos(i*(2*M_PI)/mN);
-			mPos[i][2]=mCentre[2];
+			mPoints.push_back(new Point());
+			mPoints[i]->mPos.resize(3);
+			mPoints[i]->mPos[0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
+			mPoints[i]->mPos[1]=mCentre[1]+mRadius0*cos(i*(2*M_PI)/mN);
+			mPoints[i]->mPos[2]=mCentre[2];
 		}
-		CalcMeshLengths();
+		for(int i=1; i<mN; i++){(mPoints[i])->mLast = mPoints[i-1];}
+		mPoints[0]->mLast = mPoints[mN-1];
+		//CalcMeshLengths();
 	}
 	Ring(double r, int N, double x, double y, double z){
 		mRadius0 = r; mN = N;
 		mCentre.resize(3);
 		mCentre[0] = x; mCentre[1] = y; mCentre[2] = z;
-		mPos.resize(mN);
 		for(int i=0; i<mN; i++){
-			mPos[i].resize(3);
-			mPos[i][0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
-			mPos[i][1]=mCentre[1]+mRadius0*cos(i*(2*M_PI)/mN);
-			mPos[i][2]=mCentre[2];
+			mPoints.push_back(new Point());
+			mPoints[i]->mPos.resize(3);
+			mPoints[i]->mPos[0]=mCentre[0]+mRadius0*sin(i*(2*M_PI)/mN);
+			mPoints[i]->mPos[1]=mCentre[1]+mRadius0*cos(i*(2*M_PI)/mN);
+			mPoints[i]->mPos[2]=mCentre[2];
 		}
-		CalcMeshLengths();
+		for(int i=1; i<mN; i++){(mPoints[i])->mLast = mPoints[i-1];}
+		mPoints[0]->mLast = mPoints[mN-1];
+		for(int i=0; i<mN; i++){cout << mPoints[i]->mPos[0] << endl;}
+		//CalcMeshLengths();
 	}
 };
 

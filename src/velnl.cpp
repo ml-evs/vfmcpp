@@ -7,7 +7,7 @@ using namespace std;
 
 	const double kappa = 9.98e-8;
 
-void Filament::CalcVelocitySelfNL(){
+/*void Filament::CalcVelocitySelfNL(){
 
 	vector < vector <double> > pxq;
 	vector < vector <double> > p; // p = s_l - s_k
@@ -84,4 +84,4 @@ void Filament::CalcVelocitySelfNL(){
 			}
 		}
 	}
-}
+}*/
