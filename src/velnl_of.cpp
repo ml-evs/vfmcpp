@@ -1,21 +1,20 @@
-// Calculates the non-local contribution to the velocities of points on each ring from another filament
-// Adapted from CalcNonLocalVel_OtherFilament.m by Paul Walmsley
+/* 	Calculates the non-local contribution to the velocities of points on each ring from another filament.
+	Adapted from CalcNonLocalVel_OtherFilament.m by Paul Walmsley */
 
 #include "tangle.h"
 
-
 using namespace std;
+
+void Tangle::CalcVelocityNL_OF(){
 
 	const double kappa = 9.98e-8;
 
-/*void Tangle::CalcVelocityNL_OF(){
-
-	vector <Filament>::iterator begin, current, end;
-	vector <vector <double> > q; // q = s_l+1 - s_l
-	vector <vector <double> > p; // p = s_l - s_k
+	vector <vector <double> > q; 	// q = s_l+1 - s_l
+	vector <vector <double> > p; 	// p = s_l - s_k
 	vector <double> A, B, C, D;
 	vector < vector <double> > pxq;
-	
+
+	vector <Filament>::iterator begin, current, end;	
 	begin = mTangle.begin(); end = mTangle.end();
 
 	for(current=begin; current!=end; current++){
@@ -23,7 +22,6 @@ using namespace std;
 		vector <Filament>::iterator other_begin, other_current, other_end;
 		other_begin = mTangle.begin(); other_end = mTangle.end();
 		int N_k = current->mN;
-		(current->mVelNL).resize(N_k);
 		for(other_current=other_begin; other_current!=other_end; other_current++){
 			if(other_current == current){continue;}
 			else{
@@ -36,16 +34,15 @@ using namespace std;
 						if(l+1==N_l){j = -1;}
 						else{j=l;}
 						for(int m=0;m<3;m++){
-							q[l][m] = ((other_current->mPos[j+1][m])-(other_current->mPos[l][m]));
+							q[l][m] = ((other_current->mPoints[j+1]->mPos[m])-(other_current->mPoints[l]->mPos[m]));
 						}
 				} // End q calculation
 
 				for (int k=0;k<N_k;k++){
-					(current->mVelNL[k]).resize(3);
 					for(int l=0;l<N_l;l++){
 						p[l].resize(3);
 						for(int m=0;m<3;m++){
-							p[l][m] = (other_current->mPos[l][m]-current->mPos[k][m]);	
+							p[l][m] = (other_current->mPoints[l]->mPos[m]-current->mPoints[k]->mPos[m]);	
 						}
 					} // End p calculation
 
@@ -64,11 +61,11 @@ using namespace std;
 							C[l] += q[l][m]*q[l][m];
 						}
 						for(int m=0;m<3;m++){
-							current->mVelNL[k][m] += (kappa*(((2*C[l])+B[l])/(sqrt(A[l]+B[l]+C[l])) - B[l]/sqrt(A[l])) * pxq[l][m])/(2*M_PI*(4*A[l]*C[l]-B[l]*B[l]));	
+							current->mPoints[k]->mVelNL[m] += (kappa*(((2*C[l])+B[l])/(sqrt(A[l]+B[l]+C[l])) - B[l]/sqrt(A[l])) * pxq[l][m])/(2*M_PI*(4*A[l]*C[l]-B[l]*B[l]));	
 						}
 					}
 				}
 			}
 		}
 	}
-}*/
+}

@@ -7,7 +7,7 @@ using namespace std;
 
 	const double kappa = 9.98e-8;
 
-/*void Filament::CalcVelocitySelfNL(){
+void Filament::CalcVelocitySelfNL(){
 
 	vector < vector <double> > pxq;
 	vector < vector <double> > p; // p = s_l - s_k
@@ -16,12 +16,10 @@ using namespace std;
 	A.resize(mN-2); B = A; C = A; D = A;
 	p.resize(mN-2); q = p; 
 	pxq = p;
-	mVelNL.resize(mN);
 	int g, h, i(0), j, s;
 	
 	for(int k=0;k<mN;k++){
 		s = 0; i=0;
-		mVelNL[k].resize(3);
 		if(k !=0 && k!=mN-1){
 			for(int l=0;l<mN;l++){
 				if(l==k||l==k-1){s++;}
@@ -30,8 +28,8 @@ using namespace std;
 					if(l+1==mN){g=-1;}
 					else{g=l;}
 					for(int m=0;m<3;m++){
-						p[l-s][m] = (mPos[l][m]-mPos[k][m]);
-						q[l-s][m] = (mPos[g+1][m]-mPos[l][m]);
+						p[l-s][m] = (mPoints[l]->mPos[m]-mPoints[k]->mPos[m]);
+						q[l-s][m] = (mPoints[g+1]->mPos[m]-mPoints[l]->mPos[m]);
 					}
 				}
 			}
@@ -42,10 +40,10 @@ using namespace std;
 				g = l+k; h = l+k;
 				for(int m=0;m<3;m++){ 
 					if(l==k-1){l=k+2;}
-					p[i][m] = mPos[l][m] - mPos[k][m];
+					p[i][m] = mPoints[l]->mPos[m] - mPoints[k]->mPos[m];
 					if(g+1>=mN){g-=mN;}
 					if(h>=mN){h-=mN;}
-					q[i][m] = mPos[g+1][m] - mPos[h][m];
+					q[i][m] = mPoints[g+1]->mPos[m] - mPoints[h]->mPos[m];
 				} 
 				i++;
 			}
@@ -57,10 +55,10 @@ using namespace std;
 				for(int m=0;m<3;m++){ 
 					if(l==k-1){l=k+2;}
 					if(l>=mN){j=0;}
-					p[i][m] = mPos[j][m] - mPos[k][m];
+					p[i][m] = mPoints[j]->mPos[m] - mPoints[k]->mPos[m];
 					if(g+2>=mN){g=k-g-1;}
 					if(h==k-1){h=k-h-1;}
-					q[i][m] = mPos[g+1][m] - mPos[h][m];
+					q[i][m] = mPoints[g+1]->mPos[m] - mPoints[h]->mPos[m];
 				} 
 				i++;
 			}
@@ -80,8 +78,8 @@ using namespace std;
 				C[l] += q[l][j]*q[l][j];
 			}
 			for(int j=0;j<3;j++){
-				mVelNL[k][j] += (kappa*((2*C[l]+B[l])/(sqrt(A[l]+B[l]+C[l])) - B[l]/sqrt(A[l])) * pxq[l][j])/(2*M_PI*(4*A[l]*C[l]-B[l]*B[l]));
+				mPoints[k]->mVelNL[j] += (kappa*((2*C[l]+B[l])/(sqrt(A[l]+B[l]+C[l])) - B[l]/sqrt(A[l])) * pxq[l][j])/(2*M_PI*(4*A[l]*C[l]-B[l]*B[l]));
 			}
 		}
 	}
-}*/
+}

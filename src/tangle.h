@@ -17,7 +17,7 @@ public:
 		mTangle.push_back(Ring2);
 	}
 	~Tangle(){};
-	//void CalcVelocityNL_OF();
+	void CalcVelocityNL_OF();
 };
 
 #endif
