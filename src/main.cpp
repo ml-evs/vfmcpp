@@ -16,12 +16,12 @@ using namespace std;
 int main(){
 
 	/* create filaments */
-	Ring Ring1(r0,N,0,0,5e-6);
-	Ring Ring2(0.9*r0,N,0,0.05e-6,0);
+	Ring Ring1(r0,N,0,0,0);
+	//Ring Ring2(0.9*r0,N,0,0,5e-6);
 	//Ring Ring3(r0,N,0,0,1.1e-6);
 
 	/* add filaments to tangle */
-	Tangle Tangle(Ring1, Ring2);
+	Tangle Tangle(Ring1);//, Ring2);
 
 	/* set resolutions */
 	double dt, dr(0);
@@ -41,26 +41,29 @@ int main(){
 	cout << dr << ", " << dt << endl;
 
 	/* set number of timesteps and number of steps per save */
-	int N_t(1e-5/dt); 	// number of time steps
+	int N_t(1e-3/dt); 	// number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	int N_f(10000); 	// number of time steps per save
 
-	string filename = "dat_race/data_"; // location of saves
+	string filename = "data/dat_test/data_"; // location of saves
 	
-	// prepare to time calculations
+	/* prepare to time calculations */
 	double percent;
 	clock_t t;
   	t=clock();
 
+  	/* begin time-stepping */
 	for(int i(0); i<N_t; i++){
+		/* calculate velocities and propagate positions */
 		Tangle.CalcVelocityNL_OF();
 		for(current=begin; current!=end; current++){
 			current->CalcVelocity();
 			current->PropagatePosAB3(dt);
 		}
 		
-		percent = (100*i/N_t);
-		printf("\r %4.1f %%",percent);
+		percent = (100*i/N_t); 
+		printf("\r %4.1f %% \t",percent); // output percentage completion
+		/* save positions to file every N_f steps */
 		if(i%N_f==0){
 			string ith_filename = filename + to_string(i) + (".dat");
 			ofstream outfile(ith_filename);
@@ -72,13 +75,12 @@ int main(){
 					}
 					outfile << "\n";
 				}
-				
 			}
 			cout << "!!!!!!\t Wrote timestep " << i << " to file. \t!!!!!!" << endl;
 			outfile.close();
 		}
-
 	}
+	/* save total time to file */
 	t = clock()-t;
   	ofstream timefile(filename+("time.dat"));
 	timefile << "Total time taken to iterate " << N_t << " time steps = " << ((float)t)/CLOCKS_PER_SEC << " s." << endl;

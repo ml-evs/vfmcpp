@@ -1,2 +1,2 @@
 vfmcpp : main.cpp vel.cpp mesh.cpp tdt.cpp velnl.cpp filament.h velnl_of.cpp tangle.h point.h
-	g++ -std=c++0x -O2 -pg -Wall main.cpp vel.cpp mesh.cpp tdt.cpp velnl.cpp velnl_of.cpp -o ../bin/vfmcpp_list_test
+	g++ -std=c++0x -O2 -pg -Wall main.cpp vel.cpp mesh.cpp tdt.cpp velnl.cpp velnl_of.cpp -o ../bin/vfmcpp_test_2

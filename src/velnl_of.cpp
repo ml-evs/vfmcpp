@@ -18,7 +18,6 @@ void Tangle::CalcVelocityNL_OF(){
 	begin = mTangle.begin(); end = mTangle.end();
 
 	for(current=begin; current!=end; current++){
-
 		vector <Filament>::iterator other_begin, other_current, other_end;
 		other_begin = mTangle.begin(); other_end = mTangle.end();
 		int N_k = current->mN;

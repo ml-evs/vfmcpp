@@ -10,7 +10,8 @@ using namespace std;
 class Point{
 public:
 	/*member data*/
-	Point 			*mLast;			// pointer to last point in filament
+	Point 			*mPrev;			// pointer to previous point in filament
+	Point 			*mNext;			// pointer to next point in filament
 	vector <double>	mPos;			// position
 	vector <double>	mVel; 			// current velocity
 	vector <double> mVel1;			// velocity last time step
@@ -19,12 +20,14 @@ public:
 	vector <double> mSPrime;		// tangent at point
 	vector <double> mS2Prime;		// binormal at point
 	double			mSegLength; 	// distance to last point
+	double 			mCharge; 		// charge at point 
 	/*member functions*/
 	Point(){
 		/*default constructor just reserves memory*/
 		mVel.reserve(3); mPos.reserve(3);
 		mVel1.reserve(3); mVel2.reserve(3);  mVelNL.reserve(3);
 		mSPrime.reserve(3); mS2Prime.reserve(3);
+		mCharge = 0;
 	}
 	~Point(){};
 };
