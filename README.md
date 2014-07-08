@@ -1,3 +1,3 @@
 VortexFilament
 ==============
-fuh-fuh-fu-filuhments
+vfmcpp is a C++ implementation of the vortex filament model of superfluids.
