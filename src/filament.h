@@ -22,6 +22,7 @@ public:
 	void CalcS2Prime();
 	void CalcVelocitySelfNL();
 	void PropagatePosAB3(double & dt); 
+	void Filament::AdjMeshLengths(double dr)
 };
 
 class Ring : public Filament{
