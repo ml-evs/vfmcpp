@@ -71,7 +71,7 @@ ax = fig.add_subplot(111,
 	projection='3d')
 
 rings = []
-rings += ax.plot([],[],[], 'g.', markersize=2, linewidth=2, alpha=0.5)
+rings += ax.plot([],[],[], 'g-', markersize=2, linewidth=2, alpha=0.5)
 #rings += ax.plot([],[],[], 'b-', markersize=2, linewidth=2, alpha=0.5)
 time_text = ax.text(0.0, 0.0, 0, '', transform=ax.transAxes)
 ax.set_xlim3d((-8.0e-6,8.0e-6))

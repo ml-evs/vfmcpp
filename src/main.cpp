@@ -48,7 +48,7 @@ int main(){
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	int N_f(10000); 	// number of time steps per save
 
-	string filename = "data/dat_PLEASE_PLEASE_ADJUST_ME/data_"; // location of saves
+	string filename = "data/dat_PLEASE_PLEASE_ADJUST_ME_curv/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
