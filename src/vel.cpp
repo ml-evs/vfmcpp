@@ -14,7 +14,7 @@ void Filament::CalcVelocity(){
 		mPoints[i]->mVel2 = mPoints[i]->mVel1;
 		mPoints[i]->mVel1 = mPoints[i]->mVel;
 	}
-	CalcSPrime(); CalcS2Prime(); CalcMeshLengths(); CalcVelocitySelfNL();
+	CalcMeshLengths(); CalcSPrime(); CalcS2Prime(); //CalcVelocitySelfNL();
 	for(int i=0;i<mN;i++){
 		mPoints[i]->mVel[0] = (mPoints[i]->mSPrime[1]*mPoints[i]->mS2Prime[2] - mPoints[i]->mSPrime[2]*mPoints[i]->mS2Prime[1]);
 		mPoints[i]->mVel[1] = (mPoints[i]->mSPrime[2]*mPoints[i]->mS2Prime[0] - mPoints[i]->mSPrime[0]*mPoints[i]->mS2Prime[2]);
@@ -32,7 +32,7 @@ void Filament::CalcVelocity(){
 	}
 	if(mPoints[0]->mVel2.empty()){
 		for(int i(0); i!=mN; i++){
-			mPoints[i]->mVel2=mPoints[i]->mVel1;
+			mPoints[i]->mVel2=mPoints[i]->mVel;
 		}
 	}
 }
@@ -49,16 +49,16 @@ void Filament::CalcSPrime(){
 		l = mPoints[i]->mSegLength; l1 = mPoints[i]->mNext->mSegLength; l2 = mPoints[i]->mNext->mNext->mSegLength; lm1 = mPoints[i]->mPrev->mSegLength; 
 		
 		A[i] = l * l1 * l1 + l * l1 * l2;
-		A[i] = A[i] / (lm1 * (lm1 + l) * (lm1 + l + l1) * (lm1 + l + l1 +l2));
+		A[i] /= (lm1 * (lm1 + l) * (lm1 + l + l1) * (lm1 + l + l1 +l2));
 
 		B[i] = -lm1 * l1 * l1 - l * l1 * l1 - lm1 * l1 * l2 - l * l1 * l2;
-		B[i] = B[i] / (lm1 * l * (l + l1) * (l + l1 + l2));
+		B[i] /= (lm1 * l * (l + l1) * (l + l1 + l2));
 
 		D[i] = lm1 * l * l1 + l * l * l1 + lm1 * l * l2 + l * l * l2;
-		D[i] = D[i] / (l1 * l2 * (l + l1) * (lm1 + l + l1));
+		D[i] /= (l1 * l2 * (l + l1) * (lm1 + l + l1));
 
 		E[i] = -l1 * l * l - lm1 * l * l1;
-		E[i] = E[i] / (l2 * (l1 + l2) * (l + l1 + l2) * (lm1 + l + l1 + l2));
+		E[i] /= (l2 * (l1 + l2) * (l + l1 + l2) * (lm1 + l + l1 + l2));
 
 		C[i] = -(A[i] + B[i] + D[i] + E[i]);		
 		

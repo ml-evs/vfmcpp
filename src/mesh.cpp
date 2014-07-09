@@ -13,4 +13,5 @@ void Filament::CalcMeshLengths(){
 		}
 		mPoints[i]->mSegLength = sqrt(mPoints[i]->mSegLength);
 	}
+	cout << mPoints[99]->mSegLength << endl;
 }

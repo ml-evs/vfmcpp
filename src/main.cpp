@@ -25,7 +25,7 @@ int main(){
 
 	/* set resolutions */
 	double dt, dr(0);
-	int N(0);
+	int N_p(0);
 	vector <Filament>::iterator begin, current, end;
 	begin = (Tangle.mTangle).begin();
 	end = (Tangle.mTangle).end();
@@ -33,9 +33,9 @@ int main(){
 		for(int j(0); j<current->mN; j++){
 			dr += current->mPoints[j]->mSegLength;
 		}
-		N += current->mN;
+		N_p += current->mN;
 	}
-	dr /= N;
+	dr /= N_p;
 	dt = pow((dr/2),2)/(kappa*log(dr/(2*M_PI*a0)));
 	dt = dt/25; 		// Baggaley, Barenghi PRB 2010
 	cout << dr << ", " << dt << endl;
@@ -45,7 +45,7 @@ int main(){
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	int N_f(10000); 	// number of time steps per save
 
-	string filename = "data/dat_test/data_"; // location of saves
+	string filename = "data/dat_test_2/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -55,28 +55,29 @@ int main(){
   	/* begin time-stepping */
 	for(int i(0); i<N_t; i++){
 		/* calculate velocities and propagate positions */
-		Tangle.CalcVelocityNL_OF();
+		//Tangle.CalcVelocityNL_OF();
 		for(current=begin; current!=end; current++){
 			current->CalcVelocity();
 			current->PropagatePosAB3(dt);
 		}
-		
-		percent = (100*i/N_t); 
-		printf("\r %4.1f %% \t",percent); // output percentage completion
+		//percent = (100*i/N_t); 
+		//printf("\r %4.1f %% \t",percent); // output percentage completion
 		/* save positions to file every N_f steps */
 		if(i%N_f==0){
 			string ith_filename = filename + to_string(i) + (".dat");
 			ofstream outfile(ith_filename);
 			outfile.precision(8);
 			for(current=begin; current!=end; current++){
-				for(int j(0); j<current->mN; j++){
+				int j(0);
+				while(j!=current->mN){
 					for(int m(0); m<3; m++){
-						outfile << current->mPoints[j]->mPos[m] << "\t";
+						outfile << current->mPoints[j]->mNext->mPos[m] << "\t";
 					}
+					j++;
 					outfile << "\n";
 				}
 			}
-			cout << "!!!!!!\t Wrote timestep " << i << " to file. \t!!!!!!" << endl;
+			//cout << "!!!!!!\t Wrote timestep " << i << " to file. \t!!!!!!" << endl;
 			outfile.close();
 		}
 	}
