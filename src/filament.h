@@ -34,7 +34,7 @@ public:
 	Ring(){
 		mRadius0 = 1e-6; 
 		mN = 100;
-		mCentre.resize(3);
+		mCentre.resize(3,0);
 		for(int i=0; i<mN; i++){
 			mPoints.push_back(new Point());
 			mPoints[i]->mPos[0]=mCentre[0]-mRadius0*sin(i*(2*M_PI)/mN);
@@ -65,6 +65,7 @@ public:
 	}
 };
 /* string class */
+/*
 class String : public Filament{
 private:
 	double mL;
@@ -95,6 +96,6 @@ public:
 		mPoints[0]->mPrev = mPoints[mN-1];
 		CalcMeshLengths();
 	}
-};
+};*/
 
 #endif

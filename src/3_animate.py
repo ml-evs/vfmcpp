@@ -14,7 +14,7 @@ def init():
 def getfiles(N_f):
 	files = list()
 	i = 0
-	base_filename = 'dat3_rings_diff/data_'
+	base_filename = '../bin/data/dat3_rings_diff/data_'
 	end = False
 	while(end==False):
 		filename = base_filename + str(i) + '.dat'
@@ -90,9 +90,9 @@ ax = fig.add_subplot(111,
 	projection='3d')
 
 rings = []
-rings += ax.plot([],[],[], 'b-', markersize=2, linewidth=3, alpha=0.8)
-rings += ax.plot([],[],[], 'g-', markersize=2, linewidth=3, alpha=0.8)
-rings += ax.plot([],[],[], 'c-', markersize=2, linewidth=3, alpha=0.8)
+rings += ax.plot([],[],[], 'b-', markersize=2, linewidth=3, alpha=0.6)
+rings += ax.plot([],[],[], 'g-', markersize=2, linewidth=3, alpha=0.6)
+rings += ax.plot([],[],[], 'c-', markersize=2, linewidth=3, alpha=0.6)
 time_text = ax.text(0.0, 0.0, 0, '', transform=ax.transAxes)
 ax.set_xlim3d((-2.0e-6,2.0e-6))
 ax.set_ylim3d((-2.0e-6,2.0e-6))

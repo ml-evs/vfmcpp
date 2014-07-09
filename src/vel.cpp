@@ -10,29 +10,37 @@ void Filament::CalcVelocity(){
 	/* circulation quantum, core radius */
 	double	kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0;
 
-	for(int i=0;i<mN;i++){
-		mPoints[i]->mVel2 = mPoints[i]->mVel1;
-		mPoints[i]->mVel1 = mPoints[i]->mVel;
+	for(int i(0);i<mN;i++){
+		for(int j(0);j!=3;j++){
+			mPoints[i]->mVel2[j] = mPoints[i]->mVel1[j];
+			mPoints[i]->mVel1[j] = mPoints[i]->mVel[j];
+		}
 	}
-	CalcMeshLengths(); CalcSPrime(); CalcS2Prime(); //CalcVelocitySelfNL();
+	CalcSPrime(); CalcS2Prime(); CalcVelocitySelfNL(); CalcMeshLengths();
 	for(int i=0;i<mN;i++){
-		mPoints[i]->mVel[0] = (mPoints[i]->mSPrime[1]*mPoints[i]->mS2Prime[2] - mPoints[i]->mSPrime[2]*mPoints[i]->mS2Prime[1]);
-		mPoints[i]->mVel[1] = (mPoints[i]->mSPrime[2]*mPoints[i]->mS2Prime[0] - mPoints[i]->mSPrime[0]*mPoints[i]->mS2Prime[2]);
-		mPoints[i]->mVel[2] = (mPoints[i]->mSPrime[0]*mPoints[i]->mS2Prime[1] - mPoints[i]->mSPrime[1]*mPoints[i]->mS2Prime[0]);
+		mPoints[i]->mVel[0] = ((mPoints[i]->mSPrime[1])*(mPoints[i]->mS2Prime[2]) - (mPoints[i]->mSPrime[2])*(mPoints[i]->mS2Prime[1]));
+		mPoints[i]->mVel[1] = ((mPoints[i]->mSPrime[2])*(mPoints[i]->mS2Prime[0]) - (mPoints[i]->mSPrime[0])*(mPoints[i]->mS2Prime[2]));
+		mPoints[i]->mVel[2] = ((mPoints[i]->mSPrime[0])*(mPoints[i]->mS2Prime[1]) - (mPoints[i]->mSPrime[1])*(mPoints[i]->mS2Prime[0]));
 		for(int q=0;q<3;q++){
-			mPoints[i]->mVel[q] *= kappa*log(2*sqrt(mPoints[i]->mSegLength * mPoints[i]->mSegLength)/a1)/(4*M_PI);
+			mPoints[i]->mVel[q] *= kappa*log(2*sqrt(mPoints[i]->mSegLength * mPoints[i]->mNext->mSegLength)/a1)/(4*M_PI);
 			mPoints[i]->mVel[q] += mPoints[i]->mVelNL[q];
 			mPoints[i]->mVelNL[q] = 0;
 		}
 	}
 	if(mPoints[0]->mVel1.empty()){
+		cout << "mVel1 empty -> interpolating." << endl;
 		for(int i(0); i!=mN; i++){
-			mPoints[i]->mVel1=mPoints[i]->mVel;
+			for(int j(0); j!=3; j++){
+				mPoints[i]->mVel1[j]=mPoints[i]->mVel[j];
+			}
 		}
 	}
 	if(mPoints[0]->mVel2.empty()){
+		cout << "mVel2 empty -> interpolating." << endl;
 		for(int i(0); i!=mN; i++){
-			mPoints[i]->mVel2=mPoints[i]->mVel;
+			for(int j(0);j!=3;j++){
+				mPoints[i]->mVel2[j]=mPoints[i]->mVel[j];
+			}
 		}
 	}
 }
@@ -41,12 +49,13 @@ void Filament::CalcVelocity(){
 void Filament::CalcSPrime(){
 	vector <double> A, B, C, D, E;
 	double l, l1, l2, lm1;
-	A.reserve(mN); B.reserve(mN); C.reserve(mN); D.reserve(mN); E.reserve(mN); 
+	A.resize(mN); B.resize(mN); C.resize(mN); D.resize(mN); E.resize(mN); 
 	// funky for loop to generate correct indices for orderered array of lengths
 	// produces (98,99,0,1,2) -> (97,98,99,0,1) for N=100.
 	for(int i=0;i<mN;i++){
 		
-		l = mPoints[i]->mSegLength; l1 = mPoints[i]->mNext->mSegLength; l2 = mPoints[i]->mNext->mNext->mSegLength; lm1 = mPoints[i]->mPrev->mSegLength; 
+		l = mPoints[i]->mSegLength; l1 = mPoints[i]->mNext->mSegLength; 
+		l2 = mPoints[i]->mNext->mNext->mSegLength; lm1 = mPoints[i]->mPrev->mSegLength; 
 		
 		A[i] = l * l1 * l1 + l * l1 * l2;
 		A[i] /= (lm1 * (lm1 + l) * (lm1 + l + l1) * (lm1 + l + l1 +l2));
@@ -79,10 +88,11 @@ void Filament::CalcSPrime(){
 void Filament::CalcS2Prime(){
 	vector <double> A2, B2, C2, D2, E2;
 	double l, l1, l2, lm1;
-	A2.reserve(mN); B2.reserve(mN); C2.reserve(mN); D2.reserve(mN); E2.reserve(mN); 
+	A2.resize(mN); B2.resize(mN); C2.resize(mN); D2.resize(mN); E2.resize(mN); 
 	for(int i=0;i<mN;i++){
 		
-		l = mPoints[i]->mSegLength; l1 = mPoints[i]->mNext->mSegLength; l2 = mPoints[i]->mNext->mNext->mSegLength; lm1 = mPoints[i]->mPrev->mSegLength; 
+		l = mPoints[i]->mSegLength; l1 = mPoints[i]->mNext->mSegLength; 
+		l2 = mPoints[i]->mNext->mNext->mSegLength; lm1 = mPoints[i]->mPrev->mSegLength; 
 
 		A2[i] = 2 * (-2 * l * l1  +  l1 * l1  - l * l2  +  l1 * l2 );
 		A2[i] = A2[i] / (lm1 * (lm1 +l)*(lm1 + l + l1)*(lm1 + l + l1 + l2));

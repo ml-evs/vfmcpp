@@ -24,10 +24,10 @@ public:
 	/*member functions*/
 	Point(){
 		/*default constructor just reserves memory*/
-		mVel.reserve(3); mPos.reserve(3);
-		mVel1.reserve(3); mVel2.reserve(3);  mVelNL.reserve(3);
-		mSPrime.reserve(3); mS2Prime.reserve(3);
-		mCharge = 0;
+		mVel.resize(3); mPos.resize(3);
+		mVel1.resize(3); mVel2.resize(3);  mVelNL.resize(3);
+		mSPrime.resize(3); mS2Prime.resize(3);
+		mCharge = 0; mSegLength = 0;
 	}
 	~Point(){};
 };

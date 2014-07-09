@@ -11,12 +11,10 @@ using namespace std;
 class Tangle{
 public:
 	vector <Filament> 	mTangle;
-	vector <double> 	mEField;
 	Tangle(){};
-	Tangle(Filament Ring1){//, Filament Ring2){
+	Tangle(Filament Ring1, Filament Ring2){
 		mTangle.push_back(Ring1);
-		//mTangle.push_back(Ring2);
-		mEField.reserve(3);
+		mTangle.push_back(Ring2);
 	}
 	~Tangle(){};
 	void CalcVelocityNL_OF();

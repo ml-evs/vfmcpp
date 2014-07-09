@@ -14,7 +14,7 @@ def init():
 def getfiles(N_f):
 	files = list()
 	i = 0
-	base_filename = '../bin/data/dat_test_2/data_'
+	base_filename = '../bin/data/dat_PLEASE_PLEASE/data_'
 	end = False
 	while(end==False):
 		filename = base_filename + str(i) + '.dat'
@@ -34,9 +34,9 @@ def animate(i):
 	y1 = np.zeros((101))
 	z1 = np.zeros((101))	
 	
-	# x2 = np.zeros((101))
-	# y2 = np.zeros((101))
-	# z2 = np.zeros((101))
+	x2 = np.zeros((101))
+	y2 = np.zeros((101))
+	z2 = np.zeros((101))
 
 	while line:
 		data.append(line)
@@ -49,27 +49,26 @@ def animate(i):
 		x1[n] =  r[n,0]
 		y1[n] =  r[n,1]
 		z1[n] =  r[n,2]
-		# x2[n] =  r[n+100,0]
-		# y2[n] =  r[n+100,1]
-		# z2[n] =  r[n+100,2]
+
+		x2[n] =  r[n+100,0]
+		y2[n] =  r[n+100,1]
+		z2[n] =  r[n+100,2]
 
 	x1[-1] = x1[0]
 	y1[-1] = y1[0]
 	z1[-1] = z1[0]
 	
-	# x2[-1] = x2[0]
-	# y2[-1] = y2[0]
-	# z2[-1] = z2[0]
+	x2[-1] = x2[0]
+	y2[-1] = y2[0]
+	z2[-1] = z2[0]
 	
 
 	rings[0].set_data(x1, y1)
 	rings[0].set_3d_properties(z1)
 
-	# rings[1].set_data(x2, y2)
-	# rings[1].set_3d_properties(z2)
+	rings[1].set_data(x2, y2)
+	rings[1].set_3d_properties(z2)
 
-
-	#ax.view_init(10, 0.3 * i)
 	time_text.set_text('time = %.1f' % (1e9*i*N_f*dt)+ ' ns / %.1f' % (len(files)*1e9*N_f*dt) +' ns')
 	fig.canvas.draw()
 	plt.draw()
@@ -86,7 +85,7 @@ ax = fig.add_subplot(111,
 
 rings = []
 rings += ax.plot([],[],[], 'g-', markersize=2, linewidth=2, alpha=0.5)
-# rings += ax.plot([],[],[], 'bo', markersize=2, linewidth=2, alpha=0.5)
+rings += ax.plot([],[],[], 'b-', markersize=2, linewidth=2, alpha=0.5)
 time_text = ax.text(0.0, 0.0, 0, '', transform=ax.transAxes)
 ax.set_xlim3d((-8.0e-6,8.0e-6))
 ax.set_ylim3d((-8.0e-6,8.0e-6))
@@ -96,5 +95,5 @@ ax.set_ylabel('y')
 ax.set_zlabel('z (um)')
 ax.view_init(10,0)
 print len(files)
-ani = animation.FuncAnimation(fig, animate, init_func = init, frames = len(files), interval = 100, blit=False)
+ani = animation.FuncAnimation(fig, animate, init_func = init, frames = len(files), interval = 1, blit=False)
 plt.show()
