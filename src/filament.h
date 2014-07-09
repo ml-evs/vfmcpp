@@ -23,7 +23,7 @@ public:
 	void CalcS2Prime();
 	void CalcVelocitySelfNL();
 	void PropagatePosAB3(double & dt); 
-	void AdjMeshLengths(double dr);
+	void MeshAdjust(double dr);
 };
 /* ring class */
 class Ring : public Filament{

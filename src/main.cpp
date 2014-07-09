@@ -10,8 +10,8 @@ using namespace std;
 	
 	/* circulation quantum, core radii, mutual friction */
 	double		kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0, alpha=0;
-	const int	N = 100; 		// number of points on ring
-	double		r0=1e-6; 		// initial ring radius
+	const int	N  =  100; 		// number of points on ring
+	double		r0 = 1e-6; 		// initial ring radius
 
 int main(){
 
@@ -29,6 +29,7 @@ int main(){
 	vector <Filament>::iterator begin, current, end;
 	begin = (Tangle.mTangle).begin();
 	end = (Tangle.mTangle).end();
+	/* calculate mean distance between points */
 	for(current=begin; current!=end; current++){
 		for(int j(0); j<current->mN; j++){
 			dr += current->mPoints[j]->mSegLength;
@@ -36,6 +37,8 @@ int main(){
 		N_p += current->mN;
 	}
 	dr /= N_p;
+	/* set resolution as 4/3 average distance for mesh adjust */
+	dr = (4.0/3.0)*dr;
 	dt = pow((dr/2),2)/(kappa*log(dr/(2*M_PI*a0)));
 	dt = dt/25; 		// Baggaley, Barenghi PRB 2010
 	cout << dr << ", " << dt << endl;
@@ -45,7 +48,7 @@ int main(){
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	int N_f(10000); 	// number of time steps per save
 
-	string filename = "data/dat_PLEASE_PLEASE/data_"; // location of saves
+	string filename = "data/dat_PLEASE_PLEASE_ADJUST_ME/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -59,6 +62,7 @@ int main(){
 		for(current=begin; current!=end; current++){
 			current->CalcVelocity();
 			current->PropagatePosAB3(dt);
+			current->MeshAdjust(dr);
 		}
 		percent = (100*i/N_t); 
 		printf("\r %4.1f %% \t",percent); // output percentage completion
@@ -77,7 +81,7 @@ int main(){
 					outfile << "\n";
 				}
 			}
-			//cout << "!!!!!!\t Wrote timestep " << i << " to file. \t!!!!!!" << endl;
+			cout << "!!!!!!\t Wrote timestep " << i << " to file. \t!!!!!!" << endl;
 			outfile.close();
 		}
 	}
