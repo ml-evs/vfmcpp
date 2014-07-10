@@ -10,7 +10,9 @@ using namespace std;
 
 class Tangle{
 public:
+	/* member data */
 	vector <Filament> 	mTangle;
+	/* member functions */
 	Tangle(){};
 	Tangle(Filament Ring1, Filament Ring2){
 		mTangle.push_back(Ring1);

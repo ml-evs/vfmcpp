@@ -13,8 +13,8 @@ def init():
 
 def getfiles(N_f):
 	files = list()
-	i = 0
-	base_filename = '../bin/data/dat_PLEASE_PLEASE/data_'
+	i = 2450000
+	base_filename = '../bin/data/dat_PLEASE_PLEASE_ADJUST_ME/data_'
 	end = False
 	while(end==False):
 		filename = base_filename + str(i) + '.dat'
@@ -74,7 +74,7 @@ def animate(i):
 	plt.draw()
 	return rings, time_text
 
-N_f = 100000
+N_f = 10000
 dt = 9.1e-11
 files = getfiles(N_f)
 fig = plt.figure(facecolor='w',figsize=(10,10))
