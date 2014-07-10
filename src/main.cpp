@@ -16,8 +16,8 @@ using namespace std;
 int main(){
 
 	/* create filaments */
-	Ring Ring1(r0,N,0,0,0);
-	Ring Ring2(r0,N,0,0,1e-6);
+	Ring Ring1(0.9*r0,N,0,0.05e-6,0);
+	Ring Ring2(r0,N,0,0,5e-6);
 	//Ring Ring3(r0,N,0,0,1.1e-6);
 
 	/* add filaments to tangle */
@@ -48,7 +48,7 @@ int main(){
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	int N_f(10000); 	// number of time steps per save
 
-	string filename = "data/dat_PLEASE_PLEASE_ADJUST_ME_mesh/data_"; // location of saves
+	string filename = "data/speedrun/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -68,10 +68,12 @@ int main(){
 		printf("\r %4.1f %% \t",percent); // output percentage completion
 		/* save positions to file every N_f steps */
 		if(i%N_f==0){
-			string ith_filename = filename + to_string(i) + (".dat");
-			ofstream outfile(ith_filename);
-			outfile.precision(8);
+			string ith_filename = filename + to_string(i) + "_";
+			int n_fil(0);
 			for(current=begin; current!=end; current++){
+				string ith_jth_filename = ith_filename + to_string(n_fil) + ".dat";
+				ofstream outfile(ith_jth_filename);
+				outfile.precision(8);
 				int j(0);
 				while(j!=current->mN){
 					for(int m(0); m<3; m++){
@@ -80,9 +82,11 @@ int main(){
 					j++;
 					outfile << "\n";
 				}
+				outfile.close();
+				n_fil++;
 			}
 			cout << "!!!!!!\t Wrote timestep " << i << " to file. \t!!!!!!" << endl;
-			outfile.close();
+			
 		}
 	}
 	/* save total time to file */
