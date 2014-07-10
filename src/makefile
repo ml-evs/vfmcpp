@@ -1,2 +1,2 @@
 vfmcpp : filament.h tangle.h point.h main.cpp vel.cpp mesh.cpp tdt.cpp velnl.cpp velnl_of.cpp mesh_adjust.cpp
-	g++ -std=c++11 -O2 -Wall main.cpp vel.cpp mesh.cpp tdt.cpp velnl.cpp velnl_of.cpp mesh_adjust.cpp -o ../bin/vfmcpp_fourthirds
+	g++ -std=c++11 -O2 -Wall main.cpp vel.cpp mesh.cpp tdt.cpp velnl.cpp velnl_of.cpp mesh_adjust.cpp -o ../bin/vfmcpp_mesh

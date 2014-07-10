@@ -14,7 +14,7 @@ def init():
 def getfiles(N_f):
 	files = list()
 	i = 0
-	base_filename = '../bin/data/dat_PLEASE_PLEASE_ADJUST_ME/data_'
+	base_filename = '../bin/data/dat_PLEASE_PLEASE_ADJUST_ME_mesh/data_'
 	end = False
 	while(end==False):
 		filename = base_filename + str(i) + '.dat'
@@ -71,7 +71,7 @@ ax = fig.add_subplot(111,
 	projection='3d')
 
 rings = []
-rings += ax.plot([],[],[], 'g-', markersize=2, linewidth=2, alpha=0.5)
+rings += ax.plot([],[],[], 'bo', markersize=4, linewidth=2, alpha=1)
 #rings += ax.plot([],[],[], 'b-', markersize=2, linewidth=2, alpha=0.5)
 time_text = ax.text(0.0, 0.0, 0, '', transform=ax.transAxes)
 ax.set_xlim3d((-8.0e-6,8.0e-6))
@@ -82,5 +82,5 @@ ax.set_ylabel('y')
 ax.set_zlabel('z (um)')
 ax.view_init(10,0)
 print len(files)
-ani = animation.FuncAnimation(fig, animate, init_func = init, frames = len(files), interval = 1, blit=False)
+ani = animation.FuncAnimation(fig, animate, init_func = init, frames = len(files), interval = 100, blit=False)
 plt.show()
