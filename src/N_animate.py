@@ -16,7 +16,7 @@ def getfiles(N_f):
 	i = 0
 	j = 0
 	jmax = 0
-	base_filename = '../bin/data/dirty_debug/data_'
+	base_filename = '../bin/data/dirtiest_debug/data_'
 	end = False
 	end2 = False
 	while(end==False):
