@@ -9,7 +9,8 @@ void Filament::CalcMeshLengths(){
 	for(int i=0;i<mN;i++){
 		mPoints[i]->mSegLength=0;
 		for(int j=0;j<3;j++){
-			mPoints[i]->mSegLength += pow((mPoints[i]->mPos[j] - mPoints[i]->mPrev->mPos[j]),2); 
+			mPoints[i]->mSegLast[j] = mPoints[i]->mPos[j] - mPoints[i]->mPrev->mPos[j];
+			mPoints[i]->mSegLength += pow((mPoints[i]->mSegLast[j]),2); 
 		}
 		mPoints[i]->mSegLength = sqrt(mPoints[i]->mSegLength);
 	}

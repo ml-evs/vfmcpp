@@ -16,7 +16,7 @@ def getfiles(N_f):
 	i = 0
 	j = 0
 	jmax = 0
-	base_filename = '../bin/data/speedrun/data_'
+	base_filename = '../bin/data/dirtiest_debug/data_'
 	end = False
 	end2 = False
 	while(end==False):
@@ -64,7 +64,7 @@ def animate(i):
 	return rings, time_text
 
 N_f = 10000
-dt = 9.1e-11
+dt = 1.385e-10
 files, jmax = getfiles(N_f)
 fig = plt.figure(facecolor='w',figsize=(10,10))
 ax = fig.add_subplot(111, 

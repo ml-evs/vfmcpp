@@ -16,7 +16,8 @@ void Filament::MeshAdjust(double dr){
 		R = 1/R;
 		/* point deletion for smoothing and proximity*/
 		if((1/R)>1.9/dr || mPoints[k]->mSegLength < 0.5*dr){
-			cout << "Deleting point." << endl;
+			if((1/R)>1.9/dr){cout << "Deleting point for smoothing." << endl;}
+			if(mPoints[k]->mSegLength < 0.5*dr){cout << "Deleting point " << k << " for proximity." << endl;}
 			/* reassign next and last pointers for point to be deleted */
 			mPoints[k]->mNext->mPrev = mPoints[k]->mPrev;
 			mPoints[k]->mPrev->mNext = mPoints[k]->mNext;
@@ -46,6 +47,9 @@ void Filament::MeshAdjust(double dr){
 				mPoints[mN-1]->mVel2[j] = 0.5*(mPoints[mN-1]->mPrev->mVel2[j] + mPoints[mN-1]->mNext->mVel2[j]);
 			}
 			CalcMeshLengths(); CalcSPrime(); CalcS2Prime();
+			cout << "Added point at index " << k << "with position " << mPoints[mN-1]->mPos[0] << ", " << mPoints[mN-1]->mPos[1] << ", " << mPoints[mN-1]->mPos[2] << endl;
+			cout << "with velocity " << mPoints[mN-1]->mVel[0] << ", " << mPoints[mN-1]->mVel[1] << ", " << mPoints[mN-1]->mVel[2] << endl;
+			cout << "With radius of curvature " << R << " m. " << endl;
 		}
 	}
 }

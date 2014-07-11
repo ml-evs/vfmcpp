@@ -48,7 +48,7 @@ int main(){
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	int N_f(10000); 	// number of time steps per save
 
-	string filename = "data/speedrun/data_"; // location of saves
+	string filename = "data/dirtiest_debug/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -86,7 +86,6 @@ int main(){
 				n_fil++;
 			}
 			cout << "!!!!!!\t Wrote timestep " << i << " to file. \t!!!!!!" << endl;
-			
 		}
 	}
 	/* save total time to file */

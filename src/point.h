@@ -19,6 +19,7 @@ public:
 	vector <double>	mVelNL; 		// non-local contributions to velocity
 	vector <double> mSPrime;		// tangent at point
 	vector <double> mS2Prime;		// binormal at point
+	vector <double> mSegLast; 		// vector to last point
 	double			mSegLength; 	// distance to last point
 	double 			mCharge; 		// charge at point 
 	/*member functions*/
@@ -26,7 +27,7 @@ public:
 		/*default constructor just reserves memory*/
 		mVel.resize(3); mPos.resize(3);
 		mVel1.resize(3); mVel2.resize(3);  mVelNL.resize(3);
-		mSPrime.resize(3); mS2Prime.resize(3);
+		mSPrime.resize(3); mS2Prime.resize(3); mSegLast.resize(3);
 		mCharge = 0; mSegLength = 0;
 	}
 	~Point(){};
