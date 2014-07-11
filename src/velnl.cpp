@@ -9,77 +9,29 @@ using namespace std;
 
 void Filament::CalcVelocitySelfNL(){
 
-	vector < vector <double> > pxq;
-	vector < vector <double> > p; // p = s_l - s_k
-	vector < vector <double> > q; // q = s_l+1 - s_l
-	vector <double> A, B, C, D;
-	A.resize(mN-2); B = A; C = A; D = A;
-	p.resize(mN-2); q = p; 
-	pxq = p;
-	int g, h, i(0), j, s;
+	vector <double> p; // p = s_l - s_k
+	vector <double> q;
+	p.resize(3); q = p; 
 	
-	for(int k=0;k<mN;k++){
-		s = 0; i=0;
-		if(k !=0 && k!=mN-1){
-			for(int l=0;l<mN;l++){
-				if(l==k||l==k-1){s++;}
-				else{
-					p[l-s].resize(3); q[l-s].resize(3);
-					if(l+1==mN){g=-1;}
-					else{g=l;}
-					for(int m=0;m<3;m++){
-						p[l-s][m] = (mPoints[l]->mPos[m]-mPoints[k]->mPos[m]);
-						q[l-s][m] = (mPoints[g+1]->mPos[m]-mPoints[l]->mPos[m]);
-					}
-				}
+	vector <Point*>::iterator b, c, e, c2;
+	b = mPoints.begin(); e = mPoints.end();
+	Point* c3;
+	/* loop over all points */
+	for(c=b; c!=e; c++){
+		int i(0);
+		/* assign pointer to next point */		
+		c3 = (*c)->mNext;
+		while(i<mN-2){
+			for(int m(0);m<3;m++){
+				p[m] = c3->mPos[m] - (*c)->mPos[m];
+				q[m] = c3->mNext->mPos[m] - c3->mPos[m];
 			}
-		}
-		else if(k==0){
-			for(int l=1;l<mN-1; l++){
-				p[i].resize(3); q[i] = p[i];
-				g = l+k; h = l+k;
-				for(int m=0;m<3;m++){ 
-					if(l==k-1){l=k+2;}
-					p[i][m] = mPoints[l]->mPos[m] - mPoints[k]->mPos[m];
-					if(g+1>=mN){g-=mN;}
-					if(h>=mN){h-=mN;}
-					q[i][m] = mPoints[g+1]->mPos[m] - mPoints[h]->mPos[m];
-				} 
-				i++;
-			}
-		}
-		else if(k==mN-1){
-			for(int l=1;l<mN-1; l++){
-				p[i].resize(3); q[i] = p[i];
-				g = l; h = l; j=l;
-				for(int m=0;m<3;m++){ 
-					if(l==k-1){l=k+2;}
-					if(l>=mN){j=0;}
-					p[i][m] = mPoints[j]->mPos[m] - mPoints[k]->mPos[m];
-					if(g+2>=mN){g=k-g-1;}
-					if(h==k-1){h=k-h-1;}
-					q[i][m] = mPoints[g+1]->mPos[m] - mPoints[h]->mPos[m];
-				} 
-				i++;
-			}
-		}
-		else{cout << "Something terrible has happened." << endl;}
-
-		// Calculate coefficients: A=|p|, B=p.q, C=|q|
-		for(int l=0;l<mN-2;l++){
-			pxq[l].resize(3);
-			pxq[l][0] = p[l][1]*q[l][2] - p[l][2]*q[l][1];
-			pxq[l][1] = p[l][2]*q[l][0] - p[l][0]*q[l][2];
-			pxq[l][2] = p[l][0]*q[l][1] - p[l][1]*q[l][0];
-			A[l] = 0; B[l] = 0; C[l] = 0;
-			for(int j=0;j<3;j++){
-				A[l] += p[l][j]*p[l][j]; 
-				B[l] += 2*p[l][j]*q[l][j];
-				C[l] += q[l][j]*q[l][j];
-			}
-			for(int j=0;j<3;j++){
-				mPoints[k]->mVelNL[j] += (kappa*((2*C[l]+B[l])/(sqrt(A[l]+B[l]+C[l])) - B[l]/sqrt(A[l])) * pxq[l][j])/(2*M_PI*(4*A[l]*C[l]-B[l]*B[l]));
-			}
+			(*c)->mVelNL[0] += (kappa*((2*(q[0]*q[0]+q[1]*q[1]+q[2]*q[2])+(2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2])))/(sqrt((p[0]*p[0]+p[1]*p[1]+p[2]*p[2])+(2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2]))+(q[0]*q[0]+q[1]*q[1]+q[2]*q[2]))) - (2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2]))/sqrt((p[0]*p[0]+p[1]*p[1]+p[2]*p[2]))) * (p[1]*q[2] - p[2]*q[1]))/(2*M_PI*(4*(p[0]*p[0]+p[1]*p[1]+p[2]*p[2])*(q[0]*q[0]+q[1]*q[1]+q[2]*q[2])-(2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2]))*(2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2]))));
+			(*c)->mVelNL[1] += (kappa*((2*(q[0]*q[0]+q[1]*q[1]+q[2]*q[2])+(2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2])))/(sqrt((p[0]*p[0]+p[1]*p[1]+p[2]*p[2])+(2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2]))+(q[0]*q[0]+q[1]*q[1]+q[2]*q[2]))) - (2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2]))/sqrt((p[0]*p[0]+p[1]*p[1]+p[2]*p[2]))) * (p[2]*q[0] - p[0]*q[2]))/(2*M_PI*(4*(p[0]*p[0]+p[1]*p[1]+p[2]*p[2])*(q[0]*q[0]+q[1]*q[1]+q[2]*q[2])-(2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2]))*(2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2]))));
+			(*c)->mVelNL[2] += (kappa*((2*(q[0]*q[0]+q[1]*q[1]+q[2]*q[2])+(2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2])))/(sqrt((p[0]*p[0]+p[1]*p[1]+p[2]*p[2])+(2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2]))+(q[0]*q[0]+q[1]*q[1]+q[2]*q[2]))) - (2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2]))/sqrt((p[0]*p[0]+p[1]*p[1]+p[2]*p[2]))) * (p[0]*q[1] - p[1]*q[0]))/(2*M_PI*(4*(p[0]*p[0]+p[1]*p[1]+p[2]*p[2])*(q[0]*q[0]+q[1]*q[1]+q[2]*q[2])-(2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2]))*(2*(p[0]*q[0]+p[1]*q[1]+p[2]*q[2]))));	
+			/* increment pointer to next */
+			c3 = c3->mNext;
+			i++;
 		}
 	}
 }
