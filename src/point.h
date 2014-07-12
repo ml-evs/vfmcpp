@@ -9,7 +9,7 @@ using namespace std;
 
 class Point{
 public:
-	/*member data*/
+	/* member data */
 	Point 			*mPrev;			// pointer to previous point in filament
 	Point 			*mNext;			// pointer to next point in filament
 	vector <double>	mPos;			// position
@@ -22,12 +22,18 @@ public:
 	vector <double> mSegLast; 		// vector to last point
 	double			mSegLength; 	// distance to last point
 	double 			mCharge; 		// charge at point 
-	/*member functions*/
+	/* member functions */
 	Point(){
-		/*default constructor just reserves memory*/
+		/* default constructor just reserves memory */
 		mVel.resize(3); mPos.resize(3);
 		mVel1.resize(3); mVel2.resize(3);  mVelNL.resize(3);
 		mSPrime.resize(3); mS2Prime.resize(3); mSegLast.resize(3);
+		mCharge = 0; mSegLength = 0;
+	}
+	Point(Point* occ){
+		/* parameterised constructor copies a point, used in reconnection */
+		mVel = occ->mVel; mVel1 = occ->mVel1; mVel2 = occ->mVel2; mVelNL = occ->mVelNL;
+		mPos = occ->mPos; mSPrime.resize(3); mS2Prime.resize(3); mSegLast.resize(3);
 		mCharge = 0; mSegLength = 0;
 	}
 	~Point(){};
