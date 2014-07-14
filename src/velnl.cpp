@@ -1,5 +1,5 @@
-/* 	Calculates the non-local contribution to the velocities of points on each ring from another filament.
-	Adapted from CalcNonLocalVel_OtherFilament.m by Paul Walmsley */
+/* 	Calculates the non-local contributions to the velocities of every point.
+	Adapted from CalcNonLocalVel_OtherFilament.m by Paul Walmsley. */
 
 #include "tangle.h"
 
@@ -113,3 +113,4 @@ void Filament::CalcVelocitySelfNL(){
 		}
 	}
 }
+
