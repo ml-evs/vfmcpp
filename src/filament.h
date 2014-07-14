@@ -8,6 +8,8 @@
 
 using namespace std;
 
+const double PI = 3.14159265359;
+
 /* general filament interface class */
 class Filament{
 public:
@@ -19,6 +21,7 @@ public:
 	~Filament(){};
 	void CalcMeshLengths();
 	void CalcVelocity();
+	void CalcImpulse();
 	void CalcSPrime();
 	void CalcS2Prime();
 	void CalcVelocitySelfNL();
@@ -37,8 +40,8 @@ public:
 		mCentre.resize(3,0);
 		for(int i=0; i<mN; i++){
 			mPoints.push_back(new Point());
-			mPoints[i]->mPos[0]=mCentre[0]-mRadius0*sin(i*(2*M_PI)/mN);
-			mPoints[i]->mPos[1]=mCentre[1]-mRadius0*cos(i*(2*M_PI)/mN);
+			mPoints[i]->mPos[0]=mCentre[0]-mRadius0*sin(i*(2*PI)/mN);
+			mPoints[i]->mPos[1]=mCentre[1]-mRadius0*cos(i*(2*PI)/mN);
 			mPoints[i]->mPos[2]=mCentre[2];
 		}
 		for(int i(1); i!=mN; i++){(mPoints[i])->mPrev = mPoints[i-1];}
@@ -53,8 +56,8 @@ public:
 		mCentre[0] = x; mCentre[1] = y; mCentre[2] = z;
 		for(int i=0; i<mN; i++){
 			mPoints.push_back(new Point());
-			mPoints[i]->mPos[0]=mCentre[0]+mRadius0*sin(-i*(2*M_PI)/mN);
-			mPoints[i]->mPos[1]=mCentre[1]+mRadius0*cos(-i*(2*M_PI)/mN);
+			mPoints[i]->mPos[0]=mCentre[0]+mRadius0*sin(-i*(2*PI)/mN);
+			mPoints[i]->mPos[1]=mCentre[1]+mRadius0*cos(-i*(2*PI)/mN);
 			mPoints[i]->mPos[2]=mCentre[2];
 		}
 		for(int i(1); i!=mN; i++){(mPoints[i])->mPrev = mPoints[i-1];}

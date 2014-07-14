@@ -20,6 +20,8 @@ public:
 	}
 	~Tangle(){};
 	void CalcVelocityNL_OF();
+	void LoopKill();
+	void Reconnect(double dr);
 };
 
 #endif
