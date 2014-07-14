@@ -2,7 +2,6 @@
 	Adapted from CalcNonLocalVel_OtherFilament.m by Paul Walmsley. */
 
 #include "tangle.h"
-#include <boost/geometry/arithmetic/cross_product.hpp>
 
 using namespace std;
 
@@ -49,7 +48,9 @@ void Tangle::CalcVelocityNL_OF(){
 							pq += p[m]*q[m];
 						}
 						/* calculate pxq and assign temp variables */
-						pxq = cross_product(p,q);
+						pxq[0] = p[1]*q[2] - p[2]*q[1];
+						pxq[1] = p[2]*q[0] - p[0]*q[2];
+						pxq[2] = p[0]*q[1] - p[1]*q[0];
 						double sqrt_ppqq2pq = sqrt(pp+qq+2*pq);
 						double sqrt_pp = sqrt(pp);
 
@@ -96,7 +97,9 @@ void Filament::CalcVelocitySelfNL(){
 				pq += p[m]*q[m];
 			}
 			/* calculate pxq and assign temp variables */
-			pxq = cross_product(p,q);
+			pxq[0] = p[1]*q[2] - p[2]*q[1];
+			pxq[1] = p[2]*q[0] - p[0]*q[2];
+			pxq[2] = p[0]*q[1] - p[1]*q[0];
 			double sqrt_ppqq2pq = sqrt(pp+qq+2*pq);
 			double sqrt_pp = sqrt(pp);
 

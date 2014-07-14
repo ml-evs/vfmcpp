@@ -25,7 +25,7 @@ public:
 	void CalcSPrime();
 	void CalcS2Prime();
 	void CalcVelocitySelfNL();
-	void PropagatePosAB3(double & dt); 
+	void PropagatePos(double & dt); 
 	void MeshAdjust(double dr);
 };
 /* ring class */

@@ -48,7 +48,7 @@ int main(){
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	int N_f(10000); 	// number of time steps per save
 
-	string filename = "data/speedtest/data_"; // location of saves
+	string filename = "data/stepping/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -60,9 +60,9 @@ int main(){
 		/* calculate velocities and propagate positions */
 		Tangle.CalcVelocityNL_OF(); 	// calculates all non-local contributions, including self-induced
 		for(current=begin; current!=end; current++){
-			current->CalcVelocity();	// calculates all local contributions and combines with non-local
-			current->PropagatePosAB3(dt);
 			current->MeshAdjust(dr);
+			current->CalcVelocity();	// calculates all local contributions and combines with non-local
+			current->PropagatePos(dt);
 		}
 		percent = (100*i/N_t); 
 		printf("\r %4.1f %% \t",percent); // output percentage completion

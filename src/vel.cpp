@@ -18,6 +18,9 @@ void Filament::CalcVelocity(){
 	}
 	CalcSPrime(); CalcS2Prime(); CalcMeshLengths();
 	for(int i=0;i<mN;i++){
+		if(mPoints[i]->mFlagFilled==0){mPoints[i]->mFlagFilled++;}
+		if(mPoints[i]->mFlagFilled==1){mPoints[i]->mFlagFilled++;}
+		if(mPoints[i]->mFlagFilled==2){mPoints[i]->mFlagFilled++;}
 		mPoints[i]->mVel[0] = ((mPoints[i]->mSPrime[1])*(mPoints[i]->mS2Prime[2]) - (mPoints[i]->mSPrime[2])*(mPoints[i]->mS2Prime[1]));
 		mPoints[i]->mVel[1] = ((mPoints[i]->mSPrime[2])*(mPoints[i]->mS2Prime[0]) - (mPoints[i]->mSPrime[0])*(mPoints[i]->mS2Prime[2]));
 		mPoints[i]->mVel[2] = ((mPoints[i]->mSPrime[0])*(mPoints[i]->mS2Prime[1]) - (mPoints[i]->mSPrime[1])*(mPoints[i]->mS2Prime[0]));
@@ -25,22 +28,6 @@ void Filament::CalcVelocity(){
 			mPoints[i]->mVel[q] *= kappa*log(2*sqrt(mPoints[i]->mSegLength * mPoints[i]->mNext->mSegLength)/a1)/(4*M_PI);
 			mPoints[i]->mVel[q] += mPoints[i]->mVelNL[q];
 			mPoints[i]->mVelNL[q] = 0;
-		}
-	}
-	if(mPoints[0]->mVel1.empty()){
-		cout << "mVel1 empty -> interpolating." << endl;
-		for(int i(0); i!=mN; i++){
-			for(int j(0); j!=3; j++){
-				mPoints[i]->mVel1[j]=mPoints[i]->mVel[j];
-			}
-		}
-	}
-	if(mPoints[0]->mVel2.empty()){
-		cout << "mVel2 empty -> interpolating." << endl;
-		for(int i(0); i!=mN; i++){
-			for(int j(0);j!=3;j++){
-				mPoints[i]->mVel2[j]=mPoints[i]->mVel[j];
-			}
 		}
 	}
 }
