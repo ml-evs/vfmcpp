@@ -20,6 +20,7 @@ public:
 	}
 	~Tangle(){};
 	void CalcVelocityNL_OF();
+	void LoopKill();
 };
 
 #endif
