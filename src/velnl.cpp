@@ -2,6 +2,7 @@
 	Adapted from CalcNonLocalVel_OtherFilament.m by Paul Walmsley. */
 
 #include "tangle.h"
+#include <boost/geometry/arithmetic/cross_product.hpp>
 
 using namespace std;
 
@@ -48,15 +49,13 @@ void Tangle::CalcVelocityNL_OF(){
 							pq += p[m]*q[m];
 						}
 						/* calculate pxq and assign temp variables */
-						pxq[0] = p[1]*q[2] - p[2]*q[1];
-						pxq[1] = p[2]*q[0] - p[0]*q[2];
-						pxq[2] = p[0]*q[1] - p[1]*q[0];
+						pxq = cross_product(p,q);
 						double sqrt_ppqq2pq = sqrt(pp+qq+2*pq);
 						double sqrt_pp = sqrt(pp);
 
 						/* add contribution to mVelNL */
 						for(int m(0);m<3;m++){
-							pField->mVelNL[m] += (pxq[m]*kappa/(8*M_PI*(pp*qq-pq))) * (2*(qq+pq)/sqrt_ppqq2pq - 2*pq/sqrt_pp);
+							pField->mVelNL[m] += (pxq[m]*kappa/(8*M_PI*(pp*qq-pq))) * ( (2*(qq+pq)/sqrt_ppqq2pq) - (2*pq/sqrt_pp) );
 						}
 					}
 					/* increment pointer to next */
@@ -97,15 +96,13 @@ void Filament::CalcVelocitySelfNL(){
 				pq += p[m]*q[m];
 			}
 			/* calculate pxq and assign temp variables */
-			pxq[0] = p[1]*q[2] - p[2]*q[1];
-			pxq[1] = p[2]*q[0] - p[0]*q[2];
-			pxq[2] = p[0]*q[1] - p[1]*q[0];
+			pxq = cross_product(p,q);
 			double sqrt_ppqq2pq = sqrt(pp+qq+2*pq);
 			double sqrt_pp = sqrt(pp);
 
 			/* assign values to mVelNL */
 			for(int j(0);j<3;j++){
-				(*c)->mVelNL[j] += (pxq[j]*kappa/(8*M_PI*(pp*qq-pq))) * (2*(qq+pq)/sqrt_ppqq2pq - 2*pq/sqrt_pp);
+				(*c)->mVelNL[j] += (pxq[j]*kappa/(8*M_PI*(pp*qq-pq))) * ( (2*(qq+pq)/sqrt_ppqq2pq) - (2*pq/sqrt_pp) );
 			}
 			/* increment pointer to next */
 			pField = pField->mNext;
