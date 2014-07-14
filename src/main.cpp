@@ -48,7 +48,7 @@ int main(){
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	int N_f(10000); 	// number of time steps per save
 
-	string filename = "data/dirtiest_debug/data_"; // location of saves
+	string filename = "data/speedtest/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -58,9 +58,9 @@ int main(){
   	/* begin time-stepping */
 	for(int i(0); i<N_t; i++){
 		/* calculate velocities and propagate positions */
-		Tangle.CalcVelocityNL_OF();
+		Tangle.CalcVelocityNL_OF(); 	// calculates all non-local contributions, including self-induced
 		for(current=begin; current!=end; current++){
-			current->CalcVelocity();
+			current->CalcVelocity();	// calculates all local contributions and combines with non-local
 			current->PropagatePosAB3(dt);
 			current->MeshAdjust(dr);
 		}
@@ -75,10 +75,12 @@ int main(){
 				ofstream outfile(ith_jth_filename);
 				outfile.precision(8);
 				int j(0);
+				Point* pCurrent = current->mPoints[0];
 				while(j!=current->mN){
 					for(int m(0); m<3; m++){
-						outfile << current->mPoints[j]->mNext->mPos[m] << "\t";
+						outfile << pCurrent->mNext->mPos[m] << "\t";
 					}
+					pCurrent = pCurrent->mNext;
 					j++;
 					outfile << "\n";
 				}
