@@ -1,2 +1,2 @@
-vfmcpp : filament.h tangle.h point.h main.cpp vel.cpp mesh.cpp tdt.cpp velnl.cpp velnl_of.cpp mesh_adjust.cpp
-	g++ -std=c++11 -O3 -pg -Wall main.cpp vel.cpp mesh.cpp tdt.cpp velnl.cpp velnl_of.cpp mesh_adjust.cpp -o ../bin/vfmcpp_dirtiest_debug
+vfmcpp : filament.h tangle.h point.h
+	g++ -std=c++11 -O3 -Wall main.cpp vel.cpp mesh.cpp tdt.cpp velnl.cpp mesh_adjust.cpp -o ../bin/vfmcpp_stepping

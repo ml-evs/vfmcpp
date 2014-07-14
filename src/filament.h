@@ -25,7 +25,7 @@ public:
 	void CalcSPrime();
 	void CalcS2Prime();
 	void CalcVelocitySelfNL();
-	void PropagatePosAB3(double & dt); 
+	void PropagatePos(double & dt); 
 	void MeshAdjust(double dr);
 };
 /* ring class */
@@ -52,7 +52,7 @@ public:
 	}
 	Ring(double r, int N, double x, double y, double z){
 		mRadius0 = r; mN = N;
-		mCentre.resize(3);
+		mCentre.resize(3,0);
 		mCentre[0] = x; mCentre[1] = y; mCentre[2] = z;
 		for(int i=0; i<mN; i++){
 			mPoints.push_back(new Point());
@@ -66,8 +66,50 @@ public:
 		mPoints[mN-1]->mNext = mPoints[0];
 		CalcMeshLengths();
 	}
+	Ring(vector <Point*> copy){
+		mN = copy.size();
+		for (int i = 0; i < mN; i++){
+			mPoints.push_back(new Point());
+			mPoints[i] = copy[i];
+		}
+		CalcMeshLengths();
+	}
 };
 /* string class */
+class String : public Filament{
+private:
+	double mL;
+public:
+	String(){
+		mN = 100;
+		mL = 2e-6;
+		for (int i = 0; i < mN; i++){
+			mPoints.push_back(new Point());
+			mPoints[i]->mPos[0] = 0;
+			mPoints[i]->mPos[1] = 0;
+			mPoints[i]->mPos[2] = i*mL / mN;
+		}
+		for (int i = 1; i != mN; i++){ (mPoints[i])->mPrev = mPoints[i - 1]; }
+		mPoints[0]->mPrev = mPoints[mN - 1];
+		for (int i = 1; i != mN; i++){ (mPoints[i])->mNext = mPoints[i + 1]; }
+		mPoints[mN - 1]->mNext = mPoints[0];
+		CalcMeshLengths();
+	}
+	String(double L, int N, double x, double y, double z ){
+		mL = L, mN = N;
+		for (int i = 0; i != mN; i++){
+			mPoints.push_back(new Point());
+			mPoints[i]->mPos[0] = x;
+			mPoints[i]->mPos[1] = y;
+			mPoints[i]->mPos[2] = z + i*mL / mN;
+		}
+		for (int i = 1; i != mN; i++){ (mPoints[i])->mPrev = mPoints[i - 1]; }
+		mPoints[0]->mPrev = mPoints[mN - 1];
+		for (int i = 1; i != mN; i++){ (mPoints[i])->mNext = mPoints[i + 1]; }
+		mPoints[mN - 1]->mNext = mPoints[0];
+		CalcMeshLengths();
+	}
+};
 /*
 class String : public Filament{
 private:

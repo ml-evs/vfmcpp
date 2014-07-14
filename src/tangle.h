@@ -14,9 +14,10 @@ public:
 	vector <Filament> 	mTangle;
 	/* member functions */
 	Tangle(){};
-	Tangle(Filament Ring1, Filament Ring2){
+	Tangle(Filament Ring1, Filament Ring2, Filament Line1){
 		mTangle.push_back(Ring1);
 		mTangle.push_back(Ring2);
+		mTangle.push_back(Line1);
 	}
 	~Tangle(){};
 	void CalcVelocityNL_OF();

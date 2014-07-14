@@ -16,42 +16,30 @@ void Filament::CalcVelocity(){
 			mPoints[i]->mVel1[j] = mPoints[i]->mVel[j];
 		}
 	}
-	CalcSPrime(); CalcS2Prime(); CalcVelocitySelfNL(); CalcMeshLengths();
+	CalcSPrime(); CalcS2Prime(); CalcMeshLengths();
 	for(int i=0;i<mN;i++){
+		if(mPoints[i]->mFlagFilled==2){mPoints[i]->mFlagFilled++;}
+		if(mPoints[i]->mFlagFilled==1){mPoints[i]->mFlagFilled++;}
+		if(mPoints[i]->mFlagFilled==0){mPoints[i]->mFlagFilled++;}
 		mPoints[i]->mVel[0] = ((mPoints[i]->mSPrime[1])*(mPoints[i]->mS2Prime[2]) - (mPoints[i]->mSPrime[2])*(mPoints[i]->mS2Prime[1]));
 		mPoints[i]->mVel[1] = ((mPoints[i]->mSPrime[2])*(mPoints[i]->mS2Prime[0]) - (mPoints[i]->mSPrime[0])*(mPoints[i]->mS2Prime[2]));
 		mPoints[i]->mVel[2] = ((mPoints[i]->mSPrime[0])*(mPoints[i]->mS2Prime[1]) - (mPoints[i]->mSPrime[1])*(mPoints[i]->mS2Prime[0]));
 		for(int q=0;q<3;q++){
-			mPoints[i]->mVel[q] *= kappa*log(2*sqrt(mPoints[i]->mSegLength * mPoints[i]->mNext->mSegLength)/a1)/(4*M_PI);
+			mPoints[i]->mVel[q] *= kappa*log(2*sqrt(mPoints[i]->mSegLength * mPoints[i]->mNext->mSegLength)/a1)/(4*PI);
 			mPoints[i]->mVel[q] += mPoints[i]->mVelNL[q];
 			mPoints[i]->mVelNL[q] = 0;
 		}
 	}
-	if(mPoints[0]->mVel1.empty()){
-		cout << "mVel1 empty -> interpolating." << endl;
-		for(int i(0); i!=mN; i++){
-			for(int j(0); j!=3; j++){
-				mPoints[i]->mVel1[j]=mPoints[i]->mVel[j];
-			}
-		}
-	}
-	if(mPoints[0]->mVel2.empty()){
-		cout << "mVel2 empty -> interpolating." << endl;
-		for(int i(0); i!=mN; i++){
-			for(int j(0);j!=3;j++){
-				mPoints[i]->mVel2[j]=mPoints[i]->mVel[j];
-			}
-		}
-	}
+	/* strings are currently fixed at one end */
+	mPoints[0]->mVel[0] = mPoints[0]->mVel[1] = mPoints[0]->mVel[2] = 0;
+	mPoints[0]->mVel1[0] = mPoints[0]->mVel1[1] = mPoints[0]->mVel1[2] = 0;
+	mPoints[0]->mVel2[0] = mPoints[0]->mVel2[1] = mPoints[0]->mVel2[2] = 0;
 }
 
 // calculate s' using coefficients from Baggaley & Barenghi JLT 166:3-20 (2012)
 void Filament::CalcSPrime(){
-	vector <double> A, B, C, D, E;
+	vector <double> A(mN), B(mN), C(mN), D(mN), E(mN);
 	double l, l1, l2, lm1;
-	A.resize(mN); B.resize(mN); C.resize(mN); D.resize(mN); E.resize(mN); 
-	// funky for loop to generate correct indices for orderered array of lengths
-	// produces (98,99,0,1,2) -> (97,98,99,0,1) for N=100.
 	for(int i=0;i<mN;i++){
 		
 		l = mPoints[i]->mSegLength; l1 = mPoints[i]->mNext->mSegLength; 
@@ -86,9 +74,8 @@ void Filament::CalcSPrime(){
 
 // calculate s'' using coefficients from Baggaley & Barenghi JLT 166:3-20 (2012)
 void Filament::CalcS2Prime(){
-	vector <double> A2, B2, C2, D2, E2;
+	vector <double> A2(mN), B2(mN), C2(mN), D2(mN), E2(mN);
 	double l, l1, l2, lm1;
-	A2.resize(mN); B2.resize(mN); C2.resize(mN); D2.resize(mN); E2.resize(mN); 
 	for(int i=0;i<mN;i++){
 		
 		l = mPoints[i]->mSegLength; l1 = mPoints[i]->mNext->mSegLength; 

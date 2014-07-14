@@ -16,25 +16,30 @@ void Tangle::Reconnect(double dr){
 				for (int k(0); k < c->mN; k++){
 					for (int l(0); l < c->mN; l++){
 						if (l == k - 1 || l == k || l == k + 1){ continue; }
-						if (sqrt(pow(c->mPoints[k]->mPos[0] - c->mPoints[l]->mPos[0], 2) + pow(c->mPoints[k]->mPos[1] - c->mPoints[l]->mPos[0], 2) + pow(c->mPoints[k]->mPos[2] - c->mPoints[l]->mPos[2], 2)) < dr) {
+						else if (sqrt(pow(c->mPoints[k]->mPos[0] - c->mPoints[l]->mPos[0], 2) + pow(c->mPoints[k]->mPos[1] - c->mPoints[l]->mPos[0], 2) + pow(c->mPoints[k]->mPos[2] - c->mPoints[l]->mPos[2], 2)) < dr) {
 							/* reassign the neighbouring pointers for those adjacent to the point of reconnection */
 							c->mPoints[k]->mPrev->mNext = c->mPoints[l]->mNext;
 							c->mPoints[k]->mNext->mPrev = c->mPoints[l]->mPrev;
 							c->mPoints[l]->mNext->mPrev = c->mPoints[k]->mPrev;
 							c->mPoints[l]->mPrev->mNext = c->mPoints[k]->mNext;
 							/* create a new ring containing points in range k+1 to l-1, delete from current */
-							int j(k+1);
+							Point* pNext(c->mPoints[k]->mNext);
 							Point* occ;
-							while (j < l - k + 1){
-								occ = c->mPoints[j];
-								c->mPoints.erase[j];
-								// Copy point ooc to be passed into ring, possibly as vector?
-								occ++;
+							int j(0);
+							vector <Point*> copy;
+							while (pNext != c->mPoints[l]){
+//							for (occ = c->mPoints[k]->mNext; occ != c->mPoints[l]->mPrev; occ++){
+								//occ = c->mPoints[j];
+								copy[j] = pNext; // pNext;
+								//pNext = pNext->mNext;
+								pNext = pNext->mNext;
+								j++;
+								delete c->mPoints[k]->mPrev;
 							}
 							c->mPoints.erase[k]; c->mPoints.erase[l];
-							int b = 3; 
+							int b = 3;
 							string NewRing = "Ring" + b;
-							Ring NewRing();
+							Ring NewRing(copy);
 							b++;
 						}
 					}

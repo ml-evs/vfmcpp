@@ -22,19 +22,20 @@ public:
 	vector <double> mSegLast; 		// vector to last point
 	double			mSegLength; 	// distance to last point
 	double 			mCharge; 		// charge at point 
+	int 			mFlagFilled;	// flag showing how many velocity steps back are present
 	/* member functions */
 	Point(){
 		/* default constructor just reserves memory */
 		mVel.resize(3); mPos.resize(3);
 		mVel1.resize(3); mVel2.resize(3);  mVelNL.resize(3);
 		mSPrime.resize(3); mS2Prime.resize(3); mSegLast.resize(3);
-		mCharge = 0; mSegLength = 0;
+		mCharge = 0; mSegLength = 0; mFlagFilled = 0;
 	}
 	Point(Point* occ){
 		/* parameterised constructor copies a point, used in reconnection */
 		mVel = occ->mVel; mVel1 = occ->mVel1; mVel2 = occ->mVel2; mVelNL = occ->mVelNL;
 		mPos = occ->mPos; mSPrime.resize(3); mS2Prime.resize(3); mSegLast.resize(3);
-		mCharge = 0; mSegLength = 0;
+		mCharge = 0; mSegLength = 0; mFlagFilled = 0;
 	}
 	~Point(){};
 };

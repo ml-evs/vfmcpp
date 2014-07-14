@@ -16,12 +16,13 @@ using namespace std;
 int main(){
 
 	/* create filaments */
-	Ring Ring1(0.9*r0,N,0,0.05e-6,0);
-	Ring Ring2(r0,N,0,0,5e-6);
+	Ring Ring1(r0,N,0,0,0);
+	Ring Ring2(r0,N,0,0,1e-6);
+	String Line1(2*r0,100,0,0,0);
 	//Ring Ring3(r0,N,0,0,1.1e-6);
 
 	/* add filaments to tangle */
-	Tangle Tangle(Ring1, Ring2);//, Ring2);
+	Tangle Tangle(Ring1, Ring2, Line1);//, Ring2);
 
 	/* set resolutions */
 	double dt, dr(0);
@@ -39,16 +40,16 @@ int main(){
 	dr /= N_p;
 	/* set resolution as 4/3 average distance for mesh adjust */
 	dr = (4.0/3.0)*dr;
-	dt = pow((dr/2),2)/(kappa*log(dr/(2*M_PI*a0)));
+	dt = pow((dr/2),2)/(kappa*log(dr/(2*PI*a0)));
 	dt = dt/25; 		// Baggaley, Barenghi PRB 2010
 	cout << dr << ", " << dt << endl;
 
 	/* set number of timesteps and number of steps per save */
-	int N_t(1e-3/dt); 	// number of time steps
+	int N_t(1);//e-3/dt); 	// number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	int N_f(10000); 	// number of time steps per save
 
-	string filename = "data/dirtiest_debug/data_"; // location of saves
+	string filename = "data/test_2/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -58,12 +59,14 @@ int main(){
   	/* begin time-stepping */
 	for(int i(0); i<N_t; i++){
 		/* calculate velocities and propagate positions */
-		Tangle.CalcVelocityNL_OF();
+		Tangle.CalcVelocityNL_OF(); 	// calculates all non-local contributions, including self-induced
 		for(current=begin; current!=end; current++){
-			current->CalcVelocity();
-			current->PropagatePosAB3(dt);
 			current->MeshAdjust(dr);
+			current->CalcVelocity();	// calculates all local contributions and combines with non-local
+			current->PropagatePos(dt);
 		}
+		Tangle.LoopKill();
+
 		percent = (100*i/N_t); 
 		printf("\r %4.1f %% \t",percent); // output percentage completion
 		/* save positions to file every N_f steps */
@@ -75,10 +78,12 @@ int main(){
 				ofstream outfile(ith_jth_filename);
 				outfile.precision(8);
 				int j(0);
+				Point* pCurrent = current->mPoints[0];
 				while(j!=current->mN){
 					for(int m(0); m<3; m++){
-						outfile << current->mPoints[j]->mNext->mPos[m] << "\t";
+						outfile << pCurrent->mNext->mPos[m] << "\t";
 					}
+					pCurrent = pCurrent->mNext;
 					j++;
 					outfile << "\n";
 				}
