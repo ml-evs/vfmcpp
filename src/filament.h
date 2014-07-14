@@ -52,7 +52,7 @@ public:
 	}
 	Ring(double r, int N, double x, double y, double z){
 		mRadius0 = r; mN = N;
-		mCentre.resize(3);
+		mCentre.resize(3,0);
 		mCentre[0] = x; mCentre[1] = y; mCentre[2] = z;
 		for(int i=0; i<mN; i++){
 			mPoints.push_back(new Point());

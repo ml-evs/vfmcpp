@@ -16,8 +16,8 @@ using namespace std;
 int main(){
 
 	/* create filaments */
-	Ring Ring1(0.9*r0,N,0,0.05e-6,0);
-	Ring Ring2(r0,N,0,0,5e-6);
+	Ring Ring1(r0,N,0,0,0);
+	Ring Ring2(r0,N,0,0,1e-6);
 	//Ring Ring3(r0,N,0,0,1.1e-6);
 
 	/* add filaments to tangle */
@@ -44,11 +44,11 @@ int main(){
 	cout << dr << ", " << dt << endl;
 
 	/* set number of timesteps and number of steps per save */
-	int N_t(1e-3/dt); 	// number of time steps
+	int N_t(1);//e-3/dt); 	// number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	int N_f(10000); 	// number of time steps per save
 
-	string filename = "data/stepping/data_"; // location of saves
+	string filename = "data/test_2/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -64,6 +64,8 @@ int main(){
 			current->CalcVelocity();	// calculates all local contributions and combines with non-local
 			current->PropagatePos(dt);
 		}
+		Tangle.LoopKill();
+
 		percent = (100*i/N_t); 
 		printf("\r %4.1f %% \t",percent); // output percentage completion
 		/* save positions to file every N_f steps */

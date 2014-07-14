@@ -15,14 +15,12 @@ void Filament::PropagatePos(double & dt){
 		}
 		/* if velocities have only been filled 1 step back, do AB2 */
 		else if(mPoints[i]->mFlagFilled==2){
-			cout << "Performing AB2." << endl;
 			for(int j(0);j<3; j++){
 				mPoints[i]->mPos[j] += (dt/2) * (3 * (mPoints[i]->mVel[j]) - (mPoints[i]->mVel1[j]));
 			}
 		}
 		/* if no previous velocities, use Euler */
 		else if(mPoints[i]->mFlagFilled==1){
-			cout << "Performing Euler." << endl;
 			for(int j(0);j<3; j++){
 				mPoints[i]->mPos[j] += dt * mPoints[i]->mVel[j];
 			}

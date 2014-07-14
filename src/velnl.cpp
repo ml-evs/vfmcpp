@@ -9,11 +9,10 @@ const double kappa = 9.98e-8;
 
 void Tangle::CalcVelocityNL_OF(){
 
-	vector <double> q; 	// q = s_l+1 - s_l
-	vector <double> p; 	// p = s_l - s_k
-	vector <double> pxq;
-	double pp, qq, pq; // p.p, q.q, p.q
-	p.resize(3); q=p; pxq = p;
+	vector <double> q(3); 	// q = s_l+1 - s_l
+	vector <double> p(3); 	// p = s_l - s_k
+	vector <double> pxq(3);
+	double pp, qq, pq; 		// p.p, q.q, p.q
 	
 	/* iterate through tangle */
 	vector <Filament>::iterator begin_tangle, current, end_tangle;	
@@ -70,12 +69,11 @@ void Tangle::CalcVelocityNL_OF(){
 
 void Filament::CalcVelocitySelfNL(){
 
-	vector <double> q; 		// q = s_l+1 - s_l
-	vector <double> p; 		// p = s_l - s_k
-	vector <double> pxq; 
-	double pp, qq, pq; 		// p.p, q.q, p.q
-	p.resize(3); q = p; pxq = p;
-
+	vector <double> q(3); 		// q = s_l+1 - s_l
+	vector <double> p(3); 		// p = s_l - s_k
+	vector <double> pxq(3); 
+	double pp, qq, pq; 			// p.p, q.q, p.q
+	
 	/* pointer to "field point" */
 	Point* pField;
 	int i(0);
