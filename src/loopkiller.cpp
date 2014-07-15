@@ -5,12 +5,13 @@ using namespace std;
 
 void Tangle::LoopKill(){
 
-	vector <Filament>::iterator begin, current, end;
-	begin = mTangle.begin(); end = mTangle.end();
-	for (current = begin; current != end; current++){			
-		if (current->mN < 6){
-			//cout << "Terminating..." << endl;
-			mTangle.erase(current);
+	for(unsigned int i(0); i<mTangle.size(); i++){
+		if(mTangle[i]->mN < 6){
+			for(unsigned int j(0); j<mTangle[i]->mPoints.size(); j++){
+				delete mTangle[i]->mPoints[j];
+			}
+			delete mTangle[i];
+			mTangle.erase(mTangle.begin()+i);
 		}
 	}
 }

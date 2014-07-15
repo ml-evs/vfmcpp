@@ -15,26 +15,26 @@ void Tangle::CalcVelocityNL_OF(){
 	double pp, qq, pq; 		// p.p, q.q, p.q
 	
 	/* iterate through tangle */
-	vector <Filament>::iterator begin_tangle, current, end_tangle;	
+	vector <Filament*>::iterator begin_tangle, current, end_tangle;	
 	begin_tangle = mTangle.begin(); end_tangle = mTangle.end();
 	for(current=begin_tangle; current!=end_tangle; current++){
-		vector <Filament>::iterator other_begin, other_current, other_end;
+		vector <Filament*>::iterator other_begin, other_current, other_end;
 		other_begin = mTangle.begin(); other_end = mTangle.end();
 		for(other_current=other_begin; other_current!=other_end; other_current++){
 			/* if self, then call self-induced nonlocal velocity */
-			if(other_current == current){current->CalcVelocitySelfNL();}
+			if(other_current == current){(*current)->CalcVelocitySelfNL();}
 			else{
 				/* other filament in tangle found, iterate through points */
 				vector <Point*>::iterator b, ob, oe, oc;
-				b = current->mPoints.begin();
-				ob = other_current->mPoints.begin(); oe = other_current->mPoints.end();
+				b = (*current)->mPoints.begin();
+				ob = (*other_current)->mPoints.begin(); oe = (*other_current)->mPoints.end();
 
 				/* assign pointer to first field point */
 				Point* pField = (*b)->mNext;
 
 				/* loop over all "field points" */
 				int i(0);
-				while(i<current->mN){
+				while(i<(*current)->mN){
 					/* iterate over "source points" */
 					for(oc=ob;oc!=oe;oc++){
 						/* calculate p and q */

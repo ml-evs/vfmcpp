@@ -23,6 +23,7 @@ void Filament::MeshAdjust(double dr){
 			mPoints[k]->mPrev->mNext = mPoints[k]->mNext;
 			/* erase point from mPoints and decrement mN */
 			mN--;
+			delete mPoints[k];
 			mPoints.erase(mPoints.begin()+k);
 			CalcMeshLengths(); CalcSPrime(); CalcS2Prime();
 		}

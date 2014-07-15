@@ -15,7 +15,6 @@ void Filament::CalcVelocity(){
 			mPoints[i]->mVel3[j] = mPoints[i]->mVel2[j];
 			mPoints[i]->mVel2[j] = mPoints[i]->mVel1[j];
 			mPoints[i]->mVel1[j] = mPoints[i]->mVel[j];
-
 		}
 	}
 	CalcSPrime(); CalcS2Prime(); CalcMeshLengths();
