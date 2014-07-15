@@ -41,15 +41,9 @@ void Filament::MeshAdjust(double dr){
 				mPoints[mN-1]->mPos[j] = (mPoints[mN-1]->mNext->mS2Prime[j] + mPoints[mN-1]->mPrev->mS2Prime[j])/2;
 				mPoints[mN-1]->mPos[j] = (mPoints[mN-1]->mS2Prime[j]) * R * (sqrt( pow(R,2) - 0.25*pow(mPoints[mN-1]->mNext->mSegLength,2)) - R);
 				mPoints[mN-1]->mPos[j] += 0.5*(mPoints[mN-1]->mNext->mPos[j] + mPoints[mN-1]->mPrev->mPos[j]);
-			/* TEMPORARY FIX: give point the average velocity of two adjacent points */
-				mPoints[mN-1]->mVel[j]  = 0.5*(mPoints[mN-1]->mPrev->mVel[j] + mPoints[mN-1]->mNext->mVel[j]);
-				mPoints[mN-1]->mVel1[j] = 0.5*(mPoints[mN-1]->mPrev->mVel1[j] + mPoints[mN-1]->mNext->mVel1[j]);
-				mPoints[mN-1]->mVel2[j] = 0.5*(mPoints[mN-1]->mPrev->mVel2[j] + mPoints[mN-1]->mNext->mVel2[j]);
 			}
 			CalcMeshLengths(); CalcSPrime(); CalcS2Prime();
-			cout << "Added point at index " << k << "with position " << mPoints[mN-1]->mPos[0] << ", " << mPoints[mN-1]->mPos[1] << ", " << mPoints[mN-1]->mPos[2] << endl;
-			cout << "with velocity " << mPoints[mN-1]->mVel[0] << ", " << mPoints[mN-1]->mVel[1] << ", " << mPoints[mN-1]->mVel[2] << endl;
-			cout << "With radius of curvature " << R << " m. " << endl;
+			cout << "Added point at index " << k << "." << endl;
 		}
 	}
 }

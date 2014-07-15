@@ -44,11 +44,11 @@ int main(){
 	cout << dr << ", " << dt << endl;
 
 	/* set number of timesteps and number of steps per save */
-	int N_t(1);//e-3/dt); 	// number of time steps
+	int N_t(1e-3/dt); 	// number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	int N_f(10000); 	// number of time steps per save
 
-	string filename = "data/test_2/data_"; // location of saves
+	string filename = "data/test_recon3/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -64,6 +64,7 @@ int main(){
 			current->CalcVelocity();	// calculates all local contributions and combines with non-local
 			current->PropagatePos(dt);
 		}
+		//Tangle.Reconnect(dr);
 		Tangle.LoopKill();
 
 		percent = (100*i/N_t); 
