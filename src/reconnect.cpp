@@ -16,7 +16,7 @@ void Tangle::Reconnect(double dr){
 				for (int k(0); k < c->mN; k++){
 					for (int l(0); l < c->mN; l++){
 						if (l == k - 1 || l == k || l == k + 1){ continue; }
-						else if (sqrt(pow(c->mPoints[k]->mPos[0] - c->mPoints[l]->mPos[0], 2) + pow(c->mPoints[k]->mPos[1] - c->mPoints[l]->mPos[0], 2) + pow(c->mPoints[k]->mPos[2] - c->mPoints[l]->mPos[2], 2)) < dr) {
+						else if (sqrt(pow(c->mPoints[k]->mPos[0] - c->mPoints[l]->mPos[0], 2) + pow(c->mPoints[k]->mPos[1] - c->mPoints[l]->mPos[1], 2) + pow(c->mPoints[k]->mPos[2] - c->mPoints[l]->mPos[2], 2)) < dr) {
 							/* reassign the neighbouring pointers for those adjacent to the point of reconnection */
 							c->mPoints[k]->mPrev->mNext = c->mPoints[l]->mNext;
 							c->mPoints[k]->mNext->mPrev = c->mPoints[l]->mPrev;
@@ -42,12 +42,20 @@ void Tangle::Reconnect(double dr){
 			else{ // Reconnections involving another filament
 				for (int k(0); k < c->mN; k++){
 					for (int l(0); l < o_c->mN; l++){
-						if (sqrt(pow(c->mPoints[k]->mPos[0] - o_c->mPoints[l]->mPos[0], 2) + pow(c->mPoints[k]->mPos[1] - o_c->mPoints[l]->mPos[0], 2) + pow(c->mPoints[k]->mPos[2] - o_c->mPoints[l]->mPos[2], 2)) < dr) {
+						if (sqrt(pow(c->mPoints[k]->mPos[0] - o_c->mPoints[l]->mPos[0], 2) + pow(c->mPoints[k]->mPos[1] - o_c->mPoints[l]->mPos[1], 2) + pow(c->mPoints[k]->mPos[2] - o_c->mPoints[l]->mPos[2], 2)) < dr) {
 							/* reassign the neighbouring pointers for those adjacent to the point of reconnection */
-							c->mPoints[k]->mPrev->mNext = o_c->mPoints[l]->mNext;
-							c->mPoints[k]->mNext->mPrev = o_c->mPoints[l]->mPrev;
-							o_c->mPoints[l]->mPrev->mNext = c->mPoints[k]->mNext;
-							o_c->mPoints[l]->mNext->mPrev = c->mPoints[k]->mPrev;
+							if ((sqrt(pow(c->mPoints[k]->mNext->mPos[0] - o_c->mPoints[l]->mPrev->mPos[0], 2) + pow(c->mPoints[k]->mNext->mPos[1] - o_c->mPoints[l]->mPrev->mPos[1], 2) + pow(c->mPoints[k]->mNext->mPos[2] - o_c->mPoints[l]->mPrev->mPos[2], 2))) < sqrt(pow(c->mPoints[k]->mNext->mPos[0] - o_c->mPoints[l]->mNext->mPos[0], 2) + pow(c->mPoints[k]->mNext->mPos[1] - o_c->mPoints[l]->mNext->mPos[1], 2) + pow(c->mPoints[k]->mNext->mPos[2] - o_c->mPoints[l]->mNext->mPos[2], 2))){
+								c->mPoints[k]->mPrev->mNext = o_c->mPoints[l]->mNext;
+								c->mPoints[k]->mNext->mPrev = o_c->mPoints[l]->mPrev;
+								o_c->mPoints[l]->mPrev->mNext = c->mPoints[k]->mNext;
+								o_c->mPoints[l]->mNext->mPrev = c->mPoints[k]->mPrev;
+							}
+							else{
+								c->mPoints[k]->mPrev->mNext = o_c->mPoints[l]->mPrev;
+								c->mPoints[k]->mNext->mPrev = o_c->mPoints[l]->mNext;
+								o_c->mPoints[l]->mPrev->mNext = c->mPoints[k]->mPrev;
+								o_c->mPoints[l]->mNext->mPrev = c->mPoints[k]->mNext;
+							}
 							c->mN--;
 							o_c->mN--;
 							/* copy points from the other filament to the current filament and delete */
@@ -61,12 +69,12 @@ void Tangle::Reconnect(double dr){
 								j++;
 							}
 							/* check if filaments are rings or strings */
-							int b;
+							/*int b;
 							if (c->mPoints[c->mN]->mNext != c->mPoints[c->mN + 1]){ b = 1; }
-							else{ b = 3; }
-							while (j > c->mN - o_c->mN + b){
-								c->mPoints[j]->mPrev = c->mPoints[j - 1];
-								c->mPoints[j]->mNext = c->mPoints[j + 1];
+							else{ b = 3; }*/
+							while (j > c->mN - o_c->mN + 1){
+								c->mPoints[l]->mPrev = o_c->mPoints[l]->mPrev;
+								c->mPoints[l]->mNext = o_c->mPoints[l]->mNext;
 								j--;
 							}
 							/* delete the connecting points */
