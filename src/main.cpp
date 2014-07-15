@@ -43,7 +43,7 @@ int main(){
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	int N_f(10000); 	// number of time steps per save
 
-	string filename = "data/full_recon/data_"; // location of saves
+	string filename = "data/full_recon_test/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -53,14 +53,15 @@ int main(){
   	/* begin time-stepping */
 	for(int i(0); i<N_t; i++){
 		/* calculate velocities and propagate positions */
+		Tangle.LoopKill();
+		Tangle.Reconnect(dr);
 		Tangle.CalcVelocityNL_OF(); 	// calculates all non-local contributions, including self-induced
 		for(current=begin; current!=end; current++){
 			(*current)->MeshAdjust(dr);
 			(*current)->CalcVelocity();	// calculates all local contributions and combines with non-local
 			(*current)->PropagatePos(dt);
 		}
-		Tangle.Reconnect(dr);
-		Tangle.LoopKill();
+
 
 		percent = (100*i/N_t); 
 		printf("\r %4.1f %% \t",percent); // output percentage completion
