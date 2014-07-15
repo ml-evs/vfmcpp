@@ -18,10 +18,11 @@ int main(){
 	/* create filaments */
 	Ring Ring1(r0,N,0,0,0);
 	Ring Ring2(r0,N,0,0,1e-6);
+	String Line1(2*r0,100,0,0,0);
 	//Ring Ring3(r0,N,0,0,1.1e-6);
 
 	/* add filaments to tangle */
-	Tangle Tangle(Ring1, Ring2);//, Ring2);
+	Tangle Tangle(Ring1, Ring2, Line1);//, Ring2);
 
 	/* set resolutions */
 	double dt, dr(0);
@@ -39,7 +40,7 @@ int main(){
 	dr /= N_p;
 	/* set resolution as 4/3 average distance for mesh adjust */
 	dr = (4.0/3.0)*dr;
-	dt = pow((dr/2),2)/(kappa*log(dr/(2*M_PI*a0)));
+	dt = pow((dr/2),2)/(kappa*log(dr/(2*PI*a0)));
 	dt = dt/25; 		// Baggaley, Barenghi PRB 2010
 	cout << dr << ", " << dt << endl;
 
