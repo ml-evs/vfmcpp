@@ -12,12 +12,15 @@ void Filament::CalcVelocity(){
 
 	for(int i(0);i<mN;i++){
 		for(int j(0);j!=3;j++){
+			mPoints[i]->mVel3[j] = mPoints[i]->mVel2[j];
 			mPoints[i]->mVel2[j] = mPoints[i]->mVel1[j];
 			mPoints[i]->mVel1[j] = mPoints[i]->mVel[j];
+
 		}
 	}
 	CalcSPrime(); CalcS2Prime(); CalcMeshLengths();
 	for(int i=0;i<mN;i++){
+		if(mPoints[i]->mFlagFilled==3){mPoints[i]->mFlagFilled++;}
 		if(mPoints[i]->mFlagFilled==2){mPoints[i]->mFlagFilled++;}
 		if(mPoints[i]->mFlagFilled==1){mPoints[i]->mFlagFilled++;}
 		if(mPoints[i]->mFlagFilled==0){mPoints[i]->mFlagFilled++;}
