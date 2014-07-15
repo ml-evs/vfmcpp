@@ -90,9 +90,7 @@ public:
 			mPoints[i]->mPos[2] = i*mL / mN;
 		}
 		for (int i = 1; i != mN; i++){ (mPoints[i])->mPrev = mPoints[i - 1]; }
-		mPoints[0]->mPrev = mPoints[mN - 1];
 		for (int i = 1; i != mN; i++){ (mPoints[i])->mNext = mPoints[i + 1]; }
-		mPoints[mN - 1]->mNext = mPoints[0];
 		CalcMeshLengths();
 	}
 	String(double L, int N, double x, double y, double z ){
@@ -104,9 +102,7 @@ public:
 			mPoints[i]->mPos[2] = z + i*mL / mN;
 		}
 		for (int i = 1; i != mN; i++){ (mPoints[i])->mPrev = mPoints[i - 1]; }
-		mPoints[0]->mPrev = mPoints[mN - 1];
 		for (int i = 1; i != mN; i++){ (mPoints[i])->mNext = mPoints[i + 1]; }
-		mPoints[mN - 1]->mNext = mPoints[0];
 		CalcMeshLengths();
 	}
 };
