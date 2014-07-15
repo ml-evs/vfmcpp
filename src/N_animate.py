@@ -16,7 +16,7 @@ def getfiles(N_f):
 	i = 0
 	j = 0
 	jmax = 0
-	base_filename = '../bin/data/dirtiest_debug/data_'
+	base_filename = '../bin/data/test_recon3/data_'
 	end = False
 	end2 = False
 	while(end==False):
@@ -55,6 +55,7 @@ def animate(i):
 			rings[m].set_data(r[:,0], r[:,1])
 			rings[m].set_3d_properties(r[:,2])
 			m+=1
+			ax.relim()
 		else:
 			end = True
 
@@ -64,7 +65,7 @@ def animate(i):
 	return rings, time_text
 
 N_f = 10000
-dt = 1.385e-10
+dt = 1.51828e-10
 files, jmax = getfiles(N_f)
 fig = plt.figure(facecolor='w',figsize=(10,10))
 ax = fig.add_subplot(111, 
@@ -74,17 +75,16 @@ ax = fig.add_subplot(111,
 
 rings = []
 colors = plt.cm.jet(np.linspace(0, 1, jmax))
-print 'jmax =' + str(jmax)
 for k in range (jmax):
-	rings += [l for c in colors for l in ax.plot([], [], [], '-', c=c, alpha = 0.5, linewidth=2)]
+	rings += [l for c in colors for l in ax.plot([], [], [], '-', c=c, alpha = 0.8, linewidth=4)]
 time_text = ax.text(0.0, 0.0, 0, '', transform=ax.transAxes)
-ax.set_xlim3d((-8.0e-6,8.0e-6))
-ax.set_ylim3d((-8.0e-6,8.0e-6))
+ax.set_xlim3d((-4.0e-6,4.0e-6))
+ax.set_ylim3d((-4.0e-6,4.0e-6))
 ax.set_zlim3d((0,10e-5))
+ax.autoscale_view(tight=True, scalex=False, scaley=False, scalez=True)
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 ax.set_zlabel('z (um)')
 ax.view_init(10,0)
-print len(files)
 ani = animation.FuncAnimation(fig, animate, init_func = init, frames = len(files), interval = 1, blit=False)
 plt.show()

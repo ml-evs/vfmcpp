@@ -30,10 +30,6 @@ void Filament::CalcVelocity(){
 			mPoints[i]->mVelNL[q] = 0;
 		}
 	}
-	/* strings are currently fixed at one end */
-	mPoints[0]->mVel[0] = mPoints[0]->mVel[1] = mPoints[0]->mVel[2] = 0;
-	mPoints[0]->mVel1[0] = mPoints[0]->mVel1[1] = mPoints[0]->mVel1[2] = 0;
-	mPoints[0]->mVel2[0] = mPoints[0]->mVel2[1] = mPoints[0]->mVel2[2] = 0;
 }
 
 // calculate s' using coefficients from Baggaley & Barenghi JLT 166:3-20 (2012)

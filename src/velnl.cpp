@@ -40,7 +40,7 @@ void Tangle::CalcVelocityNL_OF(){
 						/* calculate p and q */
 						pp = 0; qq = 0; pq = 0;
 						for(int m(0);m<3;m++){
-							p[m] = pField->mPos[m] - (*oc)->mPos[m];
+							p[m] = (*oc)->mPos[m] - pField->mPos[m];
 							q[m] = (*oc)->mNext->mSegLast[m];
 							pp += p[m]*p[m];
 							qq += q[m]*q[m];
@@ -55,7 +55,7 @@ void Tangle::CalcVelocityNL_OF(){
 
 						/* add contribution to mVelNL */
 						for(int m(0);m<3;m++){
-							pField->mVelNL[m] += (pxq[m]*kappa/(8*M_PI*(pp*qq-pq))) * ( (2*(qq+pq)/sqrt_ppqq2pq) - (2*pq/sqrt_pp) );
+							pField->mVelNL[m] += pxq[m] * kappa * ( (2*(qq+pq)/sqrt_ppqq2pq) - (2*pq/sqrt_pp) ) / (8*M_PI* (pp*qq - pq*pq) );
 						}
 					}
 					/* increment pointer to next */
@@ -88,7 +88,7 @@ void Filament::CalcVelocitySelfNL(){
 		while(i<mN-2){
 			/* calculate p and q */
 			for(int m(0);m<3;m++){
-				p[m] = pField->mPos[m] - (*c)->mPos[m]; // does double the calculations it needs to atm
+				p[m] = (*c)->mPos[m] - pField->mPos[m]; // does double the calculations it needs to atm
 				q[m] = pField->mNext->mSegLast[m];
 				pp += p[m]*p[m];
 				qq += q[m]*q[m];
