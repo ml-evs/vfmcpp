@@ -37,10 +37,6 @@ void Tangle::Reconnect(double dr){
 								delete c->mPoints[k]->mPrev;
 							}
 							c->mPoints.erase[k]; c->mPoints.erase[l];
-							int b = 3;
-							string NewRing = "Ring" + b;
-							Ring NewRing(copy);
-							b++;
 						}
 					}
 				}
@@ -66,12 +62,14 @@ void Tangle::Reconnect(double dr){
 								occ = occ->mNext;
 								j++;
 							}
-							j = c->mN - 1;
+							if (c->mPoints[c->mN]->mNext = c->mPoints.begin || o_c->mPoints[o_c->mN]->mNext = o_c->mPoints.begin){ j = c->mN - 1; } // if either filament is a ring
+							else{ j = c->mN + 1; }
 							while (j > c->mN - o_c->mN + 1){
 								c->mPoints[j]->mPrev = c->mPoints[j - 1];
 								c->mPoints[j]->mNext = c->mPoints[j + 1];
 								j--;
 							}
+
 							/* delete the connecting points */
 							c->mPoints.erase[k];
 							mTangle.erase(o_c);
