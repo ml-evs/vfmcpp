@@ -30,48 +30,20 @@ public:
 };
 /* ring class */
 class Ring : public Filament{
-private:
-	double 			mRadius0;
-	vector <double>	mCentre;
 public:
-	Ring(){
-		mRadius0 = 1e-6; 
-		mN = 100;
-		mCentre.resize(3,0);
-		for(int i=0; i<mN; i++){
-			mPoints.push_back(new Point());
-			mPoints[i]->mPos[0]=mCentre[0]-mRadius0*sin(i*(2*PI)/mN);
-			mPoints[i]->mPos[1]=mCentre[1]-mRadius0*cos(i*(2*PI)/mN);
-			mPoints[i]->mPos[2]=mCentre[2];
-		}
-		for(int i(1); i!=mN; i++){(mPoints[i])->mPrev = mPoints[i-1];}
-		mPoints[0]->mPrev = mPoints[mN-1];
-		for(int i(0); i!=mN-1; i++){(mPoints[i])->mNext = mPoints[i+1];}
-		mPoints[mN-1]->mNext = mPoints[0];
-		CalcMeshLengths();
-	}
+	Ring(){};
 	Ring(double r, int N, double x, double y, double z){
-		mRadius0 = r; mN = N;
-		mCentre.resize(3,0);
-		mCentre[0] = x; mCentre[1] = y; mCentre[2] = z;
+		mN = N;
 		for(int i=0; i<mN; i++){
 			mPoints.push_back(new Point());
-			mPoints[i]->mPos[0]=mCentre[0]+mRadius0*sin(-i*(2*PI)/mN);
-			mPoints[i]->mPos[1]=mCentre[1]+mRadius0*cos(-i*(2*PI)/mN);
-			mPoints[i]->mPos[2]=mCentre[2];
+			mPoints[i]->mPos[0]=x+r*sin(-i*(2*PI)/mN);
+			mPoints[i]->mPos[1]=y+r*cos(-i*(2*PI)/mN);
+			mPoints[i]->mPos[2]=z;
 		}
 		for(int i(1); i!=mN; i++){(mPoints[i])->mPrev = mPoints[i-1];}
 		mPoints[0]->mPrev = mPoints[mN-1];
 		for(int i(0); i!=mN-1; i++){(mPoints[i])->mNext = mPoints[i+1];}
 		mPoints[mN-1]->mNext = mPoints[0];
-		CalcMeshLengths();
-	}
-	Ring(vector <Point*> copy){
-		mN = copy.size();
-		for (int i = 0; i < mN; i++){
-			mPoints.push_back(new Point());
-			mPoints[i] = copy[i];
-		}
 		CalcMeshLengths();
 	}
 };
