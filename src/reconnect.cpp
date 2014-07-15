@@ -24,19 +24,17 @@ void Tangle::Reconnect(double dr){
 							c->mPoints[l]->mPrev->mNext = c->mPoints[k]->mNext;
 							/* create a new ring containing points in range k+1 to l-1, delete from current */
 							Point* pNext(c->mPoints[k]->mNext);
-							Point* occ;
 							int j(0);
 							vector <Point*> copy;
 							while (pNext != c->mPoints[l]){
-//							for (occ = c->mPoints[k]->mNext; occ != c->mPoints[l]->mPrev; occ++){
-								//occ = c->mPoints[j];
-								copy[j] = pNext; // pNext;
-								//pNext = pNext->mNext;
+								copy[j] = pNext;
 								pNext = pNext->mNext;
 								j++;
 								delete c->mPoints[k]->mPrev;
 							}
-							c->mPoints.erase[k]; c->mPoints.erase[l];
+							c->mPoints.erase(c->mPoints.begin() + k);
+							c->mPoints.erase(c->mPoints.begin() + l);
+							Ring NewRing(copy);
 						}
 					}
 				}
@@ -62,16 +60,17 @@ void Tangle::Reconnect(double dr){
 								occ = occ->mNext;
 								j++;
 							}
-							if (c->mPoints[c->mN]->mNext = c->mPoints.begin || o_c->mPoints[o_c->mN]->mNext = o_c->mPoints.begin){ j = c->mN - 1; } // if either filament is a ring
-							else{ j = c->mN + 1; }
-							while (j > c->mN - o_c->mN + 1){
+							/* check if filaments are rings or strings */
+							int b;
+							if (c->mPoints[c->mN]->mNext != c->mPoints[c->mN + 1]){ b = 1; }
+							else{ b = 3; }
+							while (j > c->mN - o_c->mN + b){
 								c->mPoints[j]->mPrev = c->mPoints[j - 1];
 								c->mPoints[j]->mNext = c->mPoints[j + 1];
 								j--;
 							}
-
 							/* delete the connecting points */
-							c->mPoints.erase[k];
+							c->mPoints.erase(c->mPoints.begin() + k);
 							mTangle.erase(o_c);
 						}
 					}
