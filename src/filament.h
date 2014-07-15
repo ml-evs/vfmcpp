@@ -92,8 +92,20 @@ public:
 		for (int i = 1; i != mN; i++){ (mPoints[i])->mPrev = mPoints[i - 1]; }
 		for (int i = 1; i != mN; i++){ (mPoints[i])->mNext = mPoints[i + 1]; }
 		CalcMeshLengths();
+		mPoints.push_back(new Point());
+		mPoints.push_back(new Point());
+		mPoints[0]->mPrev = mPoints[mN + 1];
+		mPoints[mN]->mNext = mPoints[mN + 1];
+		mPoints[mN + 1]->mNext = mPoints[0];
+		mPoints[mN + 1]->mPrev = mPoints[mN];
+		mPoints[mN]->mPos[0] = -1 * mPoints[2]->mPos[0];
+		mPoints[mN]->mPos[1] = -1 * mPoints[2]->mPos[1];
+		mPoints[mN]->mPos[2] = -1 * mPoints[2]->mPos[2];
+		mPoints[mN + 1]->mPos[0] = -1 * mPoints[1]->mPos[0];
+		mPoints[mN + 1]->mPos[1] = -1 * mPoints[1]->mPos[1];
+		mPoints[mN + 1]->mPos[2] = -1 * mPoints[1]->mPos[2];
 	}
-	String(double L, int N, double x, double y, double z ){
+	String(double L, int N, double x, double y, double z){
 		mL = L, mN = N;
 		for (int i = 0; i != mN; i++){
 			mPoints.push_back(new Point());
@@ -102,8 +114,21 @@ public:
 			mPoints[i]->mPos[2] = z + i*mL / mN;
 		}
 		for (int i = 1; i != mN; i++){ (mPoints[i])->mPrev = mPoints[i - 1]; }
-		for (int i = 1; i != mN; i++){ (mPoints[i])->mNext = mPoints[i + 1]; }
+		for (int i = 0; i != mN; i++){ (mPoints[i])->mNext = mPoints[i + 1]; }
 		CalcMeshLengths();
+		/* add points to fix the position of the starting point */
+		mPoints.push_back(new Point());
+		mPoints.push_back(new Point());
+		mPoints[0]->mPrev = mPoints[mN+1];
+		mPoints[mN]->mNext = mPoints[mN+1];
+		mPoints[mN + 1]->mNext = mPoints[0];
+		mPoints[mN + 1]->mPrev = mPoints[mN];	
+		mPoints[mN]->mPos[0] = -1 * (mPoints[2]->mPos[0] - mPoints[0]->mPos[0]);
+		mPoints[mN]->mPos[1] = -1 * (mPoints[2]->mPos[1] - mPoints[0]->mPos[1]);
+		mPoints[mN]->mPos[2] = -1 * (mPoints[2]->mPos[2] - mPoints[0]->mPos[2]);
+		mPoints[mN+1]->mPos[0] = -1 * mPoints[1]->mSegLast[0];
+		mPoints[mN+1]->mPos[1] = -1 * mPoints[1]->mSegLast[1];
+		mPoints[mN+1]->mPos[2] = -1 * mPoints[1]->mSegLast[2];
 	}
 };
 /*
