@@ -25,7 +25,7 @@ void Filament::MeshAdjust(double dr){
 			mN--;
 			delete mPoints[k];
 			mPoints.erase(mPoints.begin()+k);
-			CalcMeshLengths(); CalcSPrime(); CalcS2Prime();
+			CalcMeshLengths();
 		}
 		/* point addition */
 		else if (mPoints[k]->mSegLength > dr){
@@ -43,7 +43,7 @@ void Filament::MeshAdjust(double dr){
 				mPoints[mN-1]->mPos[j] = (mPoints[mN-1]->mS2Prime[j]) * R * (sqrt( pow(R,2) - 0.25*pow(mPoints[mN-1]->mNext->mSegLength,2)) - R);
 				mPoints[mN-1]->mPos[j] += 0.5*(mPoints[mN-1]->mNext->mPos[j] + mPoints[mN-1]->mPrev->mPos[j]);
 			}
-			CalcMeshLengths(); CalcSPrime(); CalcS2Prime();
+			CalcMeshLengths();
 			cout << "Added point at index " << k << "." << endl;
 		}
 	}

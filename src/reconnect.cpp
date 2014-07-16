@@ -6,8 +6,9 @@ using namespace std;
 
 void Tangle::Reconnect(double dr){
 	/* check distance between every point on every filament */
-	vector <Filament*>::iterator b, c, e, o_b, o_c, o_e;;
+	vector <Filament*>::iterator b, c, e, o_b, o_c, o_e;
 	b = mTangle.begin(); e = mTangle.end();
+	o_b = b; o_e = e;
 	for (c = b; c < e; c++){
 		for (o_c = o_b; o_c < o_e; o_c++){
 			/* self-reconnection forms new ring at cusp */
@@ -25,8 +26,9 @@ void Tangle::Reconnect(double dr){
 						pTest = pTest->mNext; // start two points away
 						/* check if non-neighbouring points are too close */
 						if(pow(pTest->mPos[0] - (*cself)->mPos[0], 2) + pow(pTest->mPos[1] - (*cself)->mPos[1], 2) + pow(pTest->mPos[2] - (*cself)->mPos[2], 2) < dr*dr){
+							cout << "Performing self-reconnection." << endl;
 							/* reassign pointers to separate new ring */ 
-							(*cself)->mNext->mPrev = pTest->mPrev;
+							(*cself)->mNext->mPrev = pTest->mPrev;  
 							pTest->mPrev->mNext = (*cself)->mNext;
 							Point* pNew = (*cself)->mNext;
 							Point* pNext;
@@ -50,57 +52,58 @@ void Tangle::Reconnect(double dr){
 							/* reassign pointers on new ring to close off new ring */
 							(*cself)->mNext = pTest;
 							pTest->mPrev = (*cself);
+							Reconnect(dr);
 						}
 						i++;
 					}
 				}
 			}
 
-			/* reconnections involving another filament */
+			///* reconnections involving another filament */
 			else{ 
 				for (int k(0); k < (*c)->mN; k++){
 					for (int l(0); l < (*o_c)->mN; l++){
 						if (pow((*c)->mPoints[k]->mPos[0] - (*o_c)->mPoints[l]->mPos[0], 2) + pow((*c)->mPoints[k]->mPos[1] - (*o_c)->mPoints[l]->mPos[1], 2) + pow((*c)->mPoints[k]->mPos[2] - (*o_c)->mPoints[l]->mPos[2], 2) < dr*dr){
+							cout << "Performing reconnection." << endl;
 							/* reassign the neighbouring pointers for those adjacent to the point of reconnection */
-							double prev_dist = pow((*c)->mPoints[k]->mNext->mPos[0] - (*o_c)->mPoints[l]->mPrev->mPos[0], 2) + pow((*c)->mPoints[k]->mNext->mPos[1] - (*o_c)->mPoints[l]->mPrev->mPos[1], 2) + pow((*c)->mPoints[k]->mNext->mPos[2] - (*o_c)->mPoints[l]->mPrev->mPos[2],2);
-							double next_dist = pow((*c)->mPoints[k]->mNext->mPos[0] - (*o_c)->mPoints[l]->mNext->mPos[0], 2) + pow((*c)->mPoints[k]->mNext->mPos[1] - (*o_c)->mPoints[l]->mNext->mPos[1], 2) + pow((*c)->mPoints[k]->mNext->mPos[2] - (*o_c)->mPoints[l]->mNext->mPos[2],2);
-							if (prev_dist >= next_dist){
+							double dot_tangents = (*c)->mPoints[k]->mSPrime[0] * (*o_c)->mPoints[l]->mSPrime[0] +(*c)->mPoints[k]->mSPrime[1] * (*o_c)->mPoints[l]->mSPrime[1] +(*c)->mPoints[k]->mSPrime[2] * (*o_c)->mPoints[l]->mSPrime[2];
+							if(dot_tangents < 0){continue;}
+							else{
 								(*c)->mPoints[k]->mPrev->mNext = (*o_c)->mPoints[l]->mNext;
 								(*c)->mPoints[k]->mNext->mPrev = (*o_c)->mPoints[l]->mPrev;
 								(*o_c)->mPoints[l]->mPrev->mNext = (*c)->mPoints[k]->mNext;
 								(*o_c)->mPoints[l]->mNext->mPrev = (*c)->mPoints[k]->mPrev;
+								(*c)->mN--;
+								(*o_c)->mN--;
+								/* copy points from the other filament to the current filament and delete */
+								(*c)->mN = (*c)->mN + (*o_c)->mN;
+								int j;
+								Point* occ;
+								occ = (*o_c)->mPoints[l]->mNext;
+								do{
+									(*c)->mPoints.push_back(new Point(occ));
+									occ = occ->mNext;
+								}while(occ!=(*o_c)->mPoints[l]);
+								j = (*c)->mN-1;
+								while (j > (*c)->mN - (*o_c)->mN + 1){
+									(*c)->mPoints[j]->mPrev = (*c)->mPoints[j-1];
+									(*c)->mPoints[j]->mNext = (*c)->mPoints[j+1];
+									j--;
+								}
+								(*c)->mPoints[(*c)->mN-(*o_c)->mN+1]->mNext = (*c)->mPoints[(*c)->mN-(*o_c)->mN+2];
+								(*c)->mPoints[(*c)->mN-(*o_c)->mN+1]->mPrev = (*c)->mPoints[k]->mPrev;
+								(*c)->mPoints.back()->mNext = (*c)->mPoints[k]->mNext;
+								(*c)->mPoints.back()->mPrev = (*c)->mPoints[(*c)->mN-1];								
+								/* delete the connecting points */
+								delete (*c)->mPoints[k];
+								(*c)->mPoints.erase((*c)->mPoints.begin() + k);
+								for(unsigned int q(0); q<(*o_c)->mPoints.size(); q++){
+									delete (*o_c)->mPoints[q];
+								}
+								delete (*o_c);
+								mTangle.erase(o_c);
+								Reconnect(dr);
 							}
-							else{
-								(*c)->mPoints[k]->mPrev->mNext = (*o_c)->mPoints[l]->mPrev;
-								(*c)->mPoints[k]->mNext->mPrev = (*o_c)->mPoints[l]->mNext;
-								(*o_c)->mPoints[l]->mPrev->mNext = (*c)->mPoints[k]->mPrev;
-								(*o_c)->mPoints[l]->mNext->mPrev = (*c)->mPoints[k]->mNext;
-							}
-							(*c)->mN--;
-							(*o_c)->mN--;
-							/* copy points from the other filament to the current filament and delete */
-							(*c)->mN = (*c)->mN + (*o_c)->mN;
-							int j(0);
-							Point* occ;
-							occ = (*o_c)->mPoints[l];
-							while (j < (*o_c)->mN){
-								(*c)->mPoints.push_back(new Point(occ));
-								occ = occ->mNext;
-								j++;
-							}
-							while (j > (*c)->mN - (*o_c)->mN + 1){
-								(*c)->mPoints[l]->mPrev = (*o_c)->mPoints[l]->mPrev;
-								(*c)->mPoints[l]->mNext = (*o_c)->mPoints[l]->mNext;
-								j--;
-							}
-							/* delete the connecting points */
-							delete (*c)->mPoints[k];
-							(*c)->mPoints.erase((*c)->mPoints.begin() + k);
-							for(unsigned int j(0); j<(*o_c)->mPoints.size(); j++){
-								delete (*o_c)->mPoints[j];
-							}
-							delete (*o_c);
-							mTangle.erase(o_c);
 						}
 					}
 				}
@@ -108,7 +111,4 @@ void Tangle::Reconnect(double dr){
 		}
 		o_b++;
 	} 
-	for (c = mTangle.begin(); c != mTangle.end(); c++){
-		(*c)->CalcMeshLengths(); (*c)->MeshAdjust(dr);
-	}
 }

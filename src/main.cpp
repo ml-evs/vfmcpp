@@ -1,6 +1,7 @@
 #include "filament.h"
 #include "tangle.h"
 #include <fstream>
+#include <sstream>
 #include <iostream>
 #include <string>
 #include <iomanip>
@@ -16,7 +17,7 @@ using namespace std;
 int main(){
 
 	/* add filaments to tangle */
-	Tangle Tangle(new Ring(r0, N, 0, 0, 0), new Ring(r0, N, 0, 0, 1e-6));
+	Tangle Tangle(new Ring(0.9*r0, N, 0, 0.15e-6, 0), new Ring(r0, N, 0, 0, 2e-6));
 	
 	/* set resolutions */
 	double dt, dr(0);
@@ -41,9 +42,9 @@ int main(){
 	/* set number of timesteps and number of steps per save */
 	int N_t(1e-3/dt); 	// number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
-	int N_f(10000); 	// number of time steps per save
+	int N_f(1000); 	// number of time steps per save
 
-	string filename = "data/full_recon_test/data_"; // location of saves
+	string filename = "data/full_recon/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -55,23 +56,29 @@ int main(){
 		/* calculate velocities and propagate positions */
 		Tangle.LoopKill();
 		Tangle.Reconnect(dr);
-		Tangle.CalcVelocityNL_OF(); 	// calculates all non-local contributions, including self-induced
 		for(current=begin; current!=end; current++){
 			(*current)->MeshAdjust(dr);
+		}
+		Tangle.CalcVelocityNL_OF(); 	// calculates all non-local contributions, including self-induced
+		for(current=begin; current!=end; current++){
 			(*current)->CalcVelocity();	// calculates all local contributions and combines with non-local
 			(*current)->PropagatePos(dt);
-		}
-
-
+		}	
 		percent = (100*i/N_t); 
 		printf("\r %4.1f %% \t",percent); // output percentage completion
 		/* save positions to file every N_f steps */
 		if(i%N_f==0){
-			string ith_filename = filename + to_string(i) + "_";
+			stringstream ss0;
+			ss0 << i;
+			string i_str = ss0.str();
+			string ith_filename = filename + i_str + "_";
 			int n_fil(0);
 			for(current=begin; current!=end; current++){
-				string ith_jth_filename = ith_filename + to_string(n_fil) + ".dat";
-				ofstream outfile(ith_jth_filename);
+				stringstream ss;
+				ss << n_fil;
+				string n_fil_str = ss.str();
+				string ith_jth_filename = ith_filename + n_fil_str + ".dat";
+				ofstream outfile(ith_jth_filename.c_str());
 				outfile.precision(8);
 				int j(0);
 				Point* pCurrent = (*current)->mPoints[0];
@@ -91,7 +98,8 @@ int main(){
 	}
 	/* save total time to file */
 	t = clock()-t;
-  	ofstream timefile(filename+("time.dat"));
+	filename = filename + "time.dat";
+  	ofstream timefile(filename.c_str());
 	timefile << "Total time taken to iterate " << N_t << " time steps = " << ((float)t)/CLOCKS_PER_SEC << " s." << endl;
 
 	return 0;

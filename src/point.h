@@ -36,7 +36,7 @@ public:
 		/* parameterised constructor copies a point, used in reconnection */
 		mVel = occ->mVel; mVel1 = occ->mVel1; mVel2 = occ->mVel2; mVel3 = occ->mVel3; mVelNL = occ->mVelNL;
 		mPos = occ->mPos; mSPrime.resize(3); mS2Prime.resize(3); mSegLast.resize(3);
-		mCharge = 0; mSegLength = 0; mFlagFilled = 0;
+		mCharge = 0; mSegLength = 0; mFlagFilled = occ->mFlagFilled;
 	}
 	~Point(){};
 };
