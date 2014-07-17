@@ -26,7 +26,7 @@ void Tangle::Reconnect(double dr){
 						pTest = pTest->mNext; // start two points away
 						/* check if non-neighbouring points are too close */
 						if(pow(pTest->mPos[0] - (*cself)->mPos[0], 2) + pow(pTest->mPos[1] - (*cself)->mPos[1], 2) + pow(pTest->mPos[2] - (*cself)->mPos[2], 2) < dr*dr){
-							cout << "Performing self-reconnection." << endl;
+							cout << " - - - - Performing self-reconnection - - - - " << endl;
 							/* reassign pointers to separate new ring */ 
 							(*cself)->mNext->mPrev = pTest->mPrev;  
 							pTest->mPrev->mNext = (*cself)->mNext;
@@ -52,23 +52,21 @@ void Tangle::Reconnect(double dr){
 							/* reassign pointers on new ring to close off new ring */
 							(*cself)->mNext = pTest;
 							pTest->mPrev = (*cself);
-							Reconnect(dr);
 						}
 						i++;
 					}
 				}
 			}
-
 			///* reconnections involving another filament */
 			else{ 
 				for (int k(0); k < (*c)->mN; k++){
 					for (int l(0); l < (*o_c)->mN; l++){
 						if (pow((*c)->mPoints[k]->mPos[0] - (*o_c)->mPoints[l]->mPos[0], 2) + pow((*c)->mPoints[k]->mPos[1] - (*o_c)->mPoints[l]->mPos[1], 2) + pow((*c)->mPoints[k]->mPos[2] - (*o_c)->mPoints[l]->mPos[2], 2) < dr*dr){
-							cout << "Performing reconnection." << endl;
 							/* reassign the neighbouring pointers for those adjacent to the point of reconnection */
 							double dot_tangents = (*c)->mPoints[k]->mSPrime[0] * (*o_c)->mPoints[l]->mSPrime[0] +(*c)->mPoints[k]->mSPrime[1] * (*o_c)->mPoints[l]->mSPrime[1] +(*c)->mPoints[k]->mSPrime[2] * (*o_c)->mPoints[l]->mSPrime[2];
-							if(dot_tangents < 0){continue;}
+							if(dot_tangents < 0){cout << "Parallel lines too close - not reconnecting." << endl;}
 							else{
+								cout << " - - - - Performing reconnection  - - - - " << endl;
 								(*c)->mPoints[k]->mPrev->mNext = (*o_c)->mPoints[l]->mNext;
 								(*c)->mPoints[k]->mNext->mPrev = (*o_c)->mPoints[l]->mPrev;
 								(*o_c)->mPoints[l]->mPrev->mNext = (*c)->mPoints[k]->mNext;
@@ -102,7 +100,6 @@ void Tangle::Reconnect(double dr){
 								}
 								delete (*o_c);
 								mTangle.erase(o_c);
-								Reconnect(dr);
 							}
 						}
 					}

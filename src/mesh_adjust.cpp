@@ -6,11 +6,11 @@ Details given by Baggaley and Barenghi, PRB 83 (2011) */
 using namespace std;
 
 void Filament::MeshAdjust(double dr){
-	for (int k(0); k<mN+1; k++){
+	for (int k(0); k<mN; k++){
 		/* maintain reasonable local curvature */
 		double R(0); // 1/|s''| at new point
 		for(int j(0);j!=3;j++){
-			R += pow((mPoints[mN-1]->mNext->mS2Prime[j] + mPoints[mN-1]->mPrev->mS2Prime[j])/2,2);
+			R += pow((mPoints[k]->mNext->mS2Prime[j] + mPoints[k]->mPrev->mS2Prime[j])/2,2);
 		}
 		R = sqrt(R);
 		R = 1/R;
