@@ -6,7 +6,7 @@ Details given by Baggaley and Barenghi, PRB 83 (2011) */
 using namespace std;
 
 void Filament::MeshAdjust(double dr){
-	for (int k(0); k<mN; k++){
+	for (int k(0); k<mN+1; k++){
 		/* maintain reasonable local curvature */
 		double R(0); // 1/|s''| at new point
 		for(int j(0);j!=3;j++){
@@ -33,15 +33,15 @@ void Filament::MeshAdjust(double dr){
 			mN++;
 			/* create new point and reassign pointers */
 			mPoints.push_back(new Point());
-			mPoints[mN-1]->mPrev = mPoints[k]->mPrev;
-			mPoints[mN-1]->mNext = mPoints[k];
-			mPoints[k]->mPrev->mNext = mPoints[mN-1];
-			mPoints[k]->mPrev = mPoints[mN-1];
+			mPoints.back()->mPrev = mPoints[k]->mPrev;
+			mPoints.back()->mNext = mPoints[k];
+			mPoints[k]->mPrev->mNext = mPoints.back();
+			mPoints[k]->mPrev = mPoints.back();
 			/* calculate position of new point a la PRB 2011, Baggaley & Barenghi */
 			for(int j(0);j!=3;j++){
-				mPoints[mN-1]->mPos[j] = (mPoints[mN-1]->mNext->mS2Prime[j] + mPoints[mN-1]->mPrev->mS2Prime[j])/2;
-				mPoints[mN-1]->mPos[j] = (mPoints[mN-1]->mS2Prime[j]) * R * (sqrt( pow(R,2) - 0.25*pow(mPoints[mN-1]->mNext->mSegLength,2)) - R);
-				mPoints[mN-1]->mPos[j] += 0.5*(mPoints[mN-1]->mNext->mPos[j] + mPoints[mN-1]->mPrev->mPos[j]);
+				mPoints.back()->mS2Prime[j] = (mPoints.back()->mNext->mS2Prime[j] + mPoints.back()->mPrev->mS2Prime[j])/2;
+				mPoints.back()->mPos[j] = (mPoints.back()->mS2Prime[j]) * R * (sqrt( pow(R,2) - 0.25*pow(mPoints.back()->mNext->mSegLength,2)) - R);
+				mPoints.back()->mPos[j] += 0.5*(mPoints.back()->mNext->mPos[j] + mPoints.back()->mPrev->mPos[j]);
 			}
 			CalcMeshLengths();
 			cout << "Added point at index " << k << "." << endl;
