@@ -26,6 +26,7 @@ void Tangle::Reconnect(double dr){
 						pTest = pTest->mNext; // start two points away
 						/* check if non-neighbouring points are too close */
 						if(pow(pTest->mPos[0] - (*cself)->mPos[0], 2) + pow(pTest->mPos[1] - (*cself)->mPos[1], 2) + pow(pTest->mPos[2] - (*cself)->mPos[2], 2) < dr*dr){
+							mN_f = 1;
 							cout << " - - - - Performing self-reconnection - - - - " << endl;
 							/* reassign pointers to separate new ring */ 
 							(*cself)->mNext->mPrev = pTest->mPrev;  
@@ -67,6 +68,7 @@ void Tangle::Reconnect(double dr){
 							if(dot_tangents < 0){cout << "Parallel lines too close - not reconnecting." << endl;}
 							else{
 								cout << " - - - - Performing reconnection  - - - - " << endl;
+								mN_f = 1;
 								(*c)->mPoints[k]->mPrev->mNext = (*o_c)->mPoints[l]->mNext;
 								(*c)->mPoints[k]->mNext->mPrev = (*o_c)->mPoints[l]->mPrev;
 								(*o_c)->mPoints[l]->mPrev->mNext = (*c)->mPoints[k]->mNext;
@@ -75,14 +77,13 @@ void Tangle::Reconnect(double dr){
 								(*o_c)->mN--;
 								/* copy points from the other filament to the current filament and delete */
 								(*c)->mN = (*c)->mN + (*o_c)->mN;
-								int j;
 								Point* occ;
 								occ = (*o_c)->mPoints[l]->mNext;
 								do{
 									(*c)->mPoints.push_back(new Point(occ));
 									occ = occ->mNext;
 								}while(occ!=(*o_c)->mPoints[l]);
-								j = (*c)->mN-1;
+								int j = (*c)->mN-1;
 								while (j > (*c)->mN - (*o_c)->mN + 1){
 									(*c)->mPoints[j]->mPrev = (*c)->mPoints[j-1];
 									(*c)->mPoints[j]->mNext = (*c)->mPoints[j+1];

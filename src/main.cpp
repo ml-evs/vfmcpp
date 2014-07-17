@@ -17,7 +17,7 @@ using namespace std;
 int main(){
 
 	/* add filaments to tangle */
-	Tangle Tangle(new Ring(0.9*r0, N, 0, 0.15e-6, 0), new Ring(r0, N, 0, 0, 2e-6));
+	Tangle Tangle(new Ring(0.9*r0, N, 0, 0.15e-6, 0), new Ring(r0, N, 0, 0, 5e-6));
 	
 	/* set resolutions */
 	double dt, dr(0);
@@ -40,10 +40,10 @@ int main(){
 	cout << dr << ", " << dt << endl;
 
 	/* set number of timesteps and number of steps per save */
-	int N_t(1e-3/dt); 	// number of time steps
+	int N_t(1e-3/dt); 				// number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
-	int N_f(1000); 	// number of time steps per save
-
+	Tangle.mN_f = 1000; 			// number of time steps per save
+	int N_slow(0); 					// counts how many steps have occurred at slow-mo
 	string filename = "data/full_whammy015/data_"; // location of saves
 	
 	/* prepare to time calculations */
@@ -59,21 +59,27 @@ int main(){
 				(*current)->MeshAdjust(dr);
 		}
 		Tangle.Reconnect(dr);
-		Tangle.CalcVelocityNL_OF(); 	// calculates all non-local contributions, including self-induced
+		Tangle.CalcVelocityNL_OF(); 					// calculates all non-local contributions, including self-induced
 		for(current=begin; current!=end; current++){
-			(*current)->CalcVelocity();	// calculates all local contributions and combines with non-local
+			(*current)->CalcVelocity();					// calculates all local contributions and combines with non-local
 			(*current)->PropagatePos(dt);
 		}
-		if(i>2443000){N_f = 1;}	
 		percent = (100*i/N_t); 
-		printf("\r %4.1f %% \t",percent); // output percentage completion
-		/* save positions to file every N_f steps */
-		if(i%N_f==0){
+		printf("\r %4.1f %% \t",percent); 				// output percentage completion
+		if(N_slow == 1000){Tangle.mN_f = 1000;} 		// reset saving after reconnection 
+
+		/* save positions to file every mN_f steps */
+		if(i%Tangle.mN_f==0){
+
+			if(Tangle.mN_f==1){N_slow++;} 				// increment slow-mo counter
+			else{N_slow = 0;} 							// reset slow-mo counter
+			
 			stringstream ss0;
 			ss0 << i;
 			string i_str = ss0.str();
 			string ith_filename = filename + i_str + "_";
 			int n_fil(0);
+
 			for(current=begin; current!=end; current++){
 				stringstream ss;
 				ss << n_fil;

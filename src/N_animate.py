@@ -15,17 +15,30 @@ def getfiles(N_f):
 	files = list()
 	i = 0
 	j = 0
+	k = 0
 	jmax = 0
-	base_filename = '../bin/data/test_recon3/data_'
+	base_filename = '../bin/data/full_whammy015/data_'
 	end = False
 	end2 = False
 	while(end==False):
-		filename = base_filename + str(i)
-		if os.path.isfile(filename+"_0.dat") == True:
-			files.append(filename)
-			i += N_f
+		filename_i = base_filename + str(i)
+		filename_k = base_filename + str(k)
+		if os.path.isfile(filename_k+"_0.dat") == True:
+			files.append(filename_k)
+			k+=1
 			while(end2 == False):
-				if os.path.isfile(filename+"_"+str(j)+".dat") == True:
+				if os.path.isfile(filename_k+"_"+str(j)+".dat") == True:
+					j += 1
+				else:
+					if j>jmax:
+						jmax = j
+						end2 = True
+		elif os.path.isfile(filename_i+"_0.dat") == True:
+			files.append(filename_i)
+			i += N_f
+			k = i
+			while(end2 == False):
+				if os.path.isfile(filename_i+"_"+str(j)+".dat") == True:
 					j += 1
 				else:
 					if j>jmax:
@@ -75,8 +88,10 @@ ax = fig.add_subplot(111,
 
 rings = []
 colors = plt.cm.jet(np.linspace(0, 1, jmax))
+print jmax
 for k in range (jmax):
-	rings += [l for c in colors for l in ax.plot([], [], [], '-', c=c, alpha = 0.8, linewidth=4)]
+	rings += [l for c in colors for l in ax.plot([], [], [], '-', c=c, alpha = 1, linewidth=4)]
+print len(rings)
 time_text = ax.text(0.0, 0.0, 0, '', transform=ax.transAxes)
 ax.set_xlim3d((-4.0e-6,4.0e-6))
 ax.set_ylim3d((-4.0e-6,4.0e-6))
