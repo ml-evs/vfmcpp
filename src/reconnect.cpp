@@ -20,57 +20,61 @@ void Tangle::Reconnect(double dr){
 			/* self-reconnection forms new ring at cusp */
 			if(o_c == c){
 				/* iterate along filament for new test point */
-				vector <Point*>::iterator bself, cself, eself;
-				Point* pTest;
+				vector <Point*>::iterator bself, cself, eself, ocself;
 				bself = (*c)->mPoints.begin(); eself = (*c)->mPoints.end();
 				for(cself=bself;cself!=eself;cself++){
 					if(Reconnected==true) break;
 					/* iterate along filament for point to check against */
-					pTest = (*cself)->mNext;
 					int i(0);
 					/* ignore if neighbour - dealt with during mesh adjustment */
-					while(i<(*c)->mN-3){
-						pTest = pTest->mNext; // start two points away
-						/* check if non-neighbouring points are too close */
-						double dist2 = pow(pTest->mPos[0] - (*cself)->mPos[0], 2) + pow(pTest->mPos[1] - (*cself)->mPos[1], 2) + pow(pTest->mPos[2] - (*cself)->mPos[2], 2);
-						if(dist2 < res*res){
-							mN_f = 1;
-							cout << "Point " << i << " is too close to current point, reconnecting." << endl;
-							cout << " - - - - Performing self-reconnection - - - - " << endl;
-							/* reassign pointers to separate new ring */ 
-							(*cself)->mNext->mPrev = pTest->mPrev;  
-							pTest->mPrev->mNext = (*cself)->mNext;
-							Point* pNew = (*cself)->mNext;
-							/* create new ring in tangle */
-							mTangle.push_back(new Ring());
-							do{
-								/* push back position and velocities of new points to tangle */
-								mTangle.back()->mPoints.push_back(new Point(pNew));
-								mTangle.back()->mN++;
-								pNew->mMarkedForDeletion = true;
-								pNew = pNew->mNext;
-							}while(pNew!=(*cself)->mNext);
-							cout << " - - - - Copied points to new ring - - - - " << endl;
-							/* count number of points on new ring then assign their pointers in order*/
-							int N_new = mTangle.back()->mN;
-							cout << " - - - - Assigning pointers - - - - " << endl;
-							for(int d(1); d!=N_new; d++){
+					for(ocself=bself;ocself!=eself;ocself++){
+						if((*ocself)==(*cself)||(*ocself)==(*cself)->mNext||(*ocself)==(*cself)->mPrev){continue;}
+						else{
+							/* check if non-neighbouring points are too close */
+							double dist2 = pow((*ocself)->mPos[0] - (*cself)->mPos[0], 2) + pow((*ocself)->mPos[1] - (*cself)->mPos[1], 2) + pow((*ocself)->mPos[2] - (*cself)->mPos[2], 2);
+							if(dist2 < res*res){
+								cout << "I want to reconnect this point at a distance of " << dist2 << "which is smaller than " << res*res << endl;
+								mN_f = 1;
+								cout << "Point " << i << " is too close to current point, reconnecting." << endl;
+								cout << " - - - - Performing self-reconnection - - - - " << endl;
+								/* reassign pointers to separate new ring */ 
+								(*cself)->mNext->mPrev = (*ocself)->mPrev;  
+								(*ocself)->mPrev->mNext = (*cself)->mNext;
+								Point* pNew = (*cself)->mNext;
+								/* create new ring in tangle */
+								mTangle.push_back(new Ring());//							
+								do{
+									/* push back position and velocities of new points to tangle */
+									mTangle.back()->mPoints.push_back(new Point(pNew));
+									mTangle.back()->mN++;
+									pNew->mMarkedForDeletion = true;
+									pNew = pNew->mNext;
+								}while(pNew!=(*cself)->mNext);
+								cout << " - - - - Copied points to new ring - - - - " << endl;
+								/* count number of points on new ring then assign their pointers in order*/
+								int N_new = mTangle.back()->mN;
 								cout << " - - - - Assigning pointers - - - - " << endl;
-								mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];}
-							mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints[mTangle.back()->mN-1]; // needs to be done for rings only
-							for(int d(0); d!=N_new-1; d++){
-								cout << " - - - - Assigning pointers - - - - " << endl;
-								mTangle.back()->mPoints[d]->mNext = mTangle.back()->mPoints[d+1];}
-							mTangle.back()->mPoints[N_new-1]->mNext = mTangle.back()->mPoints[0];
-
-							/* reassign pointers on old ring to close off new ring */
-							(*cself)->mNext = pTest;
-							pTest->mPrev = (*cself);
-							Reconnected = true;
-							cout << " - - - - RECONNECTION COMPLETE - - - - " << endl;
-							break;
+								cout << "Number of new points = " << N_new << endl;
+								for(int d(1); d!=N_new; d++){
+									cout << "d = " << d << endl;
+									cout << " - - - - Assigning pointers - - - - " << endl;
+									mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];
+								}
+								mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints[mTangle.back()->mN-1]; // needs to be done for rings only
+								for(int d(0); d!=N_new-1; d++){
+									cout << "d = " << d << endl;
+									cout << " - - - - Assigning pointers - - - - " << endl;
+									mTangle.back()->mPoints[d]->mNext = mTangle.back()->mPoints[d+1];
+								}
+								mTangle.back()->mPoints[N_new-1]->mNext = mTangle.back()->mPoints[0];
+								/* reassign pointers on old ring to close off new ring */
+								(*cself)->mNext = (*ocself);
+								(*ocself)->mPrev = (*cself);
+								Reconnected = true;
+								cout << " - - - - SELF-RECONNECTION COMPLETE - - - - " << endl;
+								break;
+							}
 						}
-						i++;
 					}
 				}
 			}
