@@ -6,6 +6,7 @@ using namespace std;
 
 void Tangle::Reconnect(double dr){
 
+	double res = dr;
 	bool Reconnected = false;
 	/* check distance between every point on every filament */
 	vector <Filament*>::iterator b, c, e, o_b, o_c, o_e;
@@ -32,7 +33,7 @@ void Tangle::Reconnect(double dr){
 						pTest = pTest->mNext; // start two points away
 						/* check if non-neighbouring points are too close */
 						double dist2 = pow(pTest->mPos[0] - (*cself)->mPos[0], 2) + pow(pTest->mPos[1] - (*cself)->mPos[1], 2) + pow(pTest->mPos[2] - (*cself)->mPos[2], 2);
-						if(dist2 < dr*dr){
+						if(dist2 < res*res){
 							mN_f = 1;
 							cout << "Point " << i << " is too close to current point, reconnecting." << endl;
 							cout << " - - - - Performing self-reconnection - - - - " << endl;
@@ -53,11 +54,13 @@ void Tangle::Reconnect(double dr){
 							/* count number of points on new ring then assign their pointers in order*/
 							int N_new = mTangle.back()->mN;
 							cout << " - - - - Assigning pointers - - - - " << endl;
-							for(int i(1); i!=N_new; i++){
-								mTangle.back()->mPoints[i]->mPrev = mTangle.back()->mPoints[i-1];}
+							for(int d(1); d!=N_new; d++){
+								cout << " - - - - Assigning pointers - - - - " << endl;
+								mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];}
 							mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints[mTangle.back()->mN-1]; // needs to be done for rings only
-							for(int i(0); i!=N_new-1; i++){
-								mTangle.back()->mPoints[i]->mNext = mTangle.back()->mPoints[i+1];}
+							for(int d(0); d!=N_new-1; d++){
+								cout << " - - - - Assigning pointers - - - - " << endl;
+								mTangle.back()->mPoints[d]->mNext = mTangle.back()->mPoints[d+1];}
 							mTangle.back()->mPoints[N_new-1]->mNext = mTangle.back()->mPoints[0];
 
 							/* reassign pointers on old ring to close off new ring */
@@ -78,7 +81,7 @@ void Tangle::Reconnect(double dr){
 					if(Reconnected==true) break;
 					for (int l(0); l < (*o_c)->mN; l++){
 						if(Reconnected==true) break;
-						if (pow((*c)->mPoints[k]->mPos[0] - (*o_c)->mPoints[l]->mPos[0], 2) + pow((*c)->mPoints[k]->mPos[1] - (*o_c)->mPoints[l]->mPos[1], 2) + pow((*c)->mPoints[k]->mPos[2] - (*o_c)->mPoints[l]->mPos[2], 2) < dr*dr){
+						if (pow((*c)->mPoints[k]->mPos[0] - (*o_c)->mPoints[l]->mPos[0], 2) + pow((*c)->mPoints[k]->mPos[1] - (*o_c)->mPoints[l]->mPos[1], 2) + pow((*c)->mPoints[k]->mPos[2] - (*o_c)->mPoints[l]->mPos[2], 2) < res*res){
 							/* reassign the neighbouring pointers for those adjacent to the point of reconnection */
 							double dot_tangents = (*c)->mPoints[k]->mSPrime[0] * (*o_c)->mPoints[l]->mSPrime[0] +(*c)->mPoints[k]->mSPrime[1] * (*o_c)->mPoints[l]->mSPrime[1] +(*c)->mPoints[k]->mSPrime[2] * (*o_c)->mPoints[l]->mSPrime[2];
 							if(dot_tangents > 0){cout << " - - - - Parallel lines too close - not reconnecting - - - -" << endl;}
@@ -145,6 +148,6 @@ void Tangle::Reconnect(double dr){
 			}
 		}
 		cout << "- - - - Performing reconnection sweep - - - - " << endl;
-		Reconnect(dr);
+		Reconnect(res);
 	}
 }

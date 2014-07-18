@@ -67,13 +67,13 @@ int main(){
 		percent = (100*i/N_t); 
 		printf("\r %4.1f %% \t",percent); 				// output percentage completion
 		if(N_slow == 1000){Tangle.mN_f = 10000;} 		// reset saving after reconnection 
-
+		if(i==2840000){Tangle.mN_f = 1;}
 		/* save positions to file every mN_f steps */
 		if(i%Tangle.mN_f==0){
 
 			if(Tangle.mN_f==1){N_slow++;} 				// increment slow-mo counter
 			else{N_slow = 0;} 							// reset slow-mo counter
-			
+
 			stringstream ss0;
 			ss0 << i;
 			string i_str = ss0.str();
