@@ -42,9 +42,9 @@ int main(){
 	/* set number of timesteps and number of steps per save */
 	int N_t(1e-3/dt); 				// number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
-	Tangle.mN_f = 1000; 			// number of time steps per save
+	Tangle.mN_f = 10000; 			// number of time steps per save
 	int N_slow(0); 					// counts how many steps have occurred at slow-mo
-	string filename = "data/full_whammy015/data_"; // location of saves
+	string filename = "data/full_whammy015_slow/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -66,7 +66,7 @@ int main(){
 		}
 		percent = (100*i/N_t); 
 		printf("\r %4.1f %% \t",percent); 				// output percentage completion
-		if(N_slow == 1000){Tangle.mN_f = 1000;} 		// reset saving after reconnection 
+		if(N_slow == 1000){Tangle.mN_f = 10000;} 		// reset saving after reconnection 
 
 		/* save positions to file every mN_f steps */
 		if(i%Tangle.mN_f==0){

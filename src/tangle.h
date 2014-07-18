@@ -18,7 +18,7 @@ public:
 	Tangle(Filament* Ring1, Filament* Ring2){
 		mTangle.push_back(Ring1);
 		mTangle.push_back(Ring2);
-		mN_f = 1000;
+		mN_f = 10000;
 	}
 	~Tangle(){};
 	void CalcVelocityNL_OF();
