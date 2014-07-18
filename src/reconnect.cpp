@@ -4,9 +4,9 @@
 
 using namespace std;
 
-void Tangle::Reconnect(double dr){
+void Tangle::Reconnect(){
 
-	double res = dr;
+	double res = mDr;
 	bool Reconnected = false;
 	/* check distance between every point on every filament */
 	vector <Filament*>::iterator b, c, e, o_b, o_c, o_e;
@@ -32,7 +32,7 @@ void Tangle::Reconnect(double dr){
 						else{
 							/* check if non-neighbouring points are too close */
 							double dist2 = pow((*ocself)->mPos[0] - (*cself)->mPos[0], 2) + pow((*ocself)->mPos[1] - (*cself)->mPos[1], 2) + pow((*ocself)->mPos[2] - (*cself)->mPos[2], 2);
-							if(dist2 < res*res){
+							if(dist2 < 0.25*res*res){
 								cout << "I want to reconnect this point at a distance of " << dist2 << "which is smaller than " << res*res << endl;
 								mN_f = 1;
 								cout << "Point " << i << " is too close to current point, reconnecting." << endl;
@@ -60,13 +60,13 @@ void Tangle::Reconnect(double dr){
 									cout << " - - - - Assigning pointers - - - - " << endl;
 									mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];
 								}
-								mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints[mTangle.back()->mN-1]; // needs to be done for rings only
+								mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints.back(); // needs to be done for rings only
 								for(int d(0); d!=N_new-1; d++){
 									cout << "d = " << d << endl;
 									cout << " - - - - Assigning pointers - - - - " << endl;
 									mTangle.back()->mPoints[d]->mNext = mTangle.back()->mPoints[d+1];
 								}
-								mTangle.back()->mPoints[N_new-1]->mNext = mTangle.back()->mPoints[0];
+								mTangle.back()->mPoints.back()->mNext = mTangle.back()->mPoints[0];
 								/* reassign pointers on old ring to close off new ring */
 								(*cself)->mNext = (*ocself);
 								(*ocself)->mPrev = (*cself);
@@ -152,6 +152,6 @@ void Tangle::Reconnect(double dr){
 			}
 		}
 		cout << "- - - - Performing reconnection sweep - - - - " << endl;
-		Reconnect(res);
+		Reconnect();
 	}
 }

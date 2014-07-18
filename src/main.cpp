@@ -38,6 +38,7 @@ int main(){
 	dt = pow((dr/2),2)/(kappa*log(dr/(2*PI*a0)));
 	dt = dt/25; 		// Baggaley, Barenghi PRB 2010
 	cout << dr << ", " << dt << endl;
+	Tangle.mDr = dr;
 
 	/* set number of timesteps and number of steps per save */
 	int N_t(1e-3/dt); 				// number of time steps
@@ -58,7 +59,7 @@ int main(){
 		for(current=begin; current!=end; current++){
 				(*current)->MeshAdjust(dr);
 		}
-		Tangle.Reconnect(dr);
+		Tangle.Reconnect();
 		Tangle.CalcVelocityNL_OF(); 					// calculates all non-local contributions, including self-induced
 		for(current=begin; current!=end; current++){
 			(*current)->CalcVelocity();					// calculates all local contributions and combines with non-local
