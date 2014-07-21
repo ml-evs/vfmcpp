@@ -61,6 +61,8 @@ int main(){
 		}
 		Tangle.Reconnect();
 		Tangle.CalcVelocityNL_OF(); 					// calculates all non-local contributions, including self-induced
+		begin = Tangle.mTangle.begin();
+		end = Tangle.mTangle.end();
 		for(current=begin; current!=end; current++){
 			(*current)->CalcVelocity();					// calculates all local contributions and combines with non-local
 			(*current)->PropagatePos(dt);

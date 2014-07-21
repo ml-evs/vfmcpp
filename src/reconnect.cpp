@@ -12,7 +12,6 @@ void Tangle::Reconnect(){
 	vector <Filament*>::iterator b, c, e, o_b, o_c, o_e;
 	b = mTangle.begin(); e = mTangle.end();
 	o_b = b; o_e = e;
-
 	for (c = b; c < e; c++){
 		if(Reconnected==true) break;
 		for (o_c = o_b; o_c < o_e; o_c++){
