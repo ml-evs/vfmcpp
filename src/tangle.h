@@ -27,6 +27,7 @@ public:
 	void LoopKill();
 	void Reconnect();
 	void FromFile(); 	// mostly for debug purposes
+	void SaveState();
 };
 
 #endif

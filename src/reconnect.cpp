@@ -9,21 +9,22 @@ void Tangle::Reconnect(){
 
 	double res = mDr;
 	bool Reconnected = false;
+	bool SelfReconnected = false;
 	/* check distance between every point on every filament */
 	vector <Filament*>::iterator b, c, e, o_b, o_c, o_e;
 	b = mTangle.begin(); e = mTangle.end();
 	o_b = b; o_e = e;
 	for (c = b; c < e; c++){
-		if(Reconnected==true) break;
+		if(Reconnected==true || SelfReconnected == true) break;
 		for (o_c = o_b; o_c < o_e; o_c++){
-			if(Reconnected==true) break;
+			if(Reconnected==true || SelfReconnected == true) break;
 			/* self-reconnection forms new ring at cusp */
 			if(o_c == c){
 				/* iterate along filament for new test point */
 				vector <Point*>::iterator bself, cself, eself, ocself;
 				bself = (*c)->mPoints.begin(); eself = (*c)->mPoints.end();
 				for(cself=bself;cself!=eself;cself++){
-					if(Reconnected==true) break;
+					if(Reconnected==true || SelfReconnected == true) break;
 					/* iterate along filament for point to check against */
 					int i(0);
 					/* ignore if neighbour - dealt with during mesh adjustment */
@@ -56,6 +57,7 @@ void Tangle::Reconnect(){
 								int N_new = mTangle.back()->mN;
 								cout << " - - - - Assigning pointers - - - - " << endl;
 								for(int d(1); d!=N_new; d++){
+									cout << d << ", " << d-1 << " /  " << N_new << endl;
 									mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];
 								}
 								mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints.back(); // needs to be done for rings only
@@ -68,7 +70,7 @@ void Tangle::Reconnect(){
 								/* reassign pointers on old ring to close off new ring */
 								(*cself)->mNext = (*ocself);
 								(*ocself)->mPrev = (*cself);
-								Reconnected = true;
+								SelfReconnected = true;
 								cout << " - - - - SELF-RECONNECTION COMPLETE - - - - " << endl;
 								break;
 							}
@@ -78,125 +80,50 @@ void Tangle::Reconnect(){
 			}
 			///* reconnections involving another filament */
 			else{
-				if(Reconnected==true) break;  
+				if(Reconnected==true || SelfReconnected == true) break;  
 				for (int k(0); k < (*c)->mN; k++){
-					if(Reconnected==true) break;
+					if(Reconnected==true || SelfReconnected == true) break;
 					for (int l(0); l < (*o_c)->mN; l++){
-						if(Reconnected==true) break;
+						if(Reconnected==true || SelfReconnected == true) break;
 						if (pow((*c)->mPoints[k]->mPos[0] - (*o_c)->mPoints[l]->mPos[0], 2) + pow((*c)->mPoints[k]->mPos[1] - (*o_c)->mPoints[l]->mPos[1], 2) + pow((*c)->mPoints[k]->mPos[2] - (*o_c)->mPoints[l]->mPos[2], 2) < res*res){
 							/* reassign the neighbouring pointers for those adjacent to the point of reconnection */
 							double dot_tangents = (*c)->mPoints[k]->mSPrime[0] * (*o_c)->mPoints[l]->mSPrime[0] +(*c)->mPoints[k]->mSPrime[1] * (*o_c)->mPoints[l]->mSPrime[1] +(*c)->mPoints[k]->mSPrime[2] * (*o_c)->mPoints[l]->mSPrime[2];
 							if(dot_tangents > 0){cout << " - - - - Parallel lines too close - not reconnecting - - - -" << endl;}
 							else{
-
-								/******************** file save for debug ********************/
-								int n_fil(0);
-								for(c=b; c!=e; c++){
-									stringstream ss;
-									ss << n_fil;
-									string n_fil_str = ss.str();
-									string ith_jth_filename = "data/file_test/Reconnection_" + n_fil_str + ".dat";
-									ofstream outfile(ith_jth_filename.c_str());
-									outfile.precision(8);
-									int j(0);
-									Point* pCurrent = (*c)->mPoints[0];
-									while(j!=(*c)->mN){
-										for(int m(0); m<3; m++){
-											outfile << pCurrent->mNext->mPos[m] << "\t";
-										}
-										pCurrent = pCurrent->mNext;
-										j++;
-										outfile << "\n";
-									}
-									outfile.close();
-									ith_jth_filename =  "data/file_test/Reconnection_" + n_fil_str + "vel.dat";
-									ofstream outfile2(ith_jth_filename.c_str());
-									j = 0;
-									pCurrent = (*c)->mPoints[0];
-									while(j!=(*c)->mN){
-										for(int m(0); m<3; m++){
-											outfile2 << pCurrent->mNext->mVel[m] << "\t";
-										}
-										pCurrent = pCurrent->mNext;
-										j++;
-										outfile2 << "\n";
-									}
-									outfile2.close();									
-
-									ith_jth_filename =  "data/file_test/Reconnection_" + n_fil_str + "vel1.dat";
-									ofstream outfile3(ith_jth_filename.c_str());
-									j = 0;
-									pCurrent = (*c)->mPoints[0];
-									while(j!=(*c)->mN){
-										for(int m(0); m<3; m++){
-											outfile3 << pCurrent->mNext->mVel1[m] << "\t";
-										}
-										pCurrent = pCurrent->mNext;
-										j++;
-										outfile3 << "\n";
-									}
-									outfile3.close();									
-
-									ith_jth_filename =  "data/file_test/Reconnection_" + n_fil_str + "vel2.dat";
-									ofstream outfile4(ith_jth_filename.c_str());
-									j = 0;
-									pCurrent = (*c)->mPoints[0];
-									while(j!=(*c)->mN){
-										for(int m(0); m<3; m++){
-											outfile4 << pCurrent->mNext->mVel2[m] << "\t";
-										}
-										pCurrent = pCurrent->mNext;
-										j++;
-										outfile4 << "\n";
-									}
-									outfile4.close();		
-									
-									ith_jth_filename =  "data/file_test/Reconnection_" + n_fil_str + "vel3.dat";
-									ofstream outfile5(ith_jth_filename.c_str());
-									j = 0;
-									pCurrent = (*c)->mPoints[0];
-									while(j!=(*c)->mN){
-										for(int m(0); m<3; m++){
-											outfile5 << pCurrent->mNext->mVel3[m] << "\t";
-										}
-										pCurrent = pCurrent->mNext;
-										j++;
-										outfile5 << "\n";
-									}
-									outfile5.close();		
-									n_fil++;
-								}
-								/*************************************************************/
+								SaveState();
 								cout << " - - - - Performing reconnection - - - - " << endl;
 								mN_f = 1;
 								cout << " - - - - Assigning connecting pointers - - - - " << endl;
+								
 								(*c)->mPoints[k]->mPrev->mNext = (*o_c)->mPoints[l]->mNext;
 								(*c)->mPoints[k]->mNext->mPrev = (*o_c)->mPoints[l]->mPrev;
 								(*o_c)->mPoints[l]->mPrev->mNext = (*c)->mPoints[k]->mNext;
 								(*o_c)->mPoints[l]->mNext->mPrev = (*c)->mPoints[k]->mPrev;
-								(*c)->mN--;
-								(*o_c)->mN--;
+					
 								/* copy points from the other filament to the current filament and delete */
-								(*c)->mN = (*c)->mN + (*o_c)->mN;
 								Point* occ;
 								occ = (*o_c)->mPoints[l]->mNext;
 								int i(0);
-								while(i<(*o_c)->mN){
+								while(i<(*o_c)->mN-1){
 									(*c)->mPoints.push_back(new Point(occ));
 									occ = occ->mNext;
 									i++;
 								}
-								int j = (*c)->mPoints.size()-1;
-								while (j > (*c)->mN - (*o_c)->mN + 1){
+								for(unsigned int j((*c)->mN+1); j!= (*c)->mPoints.size()-1; j++){
 									(*c)->mPoints[j]->mPrev = (*c)->mPoints[j-1];
 									(*c)->mPoints[j]->mNext = (*c)->mPoints[j+1];
-									cout << " - - - - Assigning pointer - - - -" << j << ". " << endl;
-									j--;
+									cout << "Assigning pointer " << j << endl;
 								}
-								(*c)->mPoints[(*c)->mN-(*o_c)->mN+1]->mNext = (*c)->mPoints[(*c)->mN-(*o_c)->mN+2];
-								(*c)->mPoints[(*c)->mN-(*o_c)->mN+1]->mPrev = (*c)->mPoints[k]->mPrev;
+								(*c)->mPoints[k]->mPrev->mNext = (*c)->mPoints[(*c)->mN];
+								(*c)->mPoints[k]->mNext->mPrev = (*c)->mPoints[(*c)->mPoints.size()-1];
+								(*c)->mPoints[(*c)->mN]->mNext = (*c)->mPoints[(*c)->mN+1];
+								(*c)->mPoints[(*c)->mN]->mPrev = (*c)->mPoints[k]->mPrev;
+								cout << "Assigning pointer " << (*c)->mN << " to " << (*c)->mN+1 << endl;
 								(*c)->mPoints.back()->mNext = (*c)->mPoints[k]->mNext;
-								(*c)->mPoints.back()->mPrev = (*c)->mPoints[(*c)->mN];								
+								(*c)->mPoints.back()->mPrev = (*c)->mPoints[(*c)->mPoints.size()-2];	
+								cout << "Assigning pointer " << (*c)->mPoints.size()-1 << " to " << (*c)->mPoints.size()-2 << endl;
+								(*c)->mN += (*o_c)->mN - 2;
+
 								/* delete the connecting points */
 								cout << " - - - - Deleting points - - - - " << endl;
 								(*c)->mPoints[k]->mMarkedForDeletion = true;
@@ -225,8 +152,11 @@ void Tangle::Reconnect(){
 					mTangle[n]->mPoints.erase(mTangle[n]->mPoints.begin() + m); 
 				}
 			}
+			mTangle[n]->CalcMeshLengths();
 		}
 		cout << "- - - - Performing reconnection sweep - - - - " << endl;
+		cout << "New tangle size, " << mTangle.size() << endl;
+		cout << "New filament size, " << mTangle[0]->mPoints.size() << endl;
 		Reconnect();
 	}
 }

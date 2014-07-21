@@ -31,7 +31,7 @@ public:
 /* ring class */
 class Ring : public Filament{
 public:
-	Ring(){};
+	Ring(){mN = 0;};
 	Ring(double r, int N, double x, double y, double z){
 		mN = N;
 		for(int i=0; i<mN; i++){
