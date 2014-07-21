@@ -39,6 +39,14 @@ public:
 		mPos = occ->mPos; mSPrime.resize(3); mS2Prime.resize(3); mSegLast.resize(3);
 		mCharge = 0; mSegLength = 0; mFlagFilled = occ->mFlagFilled; mMarkedForDeletion = false;
 	}
+	Point(vector <double> CurrentPos){
+		/* parameterised constructor copies a point, used in reconnection */
+		mPos.resize(3);
+		mPos[0] = CurrentPos[0]; mPos[1] = CurrentPos[1]; mPos[2] = CurrentPos[2];
+		mVel.resize(3); mVel1.resize(3); mVel2.resize(3); mVel3.resize(3); mVelNL.resize(3);
+		mSPrime.resize(3); mS2Prime.resize(3); mSegLast.resize(3);
+		mCharge = 0; mSegLength = 0; mFlagFilled = 0; mMarkedForDeletion = false;
+	}
 	~Point(){};
 };
 

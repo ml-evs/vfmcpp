@@ -1,6 +1,7 @@
-
 #include "tangle.h"
 #include "point.h"
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -87,6 +88,85 @@ void Tangle::Reconnect(){
 							double dot_tangents = (*c)->mPoints[k]->mSPrime[0] * (*o_c)->mPoints[l]->mSPrime[0] +(*c)->mPoints[k]->mSPrime[1] * (*o_c)->mPoints[l]->mSPrime[1] +(*c)->mPoints[k]->mSPrime[2] * (*o_c)->mPoints[l]->mSPrime[2];
 							if(dot_tangents > 0){cout << " - - - - Parallel lines too close - not reconnecting - - - -" << endl;}
 							else{
+
+								/******************** file save for debug ********************/
+								int n_fil(0);
+								for(c=b; c!=e; c++){
+									stringstream ss;
+									ss << n_fil;
+									string n_fil_str = ss.str();
+									string ith_jth_filename = "data/file_test/Reconnection_" + n_fil_str + ".dat";
+									ofstream outfile(ith_jth_filename.c_str());
+									outfile.precision(8);
+									int j(0);
+									Point* pCurrent = (*c)->mPoints[0];
+									while(j!=(*c)->mN){
+										for(int m(0); m<3; m++){
+											outfile << pCurrent->mNext->mPos[m] << "\t";
+										}
+										pCurrent = pCurrent->mNext;
+										j++;
+										outfile << "\n";
+									}
+									outfile.close();
+									ith_jth_filename =  "data/file_test/Reconnection_" + n_fil_str + "vel.dat";
+									ofstream outfile2(ith_jth_filename.c_str());
+									j = 0;
+									pCurrent = (*c)->mPoints[0];
+									while(j!=(*c)->mN){
+										for(int m(0); m<3; m++){
+											outfile2 << pCurrent->mNext->mVel[m] << "\t";
+										}
+										pCurrent = pCurrent->mNext;
+										j++;
+										outfile2 << "\n";
+									}
+									outfile2.close();									
+
+									ith_jth_filename =  "data/file_test/Reconnection_" + n_fil_str + "vel1.dat";
+									ofstream outfile3(ith_jth_filename.c_str());
+									j = 0;
+									pCurrent = (*c)->mPoints[0];
+									while(j!=(*c)->mN){
+										for(int m(0); m<3; m++){
+											outfile3 << pCurrent->mNext->mVel1[m] << "\t";
+										}
+										pCurrent = pCurrent->mNext;
+										j++;
+										outfile3 << "\n";
+									}
+									outfile3.close();									
+
+									ith_jth_filename =  "data/file_test/Reconnection_" + n_fil_str + "vel2.dat";
+									ofstream outfile4(ith_jth_filename.c_str());
+									j = 0;
+									pCurrent = (*c)->mPoints[0];
+									while(j!=(*c)->mN){
+										for(int m(0); m<3; m++){
+											outfile4 << pCurrent->mNext->mVel2[m] << "\t";
+										}
+										pCurrent = pCurrent->mNext;
+										j++;
+										outfile4 << "\n";
+									}
+									outfile4.close();		
+									
+									ith_jth_filename =  "data/file_test/Reconnection_" + n_fil_str + "vel3.dat";
+									ofstream outfile5(ith_jth_filename.c_str());
+									j = 0;
+									pCurrent = (*c)->mPoints[0];
+									while(j!=(*c)->mN){
+										for(int m(0); m<3; m++){
+											outfile5 << pCurrent->mNext->mVel3[m] << "\t";
+										}
+										pCurrent = pCurrent->mNext;
+										j++;
+										outfile5 << "\n";
+									}
+									outfile5.close();		
+									n_fil++;
+								}
+								/*************************************************************/
 								cout << " - - - - Performing reconnection - - - - " << endl;
 								mN_f = 1;
 								cout << " - - - - Assigning connecting pointers - - - - " << endl;
@@ -106,7 +186,7 @@ void Tangle::Reconnect(){
 									occ = occ->mNext;
 									i++;
 								}
-								int j = (*c)->mN-1;
+								int j = (*c)->mPoints.size()-1;
 								while (j > (*c)->mN - (*o_c)->mN + 1){
 									(*c)->mPoints[j]->mPrev = (*c)->mPoints[j-1];
 									(*c)->mPoints[j]->mNext = (*c)->mPoints[j+1];
@@ -116,7 +196,7 @@ void Tangle::Reconnect(){
 								(*c)->mPoints[(*c)->mN-(*o_c)->mN+1]->mNext = (*c)->mPoints[(*c)->mN-(*o_c)->mN+2];
 								(*c)->mPoints[(*c)->mN-(*o_c)->mN+1]->mPrev = (*c)->mPoints[k]->mPrev;
 								(*c)->mPoints.back()->mNext = (*c)->mPoints[k]->mNext;
-								(*c)->mPoints.back()->mPrev = (*c)->mPoints[(*c)->mN-1];								
+								(*c)->mPoints.back()->mPrev = (*c)->mPoints[(*c)->mN];								
 								/* delete the connecting points */
 								cout << " - - - - Deleting points - - - - " << endl;
 								(*c)->mPoints[k]->mMarkedForDeletion = true;

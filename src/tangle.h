@@ -26,6 +26,7 @@ public:
 	void CalcVelocityNL_OF();
 	void LoopKill();
 	void Reconnect();
+	void FromFile(); 	// mostly for debug purposes
 };
 
 #endif

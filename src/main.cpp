@@ -45,7 +45,7 @@ int main(){
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	Tangle.mN_f = 10000; 			// number of time steps per save
 	int N_slow(0); 					// counts how many steps have occurred at slow-mo
-	string filename = "data/full_whammy015_slow/data_"; // location of saves
+	string filename = "data/file_test/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
