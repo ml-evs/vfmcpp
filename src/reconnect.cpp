@@ -9,22 +9,21 @@ void Tangle::Reconnect(){
 
 	double res = mDr;
 	bool Reconnected = false;
-	bool SelfReconnected = false;
 	/* check distance between every point on every filament */
 	vector <Filament*>::iterator b, c, e, o_b, o_c, o_e;
 	b = mTangle.begin(); e = mTangle.end();
 	o_b = b; o_e = e;
 	for (c = b; c < e; c++){
-		if(Reconnected==true || SelfReconnected == true) break;
+		if(Reconnected==true) break;
 		for (o_c = o_b; o_c < o_e; o_c++){
-			if(Reconnected==true || SelfReconnected == true) break;
+			if(Reconnected==true) break;
 			/* self-reconnection forms new ring at cusp */
 			if(o_c == c){
 				/* iterate along filament for new test point */
 				vector <Point*>::iterator bself, cself, eself, ocself;
 				bself = (*c)->mPoints.begin(); eself = (*c)->mPoints.end();
 				for(cself=bself;cself!=eself;cself++){
-					if(Reconnected==true || SelfReconnected == true) break;
+					if(Reconnected==true) break;
 					/* iterate along filament for point to check against */
 					int i(0);
 					/* ignore if neighbour - dealt with during mesh adjustment */
@@ -57,7 +56,6 @@ void Tangle::Reconnect(){
 								int N_new = mTangle.back()->mN;
 								cout << " - - - - Assigning pointers - - - - " << endl;
 								for(int d(1); d!=N_new; d++){
-									cout << d << ", " << d-1 << " /  " << N_new << endl;
 									mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];
 								}
 								mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints.back(); // needs to be done for rings only
@@ -70,7 +68,7 @@ void Tangle::Reconnect(){
 								/* reassign pointers on old ring to close off new ring */
 								(*cself)->mNext = (*ocself);
 								(*ocself)->mPrev = (*cself);
-								SelfReconnected = true;
+								Reconnected = true;
 								cout << " - - - - SELF-RECONNECTION COMPLETE - - - - " << endl;
 								break;
 							}
@@ -80,11 +78,11 @@ void Tangle::Reconnect(){
 			}
 			///* reconnections involving another filament */
 			else{
-				if(Reconnected==true || SelfReconnected == true) break;  
+				if(Reconnected==true) break;  
 				for (int k(0); k < (*c)->mN; k++){
-					if(Reconnected==true || SelfReconnected == true) break;
+					if(Reconnected==true) break;
 					for (int l(0); l < (*o_c)->mN; l++){
-						if(Reconnected==true || SelfReconnected == true) break;
+						if(Reconnected==true) break;
 						if (pow((*c)->mPoints[k]->mPos[0] - (*o_c)->mPoints[l]->mPos[0], 2) + pow((*c)->mPoints[k]->mPos[1] - (*o_c)->mPoints[l]->mPos[1], 2) + pow((*c)->mPoints[k]->mPos[2] - (*o_c)->mPoints[l]->mPos[2], 2) < res*res){
 							/* reassign the neighbouring pointers for those adjacent to the point of reconnection */
 							double dot_tangents = (*c)->mPoints[k]->mSPrime[0] * (*o_c)->mPoints[l]->mSPrime[0] +(*c)->mPoints[k]->mSPrime[1] * (*o_c)->mPoints[l]->mSPrime[1] +(*c)->mPoints[k]->mSPrime[2] * (*o_c)->mPoints[l]->mSPrime[2];

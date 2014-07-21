@@ -17,9 +17,9 @@ using namespace std;
 int main(){
 
 	/* add filaments to tangle */
-	//Tangle Tangle(new Ring(0.9*r0, N, 0, 0, 0), new Ring(r0, N, 0, 0, 5e-6));
-	Tangle Tangle;
-	Tangle.FromFile();
+	Tangle Tangle(new Ring(0.9*r0, N, 0, 0, 0), new Ring(r0, N, 0, 0, 5e-6));
+	//Tangle Tangle;
+	//Tangle.FromFile();
 
 	/* set resolutions */
 	double dt, dr(0);
@@ -41,7 +41,7 @@ int main(){
 	dt = dt/25; 		// Baggaley, Barenghi PRB 2010
 	cout << dr << ", " << dt << endl;
 	
-	dr = 7.95739e-8; dt = 1.3856e-10;
+	//dr = 7.95739e-8; dt = 1.3856e-10;
 	Tangle.mDr = dr;
 
 	/* set number of timesteps and number of steps per save */
@@ -55,24 +55,23 @@ int main(){
 	double percent;
 	clock_t t;
   	t=clock();
+  	int file_no(0);
 
   	/* begin time-stepping */
 	for(int i(0); i<N_t; i++){
 
 		percent = (100*i/N_t); 
 		printf("\r %4.1f %% \t",percent); 				// output percentage completion
-		if(N_slow == 85){Tangle.mN_f = 10;} 		// reset saving after reconnection 
-		if(N_slow == 850){Tangle.mN_f = 100;}
-		if(N_slow == 8500){Tangle.mN_f = 1000;}
-		if(N_slow == 15000){Tangle.mN_f = 10000;}
+		if(N_slow == 30){Tangle.mN_f = 10;} 		// reset saving after reconnection 
+		if(N_slow == 3000){Tangle.mN_f = 1000;}
+		if(N_slow == 100000){Tangle.mN_f = 10000;}
 		/* save positions to file every mN_f steps */
 		if(i%Tangle.mN_f==0){
-
-			if(Tangle.mN_f==1||10||100||1000){N_slow++;}  	// increment slow-mo counter
+			if(Tangle.mN_f==1||10||1000){N_slow++;}  		// increment slow-mo counter
 			else{N_slow = 0;} 								// reset slow-mo counter
 
 			stringstream ss0;
-			ss0 << i;
+			ss0 << file_no;
 			string i_str = ss0.str();
 			string ith_filename = filename + i_str + "_";
 			int n_fil(0);
@@ -84,6 +83,7 @@ int main(){
 				string ith_jth_filename = ith_filename + n_fil_str + ".dat";
 				ofstream outfile(ith_jth_filename.c_str());
 				outfile.precision(8);
+				outfile << i*dt << "\n";
 				int j(0);
 				Point* pCurrent = (*current)->mPoints[0];
 				while(j!=(*current)->mN){
@@ -98,6 +98,7 @@ int main(){
 				n_fil++;
 			}
 			cout << "!!!!!!\t Wrote timestep " << i << " to file. \t!!!!!!" << endl;
+			file_no++;
 		}
 		/* calculate velocities and propagate positions */
 		Tangle.LoopKill();

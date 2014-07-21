@@ -14,27 +14,19 @@ def init():
 def getfiles(N_f):
 	files = list()
 	times = list()
-	i = 0
-	j = 0 
-	b = 0
 	k = 0
-	l = 0
-	m = 0
+	j = 0
 	jmax = 0
 	base_filename = '../bin/data/init_test/data_'
 	end = False
 	end2 = False
 	while(end==False):
-		filename_i = base_filename + str(i)
 		filename_k = base_filename + str(k)
-		filename_b = base_filename + str(b)
-		filename_l = base_filename + str(l)
-		filename_m = base_filename + str(m)
-
-		
 		if os.path.isfile(filename_k+"_0.dat") == True:
+			file = open(filename_k+'_0.dat', 'r')
+			line = file.readline()
+			times.append(line)
 			files.append(filename_k)
-			times.append(k)
 			k+=1
 			while(end2 == False):
 				if os.path.isfile(filename_k+"_"+str(j)+".dat") == True:
@@ -43,67 +35,8 @@ def getfiles(N_f):
 					if j>jmax:
 						jmax = j
 						end2 = True
-		elif os.path.isfile(filename_l+"_0.dat") == True:
-			files.append(filename_l)
-			times.append(l)
-			l += 10
-			k = l + 1
-			while(end2 == False):
-				if os.path.isfile(filename_l+"_"+str(j)+".dat") == True:
-					j += 1
-				else:
-					if j>jmax:
-						jmax = j
-						end2 = True
-
-		elif os.path.isfile(filename_m+"_0.dat") == True:
-			files.append(filename_m)
-			times.append(m)
-			m+=     100
-			l = m + 10
-			k = m + 1
-			while(end2 == False):
-				if os.path.isfile(filename_l+"_"+str(j)+".dat") == True:
-					j += 1
-				else:
-					if j>jmax:
-						jmax = j
-						end2 = True
-
-		elif os.path.isfile(filename_b+"_0.dat") == True:
-			files.append(filename_b)
-			times.append(b)
-		 	b+=     1000
-		 	m = b + 100
-		 	l = b + 10
-		 	k = b + 1
-		 	while(end2 == False):
-		 		if os.path.isfile(filename_k+"_"+str(j)+".dat") == True:
-		 			j += 1
-		 		else:
-		 			if j>jmax:
-		 				jmax = j
-		 				end2 = True						
-		elif os.path.isfile(filename_i+"_0.dat") == True:
-			files.append(filename_i)
-			times.append(i)
-			i+=     10000
-			b = i + 1000
-			m = i + 100
-			l = i + 10
-			k = i + 1 
-			
-			
-			while(end2 == False):
-				if os.path.isfile(filename_i+"_"+str(j)+".dat") == True:
-					j += 1
-				else:
-					if j>jmax:
-						jmax = j
-						end2 = True
 		else:
 			end = True
-
 	return files, times, jmax
 
 def animate(i):
@@ -116,6 +49,7 @@ def animate(i):
 			data = []
 			file = open(files[i]+'_'+str(m)+'.dat', 'r')
 			line = file.readline()
+			line = file.readline() #skip first line
 			while line: 
 				data.append(line)
 				line = file.readline()
@@ -134,14 +68,13 @@ def animate(i):
 			rings[m].set_3d_properties([])
 			end = True
 
-	time_text.set_text('time = %.1f' % (times[i]*dt)+ ' ns / %.1f' % (times[-1]*dt) +' ns, timesteps per frame = %.0f' % (times[i]-times[i-1]))
+	#time_text.set_text('time = %.1f' % (times[i])+ ' ns / %.1f' % (times[-1]*dt) +' ns, timesteps per frame = %.0f' % ((times[i]-times[i-1])/dt))
 	fig.canvas.draw()
 	plt.draw()
-	print times[i]
 	return rings, time_text
 
 N_f = 10000
-dt = 1.51828e-1
+dt = 1.51828e-11
 
 files, times, jmax = getfiles(N_f)
 fig = plt.figure(facecolor='w')
