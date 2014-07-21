@@ -108,7 +108,7 @@ void Filament::CalcVelocitySelfNL(){
 			/* increment pointer to next */
 			pField = pField->mNext;
 			i++;
-		}while(pField!=(*c)->mPrev) // ring specific, sadly
+		}while(pField!=(*c)->mPrev->mPrev); // ring specific, sadly
 	}
 }
 

@@ -46,6 +46,7 @@ void Tangle::Reconnect(){
 									/* push back position and velocities of new points to tangle */
 									mTangle.back()->mPoints.push_back(new Point(pNew));
 									mTangle.back()->mN++;
+									(*c)->mN--;
 									pNew->mMarkedForDeletion = true;
 									pNew = pNew->mNext;
 								}while(pNew!=(*cself)->mNext);
