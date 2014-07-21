@@ -85,7 +85,7 @@ void Filament::CalcVelocitySelfNL(){
 		/* assign pointer to next point */		
 		i = 0;
 		pField = (*c)->mNext;
-		while(i<mN-2){
+		do{
 			/* calculate p and q */
 			for(int m(0);m<3;m++){
 				p[m] = (*c)->mPos[m] - pField->mPos[m]; // does double the calculations it needs to atm
@@ -108,7 +108,7 @@ void Filament::CalcVelocitySelfNL(){
 			/* increment pointer to next */
 			pField = pField->mNext;
 			i++;
-		}
+		}while(pField!=(*c)->mPrev) // ring specific, sadly
 	}
 }
 

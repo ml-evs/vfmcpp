@@ -53,10 +53,7 @@ void Tangle::Reconnect(){
 								/* count number of points on new ring then assign their pointers in order*/
 								int N_new = mTangle.back()->mN;
 								cout << " - - - - Assigning pointers - - - - " << endl;
-								cout << "Number of new points = " << N_new << endl;
 								for(int d(1); d!=N_new; d++){
-									cout << "d = " << d << endl;
-									cout << " - - - - Assigning pointers - - - - " << endl;
 									mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];
 								}
 								mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints.back(); // needs to be done for rings only
@@ -105,7 +102,6 @@ void Tangle::Reconnect(){
 								int i(0);
 								while(i<(*o_c)->mN){
 									(*c)->mPoints.push_back(new Point(occ));
-									cout << "Creating new" << i << "th point." << endl; 
 									occ = occ->mNext;
 									i++;
 								}
@@ -113,7 +109,7 @@ void Tangle::Reconnect(){
 								while (j > (*c)->mN - (*o_c)->mN + 1){
 									(*c)->mPoints[j]->mPrev = (*c)->mPoints[j-1];
 									(*c)->mPoints[j]->mNext = (*c)->mPoints[j+1];
-									cout << "Assigning pointer " << j << ". " << endl;
+									cout << " - - - - Assigning pointer - - - -" << j << ". " << endl;
 									j--;
 								}
 								(*c)->mPoints[(*c)->mN-(*o_c)->mN+1]->mNext = (*c)->mPoints[(*c)->mN-(*o_c)->mN+2];
@@ -141,7 +137,6 @@ void Tangle::Reconnect(){
 	} 
 
 	if(Reconnected == true){
-		/* dodgy point clean up */
 		for(unsigned int n(0); n<mTangle.size(); n++){
 			for(unsigned int m(0); m<mTangle[n]->mPoints.size(); m++){
 				if(mTangle[n]->mPoints[m]->mMarkedForDeletion == true){
