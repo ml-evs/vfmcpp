@@ -13,6 +13,7 @@ public:
 	/* member data */
 	vector <Filament*> 	mTangle;
 	int mN_f;			// number of timesteps between saves
+	int mN_slow;
 	double mDr;			// spatial resolution
 	/* member functions */
 	Tangle(){};
@@ -26,7 +27,9 @@ public:
 	void CalcVelocityNL_OF();
 	void LoopKill();
 	void Reconnect();
+	void CalcVelocity();
 	void FromFile(); 	// mostly for debug purposes
+	void PropagatePos(double & dt); 
 	void SaveState();
 };
 

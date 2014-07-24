@@ -20,12 +20,10 @@ public:
 	Filament(){};
 	~Filament(){};
 	void CalcMeshLengths();
-	void CalcVelocity();
 	void CalcImpulse();
 	void CalcSPrime();
 	void CalcS2Prime();
 	void CalcVelocitySelfNL();
-	void PropagatePos(double & dt); 
 	void MeshAdjust(double dr);
 };
 /* ring class */

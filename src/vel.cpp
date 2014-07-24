@@ -2,34 +2,41 @@
    Adapted from CalcVelMaster.m by Paul Walmsley */
 
 #include "filament.h"
+#include "tangle.h"
 
 using namespace std;
 
 /* calculate velocity at each point from s' and s'' eq(2) from Hanninen and Baggaley PNAS 111 p4667 (2014) */
-void Filament::CalcVelocity(){
+void Tangle::CalcVelocity(){
 	/* circulation quantum, core radius */
 	double	kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0;
-
-	for(int i(0);i<mN;i++){
-		for(int j(0);j!=3;j++){
-			mPoints[i]->mVel3[j] = mPoints[i]->mVel2[j];
-			mPoints[i]->mVel2[j] = mPoints[i]->mVel1[j];
-			mPoints[i]->mVel1[j] = mPoints[i]->mVel[j];
+	vector <Filament*>::iterator b, c, e;
+	b = mTangle.begin(); e = mTangle.end();
+	for(c=b; c!=e; c++){
+		for(int i(0);i<(*c)->mN;i++){
+			for(int j(0);j!=3;j++){
+				(*c)->mPoints[i]->mVel3[j] = (*c)->mPoints[i]->mVel2[j];
+				(*c)->mPoints[i]->mVel2[j] = (*c)->mPoints[i]->mVel1[j];
+				(*c)->mPoints[i]->mVel1[j] = (*c)->mPoints[i]->mVel[j];
+			}
 		}
-	}
-	CalcSPrime(); CalcS2Prime(); CalcMeshLengths();
-	for(int i=0;i<mN;i++){
-		if(mPoints[i]->mFlagFilled==3){mPoints[i]->mFlagFilled++;}
-		if(mPoints[i]->mFlagFilled==2){mPoints[i]->mFlagFilled++;}
-		if(mPoints[i]->mFlagFilled==1){mPoints[i]->mFlagFilled++;}
-		if(mPoints[i]->mFlagFilled==0){mPoints[i]->mFlagFilled++;}
-		mPoints[i]->mVel[0] = ((mPoints[i]->mSPrime[1])*(mPoints[i]->mS2Prime[2]) - (mPoints[i]->mSPrime[2])*(mPoints[i]->mS2Prime[1]));
-		mPoints[i]->mVel[1] = ((mPoints[i]->mSPrime[2])*(mPoints[i]->mS2Prime[0]) - (mPoints[i]->mSPrime[0])*(mPoints[i]->mS2Prime[2]));
-		mPoints[i]->mVel[2] = ((mPoints[i]->mSPrime[0])*(mPoints[i]->mS2Prime[1]) - (mPoints[i]->mSPrime[1])*(mPoints[i]->mS2Prime[0]));
-		for(int q=0;q<3;q++){
-			mPoints[i]->mVel[q] *= kappa*log(2*sqrt(mPoints[i]->mSegLength * mPoints[i]->mNext->mSegLength)/a1)/(4*PI);
-			mPoints[i]->mVel[q] += mPoints[i]->mVelNL[q];
-			mPoints[i]->mVelNL[q] = 0;
+		(*c)->CalcMeshLengths(); 
+		(*c)->CalcSPrime(); 
+		(*c)->CalcS2Prime();
+		for(int i=0;i<(*c)->mN;i++){
+			if((*c)->mPoints[i]->mFlagFilled==3){(*c)->mPoints[i]->mFlagFilled++;}
+			if((*c)->mPoints[i]->mFlagFilled==2){(*c)->mPoints[i]->mFlagFilled++;}
+			if((*c)->mPoints[i]->mFlagFilled==1){(*c)->mPoints[i]->mFlagFilled++;}
+			if((*c)->mPoints[i]->mFlagFilled==0){(*c)->mPoints[i]->mFlagFilled++;}
+			(*c)->mPoints[i]->mVel[0] = (((*c)->mPoints[i]->mSPrime[1])*((*c)->mPoints[i]->mS2Prime[2]) - ((*c)->mPoints[i]->mSPrime[2])*((*c)->mPoints[i]->mS2Prime[1]));
+			(*c)->mPoints[i]->mVel[1] = (((*c)->mPoints[i]->mSPrime[2])*((*c)->mPoints[i]->mS2Prime[0]) - ((*c)->mPoints[i]->mSPrime[0])*((*c)->mPoints[i]->mS2Prime[2]));
+			(*c)->mPoints[i]->mVel[2] = (((*c)->mPoints[i]->mSPrime[0])*((*c)->mPoints[i]->mS2Prime[1]) - ((*c)->mPoints[i]->mSPrime[1])*((*c)->mPoints[i]->mS2Prime[0]));
+			for(int q=0;q<3;q++){
+				(*c)->mPoints[i]->mVel[q] *= kappa*log(2*sqrt((*c)->mPoints[i]->mSegLength * (*c)->mPoints[i]->mNext->mSegLength)/a1)/(4*PI);
+				(*c)->mPoints[i]->mVel[q] += (*c)->mPoints[i]->mVelNL[q];
+				(*c)->mPoints[i]->mVelNL[q] = 0;
+			}
+
 		}
 	}
 }
@@ -39,10 +46,8 @@ void Filament::CalcSPrime(){
 	vector <double> A(mN), B(mN), C(mN), D(mN), E(mN);
 	double l, l1, l2, lm1;
 	for(int i=0;i<mN;i++){
-		
-		l = mPoints[i]->mSegLength; l1 = mPoints[i]->mNext->mSegLength; 
-		l2 = mPoints[i]->mNext->mNext->mSegLength; lm1 = mPoints[i]->mPrev->mSegLength; 
-		
+		l = mPoints[i]->mSegLength; l1 = mPoints[i]->mNext->mSegLength;
+		l2 = mPoints[i]->mNext->mNext->mSegLength; lm1 = mPoints[i]->mPrev->mSegLength;
 		A[i] = l * l1 * l1 + l * l1 * l2;
 		A[i] /= (lm1 * (lm1 + l) * (lm1 + l + l1) * (lm1 + l + l1 +l2));
 
@@ -55,14 +60,14 @@ void Filament::CalcSPrime(){
 		E[i] = -l1 * l * l - lm1 * l * l1;
 		E[i] /= (l2 * (l1 + l2) * (l + l1 + l2) * (lm1 + l + l1 + l2));
 
-		C[i] = -(A[i] + B[i] + D[i] + E[i]);		
-		
+		C[i] = -(A[i] + B[i] + D[i] + E[i]);
+
 	}
 	for(int p=0;p<mN;p++){
 		for(int q=0;q<3;q++){
-			mPoints[p]->mSPrime[q]  = A[p]*mPoints[p]->mPrev->mPrev->mPos[q]; 
+			mPoints[p]->mSPrime[q]  = A[p]*mPoints[p]->mPrev->mPrev->mPos[q];
 			mPoints[p]->mSPrime[q] += B[p]*mPoints[p]->mPrev->mPos[q];
-			mPoints[p]->mSPrime[q] += C[p]*mPoints[p]->mPos[q];	
+			mPoints[p]->mSPrime[q] += C[p]*mPoints[p]->mPos[q];
 			mPoints[p]->mSPrime[q] += D[p]*mPoints[p]->mNext->mPos[q];
 			mPoints[p]->mSPrime[q] += E[p]*mPoints[p]->mNext->mNext->mPos[q];
 		}
@@ -75,9 +80,9 @@ void Filament::CalcS2Prime(){
 	vector <double> A2(mN), B2(mN), C2(mN), D2(mN), E2(mN);
 	double l, l1, l2, lm1;
 	for(int i=0;i<mN;i++){
-		
-		l = mPoints[i]->mSegLength; l1 = mPoints[i]->mNext->mSegLength; 
-		l2 = mPoints[i]->mNext->mNext->mSegLength; lm1 = mPoints[i]->mPrev->mSegLength; 
+
+		l = mPoints[i]->mSegLength; l1 = mPoints[i]->mNext->mSegLength;
+		l2 = mPoints[i]->mNext->mNext->mSegLength; lm1 = mPoints[i]->mPrev->mSegLength;
 
 		A2[i] = 2 * (-2 * l * l1  +  l1 * l1  - l * l2  +  l1 * l2 );
 		A2[i] = A2[i] / (lm1 * (lm1 +l)*(lm1 + l + l1)*(lm1 + l + l1 + l2));
@@ -95,9 +100,9 @@ void Filament::CalcS2Prime(){
 	}
 	for(int p=0;p<mN;p++){
 		for(int q=0;q<3;q++){
-			mPoints[p]->mS2Prime[q]  = A2[p]*mPoints[p]->mPrev->mPrev->mPos[q];	
+			mPoints[p]->mS2Prime[q]  = A2[p]*mPoints[p]->mPrev->mPrev->mPos[q];
 			mPoints[p]->mS2Prime[q] += B2[p]*mPoints[p]->mPrev->mPos[q];
-			mPoints[p]->mS2Prime[q] += C2[p]*mPoints[p]->mPos[q];		
+			mPoints[p]->mS2Prime[q] += C2[p]*mPoints[p]->mPos[q];
 			mPoints[p]->mS2Prime[q] += D2[p]*mPoints[p]->mNext->mPos[q];
 			mPoints[p]->mS2Prime[q] += E2[p]*mPoints[p]->mNext->mNext->mPos[q];
 		}

@@ -11,13 +11,13 @@ using namespace std;
 	
 	/* circulation quantum, core radii, mutual friction */
 	double		kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0, alpha=0;
-	int			N  = 100; 		// number of points on ring
+	int			N  = 200; 		// number of points on ring
 	double		r0 = 1e-6; 		// initial ring radius
 
 int main(){
 
 	/* add filaments to tangle */
-	Tangle Tangle(new Ring(0.9*r0, N, 0, 0, 0), new Ring(r0, N, 0, 0, 5e-6));
+	Tangle Tangle(new Ring(r0, N, 0, 0, 5e-6), new Ring(0.8*r0, N, 0.15e-6, 0, 0));
 	//Tangle Tangle;
 	//Tangle.FromFile();
 
@@ -41,15 +41,15 @@ int main(){
 	dt = dt/25; 		// Baggaley, Barenghi PRB 2010
 	cout << dr << ", " << dt << endl;
 	
-	//dr = 7.95739e-8; dt = 1.3856e-10;
+	//dr = 7.95e-8; dt = 1.385e-10;
 	Tangle.mDr = dr;
 
 	/* set number of timesteps and number of steps per save */
 	int N_t(1e-3/dt); 				// number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	Tangle.mN_f = 10000; 			// number of time steps per save
-	int N_slow(0); 					// counts how many steps have occurred at slow-mo
-	string filename = "data/init_test/data_"; // location of saves
+	Tangle.mN_slow = 0; 					// counts how many steps have occurred at slow-mo
+	string filename = "data/init_test_new_long/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -58,18 +58,20 @@ int main(){
   	int file_no(0);
 
   	/* begin time-stepping */
-	for(int i(0); i<N_t; i++){
+  	int i(0);
+	while(i*dt < 2e-3){
+		begin = Tangle.mTangle.begin();
+		end = Tangle.mTangle.end();
 
-		percent = (100*i/N_t); 
-		printf("\r %4.1f %% \t",percent); 				// output percentage completion
-		if(N_slow == 30){Tangle.mN_f = 10;} 		// reset saving after reconnection 
-		if(N_slow == 3000){Tangle.mN_f = 1000;}
-		if(N_slow == 100000){Tangle.mN_f = 10000;}
+		percent = (i*dt/10); 
+		printf("\r %4.1f %% \t",percent); 						// output percentage completion
+		if(Tangle.mN_slow == 30){Tangle.mN_f = 10;} 			// reset saving after reconnection 
+		if(Tangle.mN_slow == 1000){Tangle.mN_f = 100;}
+		if(Tangle.mN_slow == 50000){Tangle.mN_f = 10000;}
+		if(Tangle.mN_f==1||Tangle.mN_f == 10||Tangle.mN_f == 100){Tangle.mN_slow++;}  // increment slow-mo counter
+		else{Tangle.mN_slow = 0;} 								// reset slow-mo counter
 		/* save positions to file every mN_f steps */
 		if(i%Tangle.mN_f==0){
-			if(Tangle.mN_f==1||10||1000){N_slow++;}  		// increment slow-mo counter
-			else{N_slow = 0;} 								// reset slow-mo counter
-
 			stringstream ss0;
 			ss0 << file_no;
 			string i_str = ss0.str();
@@ -103,16 +105,13 @@ int main(){
 		/* calculate velocities and propagate positions */
 		Tangle.LoopKill();
 		for(current=begin; current!=end; current++){
-				(*current)->MeshAdjust(dr);
+			(*current)->MeshAdjust(dr);
 		}
 		Tangle.Reconnect();
-		Tangle.CalcVelocityNL_OF(); 					// calculates all non-local contributions, including self-induced
-		begin = Tangle.mTangle.begin();
-		end = Tangle.mTangle.end();
-		for(current=begin; current!=end; current++){
-			(*current)->CalcVelocity();					// calculates all local contributions and combines with non-local
-			(*current)->PropagatePos(dt);
-		}
+		Tangle.CalcVelocityNL_OF(); 
+		Tangle.CalcVelocity();					// calculates all local contributions and combines with non-local
+		Tangle.PropagatePos(dt);
+		i++;
 	}
 	/* save total time to file */
 	t = clock()-t;

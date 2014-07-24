@@ -73,42 +73,36 @@ void Filament::CalcVelocitySelfNL(){
 	vector <double> p(3); 		// p = s_l - s_k
 	vector <double> pxq(3); 
 	double pp, qq, pq; 			// p.p, q.q, p.q
-	
-	/* pointer to "field point" */
-	Point* pField;
-	int i(0);
 	/* loop over all points */
 	vector <Point*>::iterator b, c, e, c2;
 	b = mPoints.begin(); e = mPoints.end();
 	for(c=b; c!=e; c++){
 		pp = 0; qq = 0; pq = 0;
 		/* assign pointer to next point */		
-		i = 0;
-		pField = (*c)->mNext;
-		do{
-			/* calculate p and q */
-			for(int m(0);m<3;m++){
-				p[m] = (*c)->mPos[m] - pField->mPos[m]; // does double the calculations it needs to atm
-				q[m] = pField->mNext->mSegLast[m];
-				pp += p[m]*p[m];
-				qq += q[m]*q[m];
-				pq += p[m]*q[m];
-			}
-			/* calculate pxq and assign temp variables */
-			pxq[0] = p[1]*q[2] - p[2]*q[1];
-			pxq[1] = p[2]*q[0] - p[0]*q[2];
-			pxq[2] = p[0]*q[1] - p[1]*q[0];
-			double sqrt_ppqq2pq = sqrt(pp+qq+2*pq);
-			double sqrt_pp = sqrt(pp);
+		for(c2=b; c2!=e; c2++){
+			if((*c2)==(*c)->mNext||(*c2)==(*c)||(*c2)==(*c)->mPrev){continue;}
+			else{
+				/* calculate p and q */
+				for(int m(0);m<3;m++){
+					p[m] = (*c)->mPos[m] - (*c2)->mPos[m]; // does double the calculations it needs to atm
+					q[m] = (*c2)->mNext->mSegLast[m];
+					pp += p[m]*p[m];
+					qq += q[m]*q[m];
+					pq += p[m]*q[m];
+				}
+				/* calculate pxq and assign temp variables */
+				pxq[0] = p[1]*q[2] - p[2]*q[1];
+				pxq[1] = p[2]*q[0] - p[0]*q[2];
+				pxq[2] = p[0]*q[1] - p[1]*q[0];
+				double sqrt_ppqq2pq = sqrt(pp+qq+2*pq);
+				double sqrt_pp = sqrt(pp);
 
-			/* assign values to mVelNL */
-			for(int j(0);j<3;j++){
-				(*c)->mVelNL[j] += (pxq[j]*kappa/(8*M_PI*(pp*qq-pq))) * ( (2*(qq+pq)/sqrt_ppqq2pq) - (2*pq/sqrt_pp) );
+				/* assign values to mVelNL */
+				for(int j(0);j<3;j++){
+					(*c)->mVelNL[j] += (pxq[j]*kappa/(8*M_PI*(pp*qq-pq))) * ( (2*(qq+pq)/sqrt_ppqq2pq) - (2*pq/sqrt_pp) );
+				}
 			}
-			/* increment pointer to next */
-			pField = pField->mNext;
-			i++;
-		}while(pField!=(*c)->mPrev->mPrev); // ring specific, sadly
+		}
 	}
 }
 

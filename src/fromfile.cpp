@@ -1,17 +1,19 @@
 #include "tangle.h"
 #include "point.h"
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
 void Tangle::FromFile(){
-	string base("../bin/init/test/Reconnection");
+	string base("../bin/init/2_RING");
+//	string base("../bin/init/test/Reconnection_");
 	string filename;
-	int n_fil(2);
+	int n_fil(1);
 	vector <double> CurrentVec(3);
 	int n_points(0);
 	for(int j(0);j!=n_fil; j++){
 		mTangle.push_back(new Ring());
-		filename = base + ("_"+to_string(j)+".dat");
+		filename = base + (to_string(j)+".dat");
 		n_points = 0;
 		fstream pos(filename);
 		while(pos){
@@ -23,7 +25,7 @@ void Tangle::FromFile(){
 			n_points++;
 		}
 		pos.close();
-		filename = base + ("_"+to_string(j)+"vel.dat");
+		filename = base + (to_string(j)+"vel.dat");
 		fstream vel(filename);
 		int k(0);
 		while(vel){
@@ -35,7 +37,7 @@ void Tangle::FromFile(){
 			k++;
 		}
 		vel.close();
-		filename = base + ("_"+to_string(j)+"vel1.dat");
+		filename = base + (to_string(j)+"vel1.dat");
 		fstream vel1(filename);
 		k = 0;
 		while(vel1){
@@ -47,7 +49,7 @@ void Tangle::FromFile(){
 			k++;
 		}		
 		vel1.close();
-		filename = base + ("_"+to_string(j)+"vel2.dat");
+		filename = base + (to_string(j)+"vel2.dat");
 		fstream vel2(filename);
 		k=0;
 		while(vel2){
@@ -59,7 +61,7 @@ void Tangle::FromFile(){
 			k++;
 		}
 		vel2.close();
-		filename = base + ("_"+to_string(j)+"vel3.dat");
+		filename = base + (to_string(j)+"vel3.dat");
 		fstream vel3(filename);
 		k = 0;
 		while(vel3){
@@ -92,7 +94,7 @@ void Tangle::SaveState(){
 		stringstream ss;
 		ss << n_fil;
 		string n_fil_str = ss.str();
-		string ith_jth_filename = "init/2_RING" + n_fil_str + ".dat";
+		string ith_jth_filename = "init/3_RING" + n_fil_str + ".dat";
 		ofstream outfile(ith_jth_filename.c_str());
 		outfile.precision(8);
 		int j(0);
@@ -106,7 +108,7 @@ void Tangle::SaveState(){
 			outfile << "\n";
 		}
 		outfile.close();
-		ith_jth_filename =  "init/2_RING" + n_fil_str + "vel.dat";
+		ith_jth_filename =  "init/3_RING" + n_fil_str + "vel.dat";
 		ofstream outfile2(ith_jth_filename.c_str());
 		j = 0;
 		pCurrent = (*c)->mPoints[0];
@@ -119,7 +121,7 @@ void Tangle::SaveState(){
 			outfile2 << "\n";
 		}
 		outfile2.close();											
-		ith_jth_filename =  "init/2_RING" + n_fil_str + "vel1.dat";
+		ith_jth_filename =  "init/3_RING" + n_fil_str + "vel1.dat";
 		ofstream outfile3(ith_jth_filename.c_str());
 		j = 0;
 		pCurrent = (*c)->mPoints[0];
@@ -132,7 +134,7 @@ void Tangle::SaveState(){
 			outfile3 << "\n";
 		}
 		outfile3.close();											
-		ith_jth_filename =  "init/2_RING" + n_fil_str + "vel2.dat";
+		ith_jth_filename =  "init/3_RING" + n_fil_str + "vel2.dat";
 		ofstream outfile4(ith_jth_filename.c_str());
 		j = 0;
 		pCurrent = (*c)->mPoints[0];
@@ -146,7 +148,7 @@ void Tangle::SaveState(){
 		}
 		outfile4.close();		
 		
-		ith_jth_filename =  "init/2_RING" + n_fil_str + "vel3.dat";
+		ith_jth_filename =  "init/3_RING" + n_fil_str + "vel3.dat";
 		ofstream outfile5(ith_jth_filename.c_str());
 		j = 0;
 		pCurrent = (*c)->mPoints[0];
@@ -161,4 +163,5 @@ void Tangle::SaveState(){
 		outfile5.close();		
 		n_fil++;
 	}
+	cout << "!!!!! WROTE CURRENT STATE TO FILE !!!!!" << endl;
 }

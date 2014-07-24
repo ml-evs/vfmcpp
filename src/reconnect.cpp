@@ -9,66 +9,97 @@ void Tangle::Reconnect(){
 
 	double res = mDr;
 	bool Reconnected = false;
+	bool SelfReconnected = false;
 	/* check distance between every point on every filament */
-	vector <Filament*>::iterator b, c, e, o_b, o_c, o_e;
-	b = mTangle.begin(); e = mTangle.end();
-	o_b = b; o_e = e;
-	for (c = b; c < e; c++){
+	for (unsigned int P(0);P!=mTangle.size();P++){
 		if(Reconnected==true) break;
-		for (o_c = o_b; o_c < o_e; o_c++){
+		for (unsigned int Q(0);Q!=mTangle.size(); Q++){
 			if(Reconnected==true) break;
 			/* self-reconnection forms new ring at cusp */
-			if(o_c == c){
+			if(P == Q){
 				/* iterate along filament for new test point */
 				vector <Point*>::iterator bself, cself, eself, ocself;
-				bself = (*c)->mPoints.begin(); eself = (*c)->mPoints.end();
+				bself = mTangle[P]->mPoints.begin(); eself = mTangle[P]->mPoints.end();
 				for(cself=bself;cself!=eself;cself++){
 					if(Reconnected==true) break;
 					/* iterate along filament for point to check against */
-					int i(0);
-					/* ignore if neighbour - dealt with during mesh adjustment */
 					for(ocself=bself;ocself!=eself;ocself++){
+						if(Reconnected==true) break;
 						if((*ocself)==(*cself)||(*ocself)==(*cself)->mNext||(*ocself)==(*cself)->mPrev){continue;}
 						else{
 							/* check if non-neighbouring points are too close */
 							double dist2 = pow((*ocself)->mPos[0] - (*cself)->mPos[0], 2) + pow((*ocself)->mPos[1] - (*cself)->mPos[1], 2) + pow((*ocself)->mPos[2] - (*cself)->mPos[2], 2);
 							if(dist2 < 0.25*res*res){
-								cout << "I want to reconnect this point at a distance of " << dist2 << "which is smaller than " << res*res << endl;
-								mN_f = 1;
-								cout << "Point " << i << " is too close to current point, reconnecting." << endl;
+								double dot_tangents = (*cself)->mSPrime[0] * (*ocself)->mSPrime[0] +(*cself)->mSPrime[1] * (*ocself)->mSPrime[1] +(*cself)->mSPrime[2] * (*ocself)->mSPrime[2];
+								if(dot_tangents > 0){cout << " - - - - Parallel lines too close - not reconnecting - - - -" << endl;}
+								//SaveState();
+								mN_f = 1; mN_slow = 0;
 								cout << " - - - - Performing self-reconnection - - - - " << endl;
 								/* reassign pointers to separate new ring */ 
 								(*cself)->mNext->mPrev = (*ocself)->mPrev;  
 								(*ocself)->mPrev->mNext = (*cself)->mNext;
-								Point* pNew = (*cself)->mNext;
+								Point* pNew = (*cself);
 								/* create new ring in tangle */
-								mTangle.push_back(new Ring());//							
+								mTangle.push_back(new Ring());
 								do{
 									/* push back position and velocities of new points to tangle */
 									mTangle.back()->mPoints.push_back(new Point(pNew));
 									mTangle.back()->mN++;
-									(*c)->mN--;
-									pNew->mMarkedForDeletion = true;
-									pNew = pNew->mNext;
-								}while(pNew!=(*cself)->mNext);
-								cout << " - - - - Copied points to new ring - - - - " << endl;
+									pNew = pNew->mPrev;
+								}while(pNew!=(*ocself)->mPrev);
+
 								/* count number of points on new ring then assign their pointers in order*/
 								int N_new = mTangle.back()->mN;
-								cout << " - - - - Assigning pointers - - - - " << endl;
-								for(int d(1); d!=N_new; d++){
+								for(int d(1); d!=N_new-1; d++){
 									mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];
-								}
-								mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints.back(); // needs to be done for rings only
-								for(int d(0); d!=N_new-1; d++){
-									cout << "d = " << d << endl;
-									cout << " - - - - Assigning pointers - - - - " << endl;
 									mTangle.back()->mPoints[d]->mNext = mTangle.back()->mPoints[d+1];
 								}
-								mTangle.back()->mPoints.back()->mNext = mTangle.back()->mPoints[0];
+								
+								mTangle.back()->mPoints.back()->mMarkedForDeletion = true;
+								mTangle.back()->mN--;
+								mTangle.back()->mPoints[N_new-2]->mPrev = mTangle.back()->mPoints[N_new-3];
+								mTangle.back()->mPoints[N_new-2]->mNext = mTangle.back()->mPoints[0];
+								mTangle.back()->mPoints[0]->mNext = mTangle.back()->mPoints[1];
+								//mTangle.back()->mPoints.back()->mPrev = mTangle.back()->mPoints[N_new-1];
+								//mTangle.back()->mPoints.back()->mNext = mTangle.back()->mPoints.front();
+								mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints[N_new-2]; // needs to be done for rings only
+
+
+								pNew = (*ocself)->mPrev;
+								/* create new ring in tangle */
+								mTangle.push_back(new Ring());
+								do{
+									/* push back position and velocities of new points to tangle */
+									mTangle.back()->mPoints.push_back(new Point(pNew));
+									mTangle.back()->mN++;
+									pNew = pNew->mPrev;
+								}while(pNew!=(*ocself)->mPrev);
+
+								N_new = mTangle.back()->mN;
+								for(int d(1); d!=N_new-1; d++){
+									mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];
+									mTangle.back()->mPoints[d]->mNext = mTangle.back()->mPoints[d+1];
+								}
+								mTangle.back()->mPoints.back()->mMarkedForDeletion = true;
+								mTangle.back()->mN--;
+								mTangle.back()->mPoints[N_new-2]->mPrev = mTangle.back()->mPoints[N_new-3];
+								mTangle.back()->mPoints[N_new-2]->mNext = mTangle.back()->mPoints[0];
+								mTangle.back()->mPoints[0]->mNext = mTangle.back()->mPoints[1];
+								//mTangle.back()->mPoints.back()->mPrev = mTangle.back()->mPoints[N_new-1];
+								//mTangle.back()->mPoints.back()->mNext = mTangle.back()->mPoints.front();
+								mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints[N_new-2]; // needs to be done for rings only
+
+
+								for(unsigned int q(0); q<mTangle[P]->mPoints.size(); q++){
+									delete mTangle[P]->mPoints[q];
+								}
+								mTangle.erase(mTangle.begin()+P);
+								cout << "Tangle size = " << mTangle.size() << endl; 
+								cout << "Filament sizes = " << mTangle.front()->mPoints.size() << endl;			
+								cout << "Filament sizes = " << mTangle.back()->mPoints.size() << endl;			
 								/* reassign pointers on old ring to close off new ring */
-								(*cself)->mNext = (*ocself);
-								(*ocself)->mPrev = (*cself);
 								Reconnected = true;
+								SelfReconnected = true;
 								cout << " - - - - SELF-RECONNECTION COMPLETE - - - - " << endl;
 								break;
 							}
@@ -78,59 +109,55 @@ void Tangle::Reconnect(){
 			}
 			///* reconnections involving another filament */
 			else{
-				if(Reconnected==true) break;  
-				for (int k(0); k < (*c)->mN; k++){
-					if(Reconnected==true) break;
-					for (int l(0); l < (*o_c)->mN; l++){
-						if(Reconnected==true) break;
-						if (pow((*c)->mPoints[k]->mPos[0] - (*o_c)->mPoints[l]->mPos[0], 2) + pow((*c)->mPoints[k]->mPos[1] - (*o_c)->mPoints[l]->mPos[1], 2) + pow((*c)->mPoints[k]->mPos[2] - (*o_c)->mPoints[l]->mPos[2], 2) < res*res){
+				if(Reconnected==false) break;  
+				for (int k(0); k < mTangle[P]->mN; k++){
+					if(Reconnected==false) break;
+					for (int l(0); l < mTangle[Q]->mN; l++){
+						if(Reconnected==false) break;
+						if (pow(mTangle[P]->mPoints[k]->mPos[0] - mTangle[Q]->mPoints[l]->mPos[0], 2) + pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2) + pow(mTangle[P]->mPoints[k]->mPos[2] - mTangle[Q]->mPoints[l]->mPos[2], 2) < res*res){
 							/* reassign the neighbouring pointers for those adjacent to the point of reconnection */
-							double dot_tangents = (*c)->mPoints[k]->mSPrime[0] * (*o_c)->mPoints[l]->mSPrime[0] +(*c)->mPoints[k]->mSPrime[1] * (*o_c)->mPoints[l]->mSPrime[1] +(*c)->mPoints[k]->mSPrime[2] * (*o_c)->mPoints[l]->mSPrime[2];
+							double dot_tangents = mTangle[P]->mPoints[k]->mSPrime[0] * mTangle[Q]->mPoints[l]->mSPrime[0] +mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1] +mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
 							if(dot_tangents > 0){cout << " - - - - Parallel lines too close - not reconnecting - - - -" << endl;}
 							else{
-								SaveState();
 								cout << " - - - - Performing reconnection - - - - " << endl;
-								mN_f = 1;
+								mN_f = 1; mN_slow = 0;
 								cout << " - - - - Assigning connecting pointers - - - - " << endl;
 								
-								(*c)->mPoints[k]->mPrev->mNext = (*o_c)->mPoints[l]->mNext;
-								(*c)->mPoints[k]->mNext->mPrev = (*o_c)->mPoints[l]->mPrev;
-								(*o_c)->mPoints[l]->mPrev->mNext = (*c)->mPoints[k]->mNext;
-								(*o_c)->mPoints[l]->mNext->mPrev = (*c)->mPoints[k]->mPrev;
+								mTangle[P]->mPoints[k]->mPrev->mNext = mTangle[Q]->mPoints[l]->mNext;
+								mTangle[P]->mPoints[k]->mNext->mPrev = mTangle[Q]->mPoints[l]->mPrev;
+								mTangle[Q]->mPoints[l]->mPrev->mNext = mTangle[P]->mPoints[k]->mNext;
+								mTangle[Q]->mPoints[l]->mNext->mPrev = mTangle[P]->mPoints[k]->mPrev;
 					
 								/* copy points from the other filament to the current filament and delete */
 								Point* occ;
-								occ = (*o_c)->mPoints[l]->mNext;
+								occ = mTangle[Q]->mPoints[l]->mNext;
 								int i(0);
-								while(i<(*o_c)->mN-1){
-									(*c)->mPoints.push_back(new Point(occ));
+								while(i<mTangle[Q]->mN-1){
+									mTangle[P]->mPoints.push_back(new Point(occ));
 									occ = occ->mNext;
 									i++;
 								}
-								for(unsigned int j((*c)->mN+1); j!= (*c)->mPoints.size()-1; j++){
-									(*c)->mPoints[j]->mPrev = (*c)->mPoints[j-1];
-									(*c)->mPoints[j]->mNext = (*c)->mPoints[j+1];
-									cout << "Assigning pointer " << j << endl;
+								for(unsigned int j(mTangle[P]->mN+1); j!= mTangle[P]->mPoints.size()-1; j++){
+									mTangle[P]->mPoints[j]->mPrev = mTangle[P]->mPoints[j-1];
+									mTangle[P]->mPoints[j]->mNext = mTangle[P]->mPoints[j+1];
 								}
-								(*c)->mPoints[k]->mPrev->mNext = (*c)->mPoints[(*c)->mN];
-								(*c)->mPoints[k]->mNext->mPrev = (*c)->mPoints[(*c)->mPoints.size()-1];
-								(*c)->mPoints[(*c)->mN]->mNext = (*c)->mPoints[(*c)->mN+1];
-								(*c)->mPoints[(*c)->mN]->mPrev = (*c)->mPoints[k]->mPrev;
-								cout << "Assigning pointer " << (*c)->mN << " to " << (*c)->mN+1 << endl;
-								(*c)->mPoints.back()->mNext = (*c)->mPoints[k]->mNext;
-								(*c)->mPoints.back()->mPrev = (*c)->mPoints[(*c)->mPoints.size()-2];	
-								cout << "Assigning pointer " << (*c)->mPoints.size()-1 << " to " << (*c)->mPoints.size()-2 << endl;
-								(*c)->mN += (*o_c)->mN - 2;
+								mTangle[P]->mPoints[k]->mPrev->mNext = mTangle[P]->mPoints[mTangle[P]->mN];
+								mTangle[P]->mPoints[k]->mNext->mPrev = mTangle[P]->mPoints[mTangle[P]->mPoints.size()-1];
+								mTangle[P]->mPoints[mTangle[P]->mN]->mNext = mTangle[P]->mPoints[mTangle[P]->mN+1];
+								mTangle[P]->mPoints[mTangle[P]->mN]->mPrev = mTangle[P]->mPoints[k]->mPrev;
+								mTangle[P]->mPoints.back()->mNext = mTangle[P]->mPoints[k]->mNext;
+								mTangle[P]->mPoints.back()->mPrev = mTangle[P]->mPoints[mTangle[P]->mPoints.size()-2];	
+								mTangle[P]->mN += mTangle[Q]->mN - 2;
 
 								/* delete the connecting points */
 								cout << " - - - - Deleting points - - - - " << endl;
-								(*c)->mPoints[k]->mMarkedForDeletion = true;
-								for(unsigned int q(0); q<(*o_c)->mPoints.size(); q++){
-									delete (*o_c)->mPoints[q];
+								mTangle[P]->mPoints[k]->mMarkedForDeletion = true;
+								for(unsigned int q(0); q<mTangle[Q]->mPoints.size(); q++){
+									delete mTangle[Q]->mPoints[q];
 								}
 								cout << " - - - - Deleting filament - - - - " << endl;
-								delete (*o_c);
-								mTangle.erase(o_c);
+								delete mTangle[Q];
+								mTangle.erase(mTangle.begin()+Q);
 								Reconnected = true;
 								cout << " - - - - RECONNECTION COMPLETE - - - - " << endl;
 								break;
@@ -144,17 +171,30 @@ void Tangle::Reconnect(){
 
 	if(Reconnected == true){
 		for(unsigned int n(0); n<mTangle.size(); n++){
+			vector <int> DeletionList;
 			for(unsigned int m(0); m<mTangle[n]->mPoints.size(); m++){
 				if(mTangle[n]->mPoints[m]->mMarkedForDeletion == true){
-					delete mTangle[n]->mPoints[m];
-					mTangle[n]->mPoints.erase(mTangle[n]->mPoints.begin() + m); 
+					DeletionList.push_back(m);
 				}
 			}
-			mTangle[n]->CalcMeshLengths();
+			for(unsigned int G(0);G<DeletionList.size(); G++){
+				//cout << "Deleting point " << DeletionList[G] << " from filament " << n << endl;
+				delete mTangle[n]->mPoints[DeletionList[G]];
+				mTangle[n]->mPoints.erase(mTangle[n]->mPoints.begin() + DeletionList[G]);
+			}
+			mTangle[n]->CalcMeshLengths(); mTangle[n]->CalcSPrime(); mTangle[n]->CalcS2Prime();
 		}
-		cout << "- - - - Performing reconnection sweep - - - - " << endl;
-		cout << "New tangle size, " << mTangle.size() << endl;
-		cout << "New filament size, " << mTangle[0]->mPoints.size() << endl;
-		Reconnect();
+		if(SelfReconnected==false){ 
+			cout << " - - - - Performing reconnection sweep - - - - " << endl;
+			Reconnect();
+		}
+
+		/*int B(0); 
+		cout << "In recon" << endl;
+		Point* test(mTangle.front()->mPoints.front());
+		while(B<mTangle.front()->mN){cout << test->mPos[1] << ", " << B << endl; B++; test = test->mNext;}
+		B = 0;
+		test = mTangle.back()->mPoints.front();
+		while(B<mTangle.back()->mN){cout << test->mPos[1] << ", " << B << endl; B++; test = test->mNext;}*/
 	}
 }

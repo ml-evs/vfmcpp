@@ -29,6 +29,7 @@ void Filament::MeshAdjust(double dr){
 		}
 		/* point addition */
 		else if (mPoints[k]->mSegLength > dr){
+		cout << "Adding point at index " << k << "." << endl;
 			/* increment mN */
 			mN++;
 			/* create new point and reassign pointers */
@@ -44,7 +45,6 @@ void Filament::MeshAdjust(double dr){
 				mPoints.back()->mPos[j] += 0.5*(mPoints.back()->mNext->mPos[j] + mPoints.back()->mPrev->mPos[j]);
 			}
 			CalcMeshLengths();
-			cout << "Added point at index " << k << "." << endl;
 		}
 	}
 }
