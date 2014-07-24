@@ -17,3 +17,6 @@ The code makes use of custom linked lists (with nasty bare pointers) to allow fo
 - If work moves onto larger systems, perhaps consider parallelising the code with MPI.
 - Write better documentation!
 - ...Probably many more.
+
+A simple off-centre leapfrog with no reconnection.
+![alt text](http://imgur.com/NdxWWVL "Simple leapfrog")
