@@ -6,7 +6,7 @@ The vague aim of this project is to model vortex ring dynamics in various config
 
 The code makes use of custom linked lists (with nasty bare pointers) to allow for reconnections to be modelled efficiently. Visualisation is currently performed by a 3D matplotlib script (requires latest matplotlib version), which leaves a lot to be desired. 
 
-### To-do and possible directions
+###To-do
 
 - Open filaments ('strings') with either dummy, curvature-preserving endpoints, image vortices or fixed ends.
 - More post-processing to check conservation laws.
