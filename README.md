@@ -19,4 +19,6 @@ The code makes use of custom linked lists (with nasty bare pointers) to allow fo
 - ...Probably many more.
 
 A simple off-centre leapfrog with no reconnection.
+
+
 ![alt text](http://i.imgur.com/NdxWWVL.gif "Simple leapfrog")
