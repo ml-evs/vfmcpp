@@ -17,7 +17,7 @@ def getfiles(N_f):
 	k = 0
 	j = 0
 	jmax = 0
-	base_filename = '../bin/data/init_test_new/data_'
+	base_filename = '../bin/data/init_test_new_long/data_'
 	end = False
 	end2 = False
 	while(end==False):
@@ -70,7 +70,7 @@ def animate(i):
 
 	time_text.set_text('time = %.1f' % (times[i]*1e9)+ ' ns / %.1f' % (times[-1]*1e9) +' ns')
 	ax.autoscale_view()
-	#ax.view_init(10,90+0.5*i)
+	ax.view_init(10,90+0.5*i)
 	fig.canvas.draw()
 	plt.draw()
 	return rings, time_text
@@ -79,7 +79,7 @@ N_f = 10000
 dt = 1.51828e-11
 
 files, times, jmax = getfiles(N_f)
-fig = plt.figure(figsize=(10,10))
+fig = plt.figure(figsize=(5,5))
 ax = Axes3D(fig)
 ax.set_xticks([])
 ax.set_yticks([])
@@ -98,11 +98,9 @@ time_text = ax.text(0.0, 0.0, 0, '', transform=ax.transAxes)
 ax.set_xlim3d((-2.0e-6,2.0e-6))
 ax.set_zlim3d((-5e-6,5e-6))
 ax.set_ylim3d((-2.0e-6,2.0e-6))
-ax.set_xlabel('x')
-ax.set_ylabel('z (um)')
-ax.set_zlabel('y')
 ax.view_init(10,90)
-ani = animation.FuncAnimation(fig, animate, init_func = init, frames = len(files), interval = 100, blit=False)
+ani = animation.FuncAnimation(fig, animate, init_func = init, frames = len(files), interval = 1, blit=False)
+#ani.save('../img/leapfrog.gif', writer='imagemagick', fps=20);
 #ani.save('reconnection.mp4', fps=30, dpi=500)
 
 plt.show()

@@ -45,7 +45,7 @@ int main(){
 	Tangle.mDr = dr;
 
 	/* set number of timesteps and number of steps per save */
-	int N_t(1e-3/dt); 				// number of time steps
+	int N_t(2e-3/dt); 				// number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	Tangle.mN_f = 10000; 			// number of time steps per save
 	Tangle.mN_slow = 0; 					// counts how many steps have occurred at slow-mo
@@ -63,7 +63,7 @@ int main(){
 		begin = Tangle.mTangle.begin();
 		end = Tangle.mTangle.end();
 
-		percent = (i*dt/10); 
+		percent = (100*i/N_t); 
 		printf("\r %4.1f %% \t",percent); 						// output percentage completion
 		if(Tangle.mN_slow == 30){Tangle.mN_f = 10;} 			// reset saving after reconnection 
 		if(Tangle.mN_slow == 1000){Tangle.mN_f = 100;}

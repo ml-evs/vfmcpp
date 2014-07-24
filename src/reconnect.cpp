@@ -1,3 +1,6 @@
+/* Reconnection algorithm following Baggaley, JLT 168:18-30 (2012). Currently other filament
+   reconnections use the Type III algorithm and self-reconnections use Type I. */
+
 #include "tangle.h"
 #include "point.h"
 #include <fstream>
@@ -130,7 +133,7 @@ void Tangle::Reconnect(){
 					
 								/* copy points from the other filament to the current filament and delete */
 								Point* occ;
-								occ = mTangle[Q]->mPoints[l]->mNext;
+								occ = mTangle[Q]->mPoints[l];
 								int i(0);
 								while(i<mTangle[Q]->mN-1){
 									mTangle[P]->mPoints.push_back(new Point(occ));
@@ -168,7 +171,7 @@ void Tangle::Reconnect(){
 			}
 		}
 	} 
-
+	/* cleanup points and recalculate mesh lengths and curvatures */
 	if(Reconnected == true){
 		for(unsigned int n(0); n<mTangle.size(); n++){
 			vector <int> DeletionList;
@@ -178,23 +181,15 @@ void Tangle::Reconnect(){
 				}
 			}
 			for(unsigned int G(0);G<DeletionList.size(); G++){
-				//cout << "Deleting point " << DeletionList[G] << " from filament " << n << endl;
 				delete mTangle[n]->mPoints[DeletionList[G]];
 				mTangle[n]->mPoints.erase(mTangle[n]->mPoints.begin() + DeletionList[G]);
 			}
 			mTangle[n]->CalcMeshLengths(); mTangle[n]->CalcSPrime(); mTangle[n]->CalcS2Prime();
 		}
+		/* iterate through rest of list after other filament reconnection */
 		if(SelfReconnected==false){ 
 			cout << " - - - - Performing reconnection sweep - - - - " << endl;
 			Reconnect();
 		}
-
-		/*int B(0); 
-		cout << "In recon" << endl;
-		Point* test(mTangle.front()->mPoints.front());
-		while(B<mTangle.front()->mN){cout << test->mPos[1] << ", " << B << endl; B++; test = test->mNext;}
-		B = 0;
-		test = mTangle.back()->mPoints.front();
-		while(B<mTangle.back()->mN){cout << test->mPos[1] << ", " << B << endl; B++; test = test->mNext;}*/
 	}
 }

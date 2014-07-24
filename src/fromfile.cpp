@@ -1,3 +1,5 @@
+/* Functions to read initial conditions from file and save current state. */
+
 #include "tangle.h"
 #include "point.h"
 #include <fstream>
