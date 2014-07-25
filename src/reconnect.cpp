@@ -12,7 +12,6 @@ void Tangle::Reconnect(){
 
 	double res = mDr;
 	bool Reconnected = false;
-	bool SelfReconnected = false;
 	/* check distance between every point on every filament */
 	for (unsigned int P(0);P!=mTangle.size();P++){
 		if(Reconnected==true) break;
@@ -102,7 +101,6 @@ void Tangle::Reconnect(){
 								cout << "Filament sizes = " << mTangle.back()->mPoints.size() << endl;			
 								/* reassign pointers on old ring to close off new ring */
 								Reconnected = true;
-								SelfReconnected = true;
 								cout << " - - - - SELF-RECONNECTION COMPLETE - - - - " << endl;
 								break;
 							}
@@ -112,11 +110,11 @@ void Tangle::Reconnect(){
 			}
 			///* reconnections involving another filament */
 			else{
-				if(Reconnected==false) break;  
+				if(Reconnected==true) break;  
 				for (int k(0); k < mTangle[P]->mN; k++){
-					if(Reconnected==false) break;
+					if(Reconnected==true) break;
 					for (int l(0); l < mTangle[Q]->mN; l++){
-						if(Reconnected==false) break;
+						if(Reconnected==true) break;
 						if (pow(mTangle[P]->mPoints[k]->mPos[0] - mTangle[Q]->mPoints[l]->mPos[0], 2) + pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2) + pow(mTangle[P]->mPoints[k]->mPos[2] - mTangle[Q]->mPoints[l]->mPos[2], 2) < res*res){
 							/* reassign the neighbouring pointers for those adjacent to the point of reconnection */
 							double dot_tangents = mTangle[P]->mPoints[k]->mSPrime[0] * mTangle[Q]->mPoints[l]->mSPrime[0] +mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1] +mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
@@ -187,9 +185,7 @@ void Tangle::Reconnect(){
 			mTangle[n]->CalcMeshLengths(); mTangle[n]->CalcSPrime(); mTangle[n]->CalcS2Prime();
 		}
 		/* iterate through rest of list after other filament reconnection */
-		if(SelfReconnected==false){ 
-			cout << " - - - - Performing reconnection sweep - - - - " << endl;
-			Reconnect();
+		cout << " - - - - Performing reconnection sweep - - - - " << endl;
+		Reconnect();
 		}
-	}
 }

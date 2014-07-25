@@ -14,10 +14,10 @@ def init():
 def getfiles(N_f):
 	files = list()
 	times = list()
-	k = 0
+	k = 10
 	j = 0
 	jmax = 0
-	base_filename = '../bin/data/init_test_new_long/data_'
+	base_filename = '../bin/data/015_09/data_'
 	end = False
 	end2 = False
 	while(end==False):
@@ -69,8 +69,7 @@ def animate(i):
 			end = True
 
 	time_text.set_text('time = %.1f' % (times[i]*1e9)+ ' ns / %.1f' % (times[-1]*1e9) +' ns')
-	ax.autoscale_view()
-	ax.view_init(10,90+0.5*i)
+	#ax.view_init(10,90+0.5*i)
 	fig.canvas.draw()
 	plt.draw()
 	return rings, time_text
@@ -80,18 +79,14 @@ dt = 1.51828e-11
 
 files, times, jmax = getfiles(N_f)
 fig = plt.figure(figsize=(5,5))
-ax = Axes3D(fig)
-ax.set_xticks([])
-ax.set_yticks([])
-ax.set_zticks([])
-ax.set_aspect('equal')
-# ax = fig.add_subplot(111, 
-# 	aspect='equal',
-# 	xticks=[0], yticks=[0], zticks=[0],
-# 	projection='3d')
+ax = fig.add_subplot(111, 
+ 	aspect='equal',
+ 	xticks=[0,1e-6], yticks=[0,1e-6], zticks=[0,2e-6],
+ 	xticklabels=[0,1], yticklabels=[0,1], zticklabels=[0,2],
+	projection='3d')
 rings = []
-jmax += 2
-colors = plt.cm.winter(np.linspace(0,1, jmax))
+jmax += 0
+colors = plt.cm.jet(np.linspace(0,1, jmax))
 for k in range (jmax+2):
 	rings += [l for c in colors for l in ax.plot([], [], [], '-', c=c, alpha = 1, linewidth=4)]
 time_text = ax.text(0.0, 0.0, 0, '', transform=ax.transAxes)
