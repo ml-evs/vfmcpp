@@ -3,6 +3,19 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.patches import FancyArrowPatch
+from mpl_toolkits.mplot3d import proj3d
+
+class Arrow3D(FancyArrowPatch):
+    def __init__(self, xs, ys, zs, *args, **kwargs):
+        FancyArrowPatch.__init__(self, (0,0), (0,0), *args, **kwargs)
+        self._verts3d = xs, ys, zs
+
+    def draw(self, renderer):
+        xs3d, ys3d, zs3d = self._verts3d
+        xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, renderer.M)
+        self.set_positions((xs[0],ys[0]),(xs[1],ys[1]))
+        FancyArrowPatch.draw(self, renderer)
 
 def init():
 	time_text.set_text('')
@@ -17,7 +30,7 @@ def getfiles(N_f):
 	k = 10
 	j = 0
 	jmax = 0
-	base_filename = '../bin/data/015_09/data_'
+	base_filename = '../bin/data/015_09_self/data_'
 	end = False
 	end2 = False
 	while(end==False):
@@ -40,10 +53,9 @@ def getfiles(N_f):
 	return files, times, jmax
 
 def animate(i):
-
 	end = False
 	m = 0
-	z_av = np.zeros((jmax+1))
+	r = []
 	while(end == False):
 		if os.path.isfile(files[i]+'_'+str(m)+'.dat') == True:
 			data = []
@@ -54,22 +66,29 @@ def animate(i):
 				data.append(line)
 				line = file.readline()
 			file.close()
-			r = np.zeros((len(data)+1,3))
+			r.append(np.zeros((len(data)+1,3)))
 			for j in range(len(data)):
-				r[j] = data[j].split()
-			r[-1] = r[0]
-			z_av[m] = r[0,2]
-			rings[m].set_data(r[:,0], r[:,1])
-			rings[m].set_3d_properties(r[:,2]-z_av[0])
+				r[m][j] = data[j].split()
+			r[m][-1] = r[m][0]
 			m+=1
-			ax.relim()
+			#ax.relim()
 		else:
 			rings[m].set_data([],[])
 			rings[m].set_3d_properties([])
 			end = True
 
+	q_biggest = 0
+	for q in range(len(r)):
+		test = max(r[q][:,0])-min(r[q][:,0])
+		if test > max(r[q_biggest][:,0])-min(r[q_biggest][:,0]):
+			q_biggest = q
+	z_av = np.mean(r[q_biggest][:,2])
+	for q in range (len(r)):
+		rings[q].set_data(r[q][:,0], r[q][:,2]-z_av)
+		rings[q].set_3d_properties(r[q][:,1])
+
 	time_text.set_text('time = %.1f' % (times[i]*1e9)+ ' ns / %.1f' % (times[-1]*1e9) +' ns')
-	#ax.view_init(10,90+0.5*i)
+	ax.view_init(10,-130+0.1*i)
 	fig.canvas.draw()
 	plt.draw()
 	return rings, time_text
@@ -78,24 +97,33 @@ N_f = 10000
 dt = 1.51828e-11
 
 files, times, jmax = getfiles(N_f)
-fig = plt.figure(figsize=(5,5))
+fig = plt.figure(figsize=plt.figaspect(2.), facecolor='w', edgecolor='w')
 ax = fig.add_subplot(111, 
  	aspect='equal',
- 	xticks=[0,1e-6], yticks=[0,1e-6], zticks=[0,2e-6],
- 	xticklabels=[0,1], yticklabels=[0,1], zticklabels=[0,2],
+ 	axisbg='w',
+ 	xticks=[], yticks=[], zticks=[],
+ 	xticklabels=[], yticklabels=[], zticklabels=[],
 	projection='3d')
 rings = []
-jmax += 0
-colors = plt.cm.jet(np.linspace(0,1, jmax))
+colors = plt.cm.Greens(np.linspace(0.8,1, jmax))
 for k in range (jmax+2):
-	rings += [l for c in colors for l in ax.plot([], [], [], '-', c=c, alpha = 1, linewidth=4)]
-time_text = ax.text(0.0, 0.0, 0, '', transform=ax.transAxes)
-ax.set_xlim3d((-2.0e-6,2.0e-6))
-ax.set_zlim3d((-5e-6,5e-6))
-ax.set_ylim3d((-2.0e-6,2.0e-6))
-ax.view_init(10,90)
+	rings += [l for c in colors for l in ax.plot([], [], [],'-', c=c, alpha = 0.9, linewidth=4)]
+time_text = ax.text(0.0, 0.0, 0, '', transform=ax.transAxes, color='k')
+ax.set_xlim3d((-1.5e-6,1.5e-6))
+#plt.axis('off')
+ax.set_ylim3d((-1.5e-6,1.5e-6))
+ax.set_zlim3d((-1.5e-6,1.5e-6))
+ax.view_init(10,-130)
+
+x = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.2e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")
+y = Arrow3D([-1.2e-6,-0.8e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.6e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="g")
+z = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-0.8e-6],[-1.6e-6,-1.6e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="#2E5C99")
+ax.add_artist(x)
+ax.add_artist(y)
+ax.add_artist(z)
 ani = animation.FuncAnimation(fig, animate, init_func = init, frames = len(files), interval = 1, blit=False)
-#ani.save('../img/leapfrog.gif', writer='imagemagick', fps=20);
+
+#ani.save('../img/015_09.gif', writer='imagemagick', fps=20);
 #ani.save('reconnection.mp4', fps=30, dpi=500)
 
 plt.show()
