@@ -12,6 +12,7 @@ void Tangle::Reconnect(){
 
 	double res = mDr;
 	bool Reconnected = false;
+	bool SelfReconnected = false;
 	/* check distance between every point on every filament */
 	for (unsigned int P(0);P!=mTangle.size();P++){
 		if(Reconnected==true) break;
@@ -101,6 +102,7 @@ void Tangle::Reconnect(){
 								cout << "Filament sizes = " << mTangle.back()->mPoints.size() << endl;			
 								/* reassign pointers on old ring to close off new ring */
 								Reconnected = true;
+								SelfReconnected = true;
 								cout << " - - - - SELF-RECONNECTION COMPLETE - - - - " << endl;
 								break;
 							}
@@ -115,7 +117,8 @@ void Tangle::Reconnect(){
 					if(Reconnected==true) break;
 					for (int l(0); l < mTangle[Q]->mN; l++){
 						if(Reconnected==true) break;
-						if (pow(mTangle[P]->mPoints[k]->mPos[0] - mTangle[Q]->mPoints[l]->mPos[0], 2) + pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2) + pow(mTangle[P]->mPoints[k]->mPos[2] - mTangle[Q]->mPoints[l]->mPos[2], 2) < res*res){
+						double dist2 = pow(mTangle[P]->mPoints[k]->mPos[0] - mTangle[Q]->mPoints[l]->mPos[0], 2) + pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2) + pow(mTangle[P]->mPoints[k]->mPos[2] - mTangle[Q]->mPoints[l]->mPos[2], 2);
+						if (dist2 < 0.25*res*res){
 							/* reassign the neighbouring pointers for those adjacent to the point of reconnection */
 							double dot_tangents = mTangle[P]->mPoints[k]->mSPrime[0] * mTangle[Q]->mPoints[l]->mSPrime[0] +mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1] +mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
 							if(dot_tangents > 0){cout << " - - - - Parallel lines too close - not reconnecting - - - -" << endl;}
@@ -167,8 +170,8 @@ void Tangle::Reconnect(){
 					}
 				}
 			}
-		}
-	} 
+		} 
+	}
 	/* cleanup points and recalculate mesh lengths and curvatures */
 	if(Reconnected == true){
 		for(unsigned int n(0); n<mTangle.size(); n++){
@@ -183,9 +186,10 @@ void Tangle::Reconnect(){
 				mTangle[n]->mPoints.erase(mTangle[n]->mPoints.begin() + DeletionList[G]);
 			}
 			mTangle[n]->CalcMeshLengths(); mTangle[n]->CalcSPrime(); mTangle[n]->CalcS2Prime();
+			mTangle[n]->MeshAdjust(res);
 		}
 		/* iterate through rest of list after other filament reconnection */
-		cout << " - - - - Performing reconnection sweep - - - - " << endl;
 		Reconnect();
-		}
+
+	}
 }
