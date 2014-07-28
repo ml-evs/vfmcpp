@@ -18,8 +18,8 @@ int main(){
 
 	/* add filaments to tangle */
 	Tangle Tangle(new Ring(r0, N, 0, 0, 5e-6), new Ring(0.9*r0, N, 0.15e-6, 0, 0));
-	//Tangle Tangle;
-	//Tangle.FromFile();
+/*	Tangle Tangle;
+	Tangle.FromFile();*/
 
 	/* set resolutions */
 	double dt, dr(0);
@@ -49,7 +49,7 @@ int main(){
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	Tangle.mN_f = 10000; 			// number of time steps per save
 	Tangle.mN_slow = 0; 					// counts how many steps have occurred at slow-mo
-	string filename = "data/015_09_adjust/data_"; // location of saves
+	string filename = "data/typeII_recon_/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;

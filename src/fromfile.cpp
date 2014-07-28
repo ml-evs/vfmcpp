@@ -96,7 +96,7 @@ void Tangle::SaveState(){
 		stringstream ss;
 		ss << n_fil;
 		string n_fil_str = ss.str();
-		string ith_jth_filename = "init/3_RING" + n_fil_str + ".dat";
+		string ith_jth_filename = "init/015_09_rec" + n_fil_str + ".dat";
 		ofstream outfile(ith_jth_filename.c_str());
 		outfile.precision(8);
 		int j(0);
@@ -110,7 +110,7 @@ void Tangle::SaveState(){
 			outfile << "\n";
 		}
 		outfile.close();
-		ith_jth_filename =  "init/3_RING" + n_fil_str + "vel.dat";
+		ith_jth_filename =  "init/015_09_rec" + n_fil_str + "vel.dat";
 		ofstream outfile2(ith_jth_filename.c_str());
 		j = 0;
 		pCurrent = (*c)->mPoints[0];
@@ -123,7 +123,7 @@ void Tangle::SaveState(){
 			outfile2 << "\n";
 		}
 		outfile2.close();											
-		ith_jth_filename =  "init/3_RING" + n_fil_str + "vel1.dat";
+		ith_jth_filename =  "init/015_09_rec" + n_fil_str + "vel1.dat";
 		ofstream outfile3(ith_jth_filename.c_str());
 		j = 0;
 		pCurrent = (*c)->mPoints[0];
@@ -136,7 +136,7 @@ void Tangle::SaveState(){
 			outfile3 << "\n";
 		}
 		outfile3.close();											
-		ith_jth_filename =  "init/3_RING" + n_fil_str + "vel2.dat";
+		ith_jth_filename =  "init/015_09_rec" + n_fil_str + "vel2.dat";
 		ofstream outfile4(ith_jth_filename.c_str());
 		j = 0;
 		pCurrent = (*c)->mPoints[0];
@@ -150,7 +150,7 @@ void Tangle::SaveState(){
 		}
 		outfile4.close();		
 		
-		ith_jth_filename =  "init/3_RING" + n_fil_str + "vel3.dat";
+		ith_jth_filename =  "init/015_09_rec" + n_fil_str + "vel3.dat";
 		ofstream outfile5(ith_jth_filename.c_str());
 		j = 0;
 		pCurrent = (*c)->mPoints[0];

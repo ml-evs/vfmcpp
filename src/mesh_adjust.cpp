@@ -17,7 +17,7 @@ void Filament::MeshAdjust(double dr){
 		/* point deletion for smoothing and proximity*/
 		if((1/R)>1.9/dr || mPoints[k]->mSegLength < 0.5*dr){
 			if((1/R)>1.9/dr){cout << "Deleting point for smoothing." << endl;}
-			if(mPoints[k]->mSegLength < 0.5*dr){cout << "Deleting point " << k << " for proximity." << endl;}
+			if(mPoints[k]->mSegLength < 0.5*dr){cout << "Deleting point for proximity." << endl;}
 			/* reassign next and last pointers for point to be deleted */
 			mPoints[k]->mNext->mPrev = mPoints[k]->mPrev;
 			mPoints[k]->mPrev->mNext = mPoints[k]->mNext;
@@ -29,7 +29,7 @@ void Filament::MeshAdjust(double dr){
 		}
 		/* point addition */
 		else if (mPoints[k]->mSegLength > dr){
-		cout << "Adding point at index " << k << "." << endl;
+		cout << "Adding point." << endl;
 			/* increment mN */
 			mN++;
 			/* create new point and reassign pointers */
