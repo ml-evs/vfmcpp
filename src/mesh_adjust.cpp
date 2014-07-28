@@ -6,7 +6,11 @@ Details given by Baggaley and Barenghi, PRB 83 (2011) */
 using namespace std;
 
 void Filament::MeshAdjust(double dr){
+	double res = dr;
+	bool Remeshed = false;
+	
 	for (int k(0); k<mN; k++){
+		if(Remeshed==true){break;}
 		/* maintain reasonable local curvature */
 		double R(0); // 1/|s''| at new point
 		for(int j(0);j!=3;j++){
@@ -16,8 +20,8 @@ void Filament::MeshAdjust(double dr){
 		R = 1/R;
 		/* point deletion for smoothing and proximity*/
 		if((1/R)>1.9/dr || mPoints[k]->mSegLength < 0.5*dr){
-			if((1/R)>1.9/dr){cout << "Deleting point for smoothing." << endl;}
-			if(mPoints[k]->mSegLength < 0.5*dr){cout << "Deleting point for proximity." << endl;}
+			if((1/R)>1.9/dr){cout << "Deleting point " << k << " / " << mPoints.size() << " for smoothing." << endl;}
+			if(mPoints[k]->mSegLength < 0.5*dr){cout << "Deleting point " << k << " / " << mPoints.size() << " for proximity." << endl;}
 			/* reassign next and last pointers for point to be deleted */
 			mPoints[k]->mNext->mPrev = mPoints[k]->mPrev;
 			mPoints[k]->mPrev->mNext = mPoints[k]->mNext;
@@ -25,11 +29,13 @@ void Filament::MeshAdjust(double dr){
 			mN--;
 			delete mPoints[k];
 			mPoints.erase(mPoints.begin()+k);
-			CalcMeshLengths();
+			CalcMeshLengths(); CalcSPrime(); CalcS2Prime();
+			Remeshed = true;
+			break;
 		}
 		/* point addition */
 		else if (mPoints[k]->mSegLength > dr){
-		cout << "Adding point." << endl;
+		cout << "Adding point at " << k << " / " <<  mPoints.size() << endl;
 			/* increment mN */
 			mN++;
 			/* create new point and reassign pointers */
@@ -44,7 +50,10 @@ void Filament::MeshAdjust(double dr){
 				mPoints.back()->mPos[j] = (mPoints.back()->mS2Prime[j]) * R * (sqrt( pow(R,2) - 0.25*pow(mPoints.back()->mNext->mSegLength,2)) - R);
 				mPoints.back()->mPos[j] += 0.5*(mPoints.back()->mNext->mPos[j] + mPoints.back()->mPrev->mPos[j]);
 			}
-			CalcMeshLengths();
+			CalcMeshLengths(); CalcSPrime(); CalcS2Prime();
+			Remeshed = true;
+			break;
 		}
 	}
+	if(Remeshed == true){this->MeshAdjust(res);}
 }
