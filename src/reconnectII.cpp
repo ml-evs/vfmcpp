@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void Tangle::Reconnect(){
+void Tangle::Reconnection(){
 
 	double res = mDr;
 	bool Reconnected = false;
@@ -185,7 +185,12 @@ void Tangle::Reconnect(){
 			mTangle[n]->CalcS2Prime(); 
 		}
 		/* iterate through rest of list after reconnection */
-		Reconnect();
+		Reconnection();
 
 	}
 }
+/*
+Tangle::SelfReconnect()
+
+Tangle::Reconnect()
+*/
