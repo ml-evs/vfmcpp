@@ -24,7 +24,6 @@ public:
 	void CalcSPrime();
 	void CalcS2Prime();
 	void CalcVelocitySelfNL();
-	void MeshAdjust(double dr);
 };
 /* ring class */
 class Ring : public Filament{

@@ -18,8 +18,9 @@ int main(){
 
 	/* add filaments to tangle */
 	Tangle Tangle(new Ring(r0, N, 0, 0, 5e-6), new Ring(0.9*r0, N, 0.15e-6, 0, 0));
-/*	Tangle Tangle;
-	Tangle.FromFile();*/
+	//Tangle Tangle;
+	//Tangle.FromFile();
+
 
 	/* set resolutions */
 	double dt, dr(0);
@@ -38,10 +39,11 @@ int main(){
 	/* set resolution as 4/3 average distance for mesh adjust */
 	dr = (4.0/3.0)*dr;
 	dt = pow((dr/2),2)/(kappa*log(dr/(2*PI*a0)));
-	dt = dt/25; 		// Baggaley, Barenghi PRB 2010
+	dt = dt/15; 		// Baggaley, Barenghi PRB 2010
 	cout << dr << ", " << dt << endl;
 	
-	//dr = 7.95e-8; dt = 1.385e-10;
+//	dr = 7.95739e-8; dt = 1.3856e-10;
+
 	Tangle.mDr = dr;
 
 	/* set number of timesteps and number of steps per save */
@@ -49,7 +51,7 @@ int main(){
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	Tangle.mN_f = 10000; 			// number of time steps per save
 	Tangle.mN_slow = 0; 					// counts how many steps have occurred at slow-mo
-	string filename = "data/typeII_recon_/data_"; // location of saves
+	string filename = "data/brand_new_recon_test/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -62,7 +64,8 @@ int main(){
 	while(i*dt < 0.8e-3){
 		begin = Tangle.mTangle.begin();
 		end = Tangle.mTangle.end();
-
+/*		if(i==2980000){Tangle.SaveState();}
+		if(i>2980000){Tangle.mN_f = 1;}*/
 		percent = (100*i/N_t); 
 		printf("\r %4.1f %% \t",percent); 						// output percentage completion
 		if(Tangle.mN_slow == 30){Tangle.mN_f = 10;} 			// reset saving after reconnection 
@@ -104,10 +107,11 @@ int main(){
 		}
 		/* calculate velocities and propagate positions */
 		Tangle.LoopKill();
-		for(current=begin; current!=end; current++){
-			(*current)->MeshAdjust(dr);
+		bool MeshFinished(false);
+		while(MeshFinished==false){
+			MeshFinished = Tangle.MeshAdjust();
 		}
-		Tangle.Reconnect();
+		Tangle.Reconnection();
 		Tangle.CalcVelocityNL_OF(); 
 		Tangle.CalcVelocity();					// calculates all local contributions and combines with non-local
 		Tangle.PropagatePos(dt);

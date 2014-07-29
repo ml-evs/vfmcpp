@@ -26,11 +26,14 @@ public:
 	~Tangle(){};
 	void CalcVelocityNL_OF();
 	void LoopKill();
-	void Reconnect();
+	void Reconnection();
+	void SelfReconnect(int P, int Q, int k, int l);
+	void Reconnect(int P, int Q, int k, int l);
 	void CalcVelocity();
 	void FromFile(); 	// mostly for debug purposes
 	void PropagatePos(double & dt); 
 	void SaveState();
+	bool MeshAdjust();
 };
 
 #endif
