@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void Tangle::Reconnect(){
+void Tangle::Reconnection(){
 
 	double res = mDr;
 	bool Reconnected = false;
@@ -56,7 +56,7 @@ void Tangle::Reconnect(){
 										mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];
 										mTangle.back()->mPoints[d]->mNext = mTangle.back()->mPoints[d+1];
 									}
-									
+
 									mTangle.back()->mPoints[N_new-2]->mPrev = mTangle.back()->mPoints[N_new-3];
 									mTangle.back()->mPoints[N_new-2]->mNext = mTangle.back()->mPoints[0];
 									mTangle.back()->mPoints[0]->mNext = mTangle.back()->mPoints[1];
@@ -127,13 +127,15 @@ void Tangle::Reconnect(){
 							double dot_tangents = mTangle[P]->mPoints[k]->mSPrime[0] * mTangle[Q]->mPoints[l]->mSPrime[0] +mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1] +mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
 							if(dot_tangents > 0){cout << " - - - - Parallel lines too close - not reconnecting - - - -" << endl;}
 							else{
-								SaveState();
+								//SaveState();
 								cout << " - - - - Performing reconnection - - - - " << endl;
 								mN_f = 1; mN_slow = 0;
 								cout << " - - - - Assigning connecting pointers - - - - " << endl;
 								mTangle[P]->mPoints[k]->mPrev->mNext = mTangle[Q]->mPoints[l]->mNext;
 								mTangle[Q]->mPoints[l]->mNext->mPrev = mTangle[P]->mPoints[k]->mPrev;
-																				
+								cout << mTangle[P]->mN << endl;
+								cout << mTangle[Q]->mN << endl;
+
 								/* copy points from the other filament to the current filament and delete */
 								Point* occ;
 								occ = mTangle[Q]->mPoints[l];
@@ -143,17 +145,20 @@ void Tangle::Reconnect(){
 									occ = occ->mPrev;
 									i++;
 								}
-								for(unsigned int j(mTangle[P]->mN); j!= mTangle[P]->mPoints.size()-1; j++){
+								for(unsigned int j(mTangle[P]->mN+1); j!= mTangle[P]->mPoints.size()-1; j++){
 									mTangle[P]->mPoints[j]->mNext = mTangle[P]->mPoints[j-1];
 									mTangle[P]->mPoints[j]->mPrev = mTangle[P]->mPoints[j+1];
 								}
-								mTangle[P]->mPoints[k]->mPrev->mPrev = mTangle[P]->mPoints[mTangle[P]->mPoints.size()-1];
+								mTangle[P]->mPoints[k]->mPrev->mNext = mTangle[P]->mPoints[mTangle[P]->mPoints.size()-1];
 								mTangle[P]->mPoints[mTangle[P]->mN]->mPrev = mTangle[P]->mPoints[mTangle[P]->mN+1];
 								mTangle[P]->mPoints[mTangle[P]->mN]->mNext = mTangle[P]->mPoints[k];
-								mTangle[P]->mPoints[k]->mPrev = mTangle[P]->mPoints[mTangle[P]->mN];
 								mTangle[P]->mPoints.back()->mPrev = mTangle[P]->mPoints[k]->mPrev;
 								mTangle[P]->mPoints.back()->mNext = mTangle[P]->mPoints[mTangle[P]->mPoints.size()-2];	
+								mTangle[P]->mPoints[k]->mPrev = mTangle[P]->mPoints[mTangle[P]->mN];
 								mTangle[P]->mN = mTangle[P]->mPoints.size();
+
+								cout << k << endl;
+								cout << l << endl;
 
 								/* delete the connecting points */
 								cout << " - - - - Deleting points - - - - " << endl;
@@ -180,7 +185,12 @@ void Tangle::Reconnect(){
 			mTangle[n]->CalcS2Prime(); 
 		}
 		/* iterate through rest of list after reconnection */
-		Reconnect();
+		Reconnection();
 
 	}
 }
+/*
+Tangle::SelfReconnect()
+
+Tangle::Reconnect()
+*/
