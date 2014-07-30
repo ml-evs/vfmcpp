@@ -44,14 +44,14 @@ int main(){
 	
 //	dr = 7.95739e-8; dt = 1.3856e-10;
 
-	Tangle.mDr = dr;
+	Tangle.mDr = dr; Tangle.mDt = dt;
 
 	/* set number of timesteps and number of steps per save */
-	int N_t(0.8e-3/dt); 				// number of time steps
+	int N_t(0.8e-3/Tangle.mDt); 				// number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	Tangle.mN_f = 10000; 			// number of time steps per save
 	Tangle.mN_slow = 0; 					// counts how many steps have occurred at slow-mo
-	string filename = "data/brand_new_recon_test/data_"; // location of saves
+	string filename = "data/brand_new_mesh_test/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -61,7 +61,7 @@ int main(){
 
   	/* begin time-stepping */
   	int i(0);
-	while(i*dt < 0.8e-3){
+	while(i*Tangle.mDt < 0.8e-3){
 		begin = Tangle.mTangle.begin();
 		end = Tangle.mTangle.end();
 /*		if(i==2980000){Tangle.SaveState();}
@@ -88,7 +88,7 @@ int main(){
 				string ith_jth_filename = ith_filename + n_fil_str + ".dat";
 				ofstream outfile(ith_jth_filename.c_str());
 				outfile.precision(8);
-				outfile << i*dt << "\n";
+				outfile << i*Tangle.mDt << "\n";
 				int j(0);
 				Point* pCurrent = (*current)->mPoints[0];
 				while(j!=(*current)->mN){
@@ -107,14 +107,14 @@ int main(){
 		}
 		/* calculate velocities and propagate positions */
 		Tangle.LoopKill();
+		Tangle.Reconnection();
 		bool MeshFinished(false);
 		while(MeshFinished==false){
 			MeshFinished = Tangle.MeshAdjust();
 		}
-		Tangle.Reconnection();
 		Tangle.CalcVelocityNL_OF(); 
 		Tangle.CalcVelocity();					// calculates all local contributions and combines with non-local
-		Tangle.PropagatePos(dt);
+		Tangle.PropagatePos(Tangle.mDt);
 		i++;
 	}
 	/* save total time to file */

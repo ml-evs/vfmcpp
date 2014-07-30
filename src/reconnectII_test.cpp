@@ -30,7 +30,7 @@ void Tangle::Reconnection(){
 							/* check if non-neighbouring points are too close */
 							double dist2 = pow(mTangle[P]->mPoints[k]->mPos[0] - mTangle[Q]->mPoints[l]->mPos[0], 2) + pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2) + pow(mTangle[P]->mPoints[k]->mPos[2] - mTangle[Q]->mPoints[l]->mPos[2], 2);
 							if(dist2 < 0.25*res*res){
-								double dot_tangents = mTangle[P]->mPoints[k]->mSPrime[0] * mTangle[Q]->mPoints[l]->mSPrime[0] +mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1] +mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
+								double dot_tangents = mTangle[P]->mPoints[k]->mSPrime[0] * mTangle[Q]->mPoints[l]->mSPrime[0] + mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1] + mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
 								if(dot_tangents > 0){cout << " - - - - Parallel lines too close - not reconnecting - - - -" << endl;}
 								else{
 									/* find closest point to k inside range and mark it for reconnection */
@@ -117,9 +117,6 @@ void Tangle::SelfReconnect(int P, int Q, int k, int l){
 		delete mTangle[P]->mPoints[q];
 	}
 	mTangle.erase(mTangle.begin()+P);
-	cout << "Tangle size = " << mTangle.size() << endl; 
-	cout << "Filament sizes = " << mTangle.front()->mPoints.size() << endl;			
-	cout << "Filament sizes = " << mTangle.back()->mPoints.size() << endl;			
 	/* reassign pointers on old ring to close off new ring */
 	cout << " - - - - SELF-RECONNECTION COMPLETE - - - - " << endl;
 }
@@ -128,7 +125,6 @@ void Tangle::Reconnect(int P, int Q, int k, int l){
 
 	cout << " - - - - Performing reconnection - - - - " << endl;
 	mN_f = 1; mN_slow = 0;
-	cout << " - - - - Assigning connecting pointers - - - - " << endl;
 	mTangle[P]->mPoints[k]->mPrev->mNext = mTangle[Q]->mPoints[l]->mNext;
 	mTangle[Q]->mPoints[l]->mNext->mPrev = mTangle[P]->mPoints[k]->mPrev;
 	cout << mTangle[P]->mN << endl;
@@ -153,11 +149,9 @@ void Tangle::Reconnect(int P, int Q, int k, int l){
 	mTangle[P]->mPoints[k]->mPrev = mTangle[P]->mPoints[mTangle[P]->mN];
 	mTangle[P]->mN = mTangle[P]->mPoints.size();	cout << k << endl;
 	cout << l << endl;	/* delete the connecting points */
-	cout << " - - - - Deleting points - - - - " << endl;
 	for(unsigned int q(0); q<mTangle[Q]->mPoints.size(); q++){
 		delete mTangle[Q]->mPoints[q];
 	}
-	cout << " - - - - Deleting filament - - - - " << endl;
 	delete mTangle[Q];
 	mTangle.erase(mTangle.begin()+Q);
 	cout << " - - - - RECONNECTION COMPLETE - - - - " << endl;

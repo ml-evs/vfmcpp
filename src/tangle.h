@@ -15,6 +15,7 @@ public:
 	int mN_f;			// number of timesteps between saves
 	int mN_slow;
 	double mDr;			// spatial resolution
+	double mDt; 		// temporal resolution
 	/* member functions */
 	Tangle(){};
 	Tangle(Filament* Ring1, Filament* Ring2){

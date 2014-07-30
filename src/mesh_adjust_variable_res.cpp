@@ -33,7 +33,7 @@ bool Tangle::MeshAdjust(){
 		}
 	}
 
-	if(DeleteCount<=1 && AddCount <= 1){
+	if(DeleteCount >= 1 && AddCount >= 1){
 		for(c=b;c!=e;c++){
 			for (int k(0); k<(*c)->mN; k++){
 				if(Remeshed==true){break;}
@@ -56,6 +56,7 @@ bool Tangle::MeshAdjust(){
 					delete (*c)->mPoints[k];
 					(*c)->mPoints.erase((*c)->mPoints.begin()+k);
 					(*c)->CalcMeshLengths(); (*c)->CalcSPrime(); (*c)->CalcS2Prime();
+					break;
 				}
 				/* point addition */
 				else if ((*c)->mPoints[k]->mSegLength > dr){
@@ -75,26 +76,14 @@ bool Tangle::MeshAdjust(){
 						(*c)->mPoints.back()->mPos[j] += 0.5*((*c)->mPoints.back()->mNext->mPos[j] + (*c)->mPoints.back()->mPrev->mPos[j]);
 					}
 					(*c)->CalcMeshLengths(); (*c)->CalcSPrime(); (*c)->CalcS2Prime();
+					break;
 				}
 			}
 		}
 	}
 
-	else{
-		for(c=b; c!=e; c++){
-			for(int j(0); j<(*c)->mN; j++){
-				dr += (*c)->mPoints[j]->mSegLength;
-			}
-			N_p += (*c)->mN;
-		}
-		dr /= N_p;
-		dr = (4.0/3.0)*dr;
-		if(AddCount>1){
-			dr = 0.8*dr;
-		}
-		mDr = dr;
+	if(DeleteCount > 1 || AddCount > 1){
 		return false;
-
 	}
 
 	return true;
