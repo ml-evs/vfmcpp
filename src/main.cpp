@@ -17,9 +17,9 @@ using namespace std;
 int main(){
 
 	/* add filaments to tangle */
-	Tangle Tangle(new Ring(r0, N, 0, 0, 5e-6), new Ring(0.9*r0, N, 0.15e-6, 0, 0));
-	//Tangle Tangle;
-	//Tangle.FromFile();
+	//Tangle Tangle(new Ring(r0, N, 0, 0, 5e-6), new Ring(0.9*r0, N, 0.28e-6, 0, 0));
+	Tangle Tangle;
+	Tangle.FromFile();
 
 
 	/* set resolutions */
@@ -42,16 +42,16 @@ int main(){
 	dt = dt/15; 		// Baggaley, Barenghi PRB 2010
 	cout << dr << ", " << dt << endl;
 	
-//	dr = 7.95739e-8; dt = 1.3856e-10;
+	dr = 7.95739e-8; dt = 1.3856e-10;
 
 	Tangle.mDr = dr; Tangle.mDt = dt;
 
 	/* set number of timesteps and number of steps per save */
-	int N_t(0.8e-3/Tangle.mDt); 				// number of time steps
+	int N_t(2);//(0.8e-3/Tangle.mDt); 				// number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	Tangle.mN_f = 10000; 			// number of time steps per save
 	Tangle.mN_slow = 0; 					// counts how many steps have occurred at slow-mo
-	string filename = "data/brand_new_mesh_test/data_"; // location of saves
+	string filename = "../bin/data/new_recon_test/data_"; // location of saves
 	
 	/* prepare to time calculations */
 	double percent;
@@ -61,11 +61,9 @@ int main(){
 
   	/* begin time-stepping */
   	int i(0);
-	while(i*Tangle.mDt < 0.8e-3){
+	while(i*Tangle.mDt < N_t*dt){
 		begin = Tangle.mTangle.begin();
 		end = Tangle.mTangle.end();
-/*		if(i==2980000){Tangle.SaveState();}
-		if(i>2980000){Tangle.mN_f = 1;}*/
 		percent = (100*i/N_t); 
 		printf("\r %4.1f %% \t",percent); 						// output percentage completion
 		if(Tangle.mN_slow == 30){Tangle.mN_f = 10;} 			// reset saving after reconnection 
@@ -93,7 +91,7 @@ int main(){
 				Point* pCurrent = (*current)->mPoints[0];
 				while(j!=(*current)->mN){
 					for(int m(0); m<3; m++){
-						outfile << pCurrent->mNext->mPos[m] << "\t";
+						outfile << pCurrent->mPos[m] << "\t";
 					}
 					pCurrent = pCurrent->mNext;
 					j++;
@@ -107,11 +105,11 @@ int main(){
 		}
 		/* calculate velocities and propagate positions */
 		Tangle.LoopKill();
-		Tangle.Reconnection();
 		bool MeshFinished(false);
 		while(MeshFinished==false){
 			MeshFinished = Tangle.MeshAdjust();
 		}
+		Tangle.Reconnection();
 		Tangle.CalcVelocityNL_OF(); 
 		Tangle.CalcVelocity();					// calculates all local contributions and combines with non-local
 		Tangle.PropagatePos(Tangle.mDt);

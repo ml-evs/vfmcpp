@@ -26,10 +26,11 @@ public:
 	}
 	~Tangle(){};
 	void CalcVelocityNL_OF();
-	void LoopKill();
+	bool LoopKill();
 	void Reconnection();
 	void SelfReconnect(int P, int Q, int k, int l);
 	void Reconnect(int P, int Q, int k, int l);
+	int ReconnectionTest();
 	void CalcVelocity();
 	void FromFile(); 	// mostly for debug purposes
 	void PropagatePos(double & dt); 

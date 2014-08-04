@@ -7,10 +7,9 @@
 #include <sstream>
 
 void Tangle::FromFile(){
-	string base("../bin/init/2_RING");
-//	string base("../bin/init/test/Reconnection_");
+	string base("../bin/init/015_09_rec");
 	string filename;
-	int n_fil(1);
+	int n_fil(2);
 	vector <double> CurrentVec(3);
 	int n_points(0);
 	for(int j(0);j!=n_fil; j++){
