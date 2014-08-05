@@ -47,7 +47,7 @@ int main(){
 	Tangle.mDr = dr; Tangle.mDt = dt;
 
 	/* set number of timesteps and number of steps per save */
-	int N_t(2);//(0.8e-3/Tangle.mDt); 				// number of time steps
+	int N_t(0.8e-3/Tangle.mDt); 				// number of time steps
 	cout << "Number of time steps to be performed: " << N_t << endl;
 	Tangle.mN_f = 10000; 			// number of time steps per save
 	Tangle.mN_slow = 0; 					// counts how many steps have occurred at slow-mo
