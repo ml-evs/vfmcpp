@@ -16,6 +16,11 @@ The code makes use of custom linked lists (with nasty bare pointers) to allow fo
 - Write better documentation!
 - ...Probably many more.
 
+Aftermath of off-centre ring collision.
+
+![alt text](http://charmedxi.co.uk/vfmcpp/img/double_rec.gif "Post double reconnection")
+
+
 A simple off-centre leapfrog with no reconnection.
 
 
