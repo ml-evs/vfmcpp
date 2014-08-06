@@ -11,16 +11,18 @@ using namespace std;
 	
 	/* circulation quantum, core radii, mutual friction */
 	double		kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0, alpha=0;
-	int			N  = 100; 		// number of points on ring
-	double		r0 = 1e-6; 		// initial ring radius
+	int				N  = 100; 		// number of points on ring
+	double		r0 = 1e-6; 		// default initial ring radius
+	double 		t_total = 1e-3; // default total time
 
-int main(){
+int main(int argc, char* argv[]){
 
-	/* add filaments to tangle */
-	//Tangle Tangle(new Ring(r0, N, 0, 0, 5e-6), new Ring(0.9*r0, N, 0.28e-6, 0, 0));
+	/* initialise tangle and print banner */
 	Tangle Tangle;
-	Tangle.FromFile();
-
+	string runfile;
+	if(argc!=1){runfile = argv[1];}
+	else runfile = "NULL";
+	string filename = Tangle.Initialise(runfile);
 
 	/* set resolutions */
 	double dt, dr(0);
@@ -39,88 +41,84 @@ int main(){
 	/* set resolution as 4/3 average distance for mesh adjust */
 	dr = (4.0/3.0)*dr;
 	dt = pow((dr/2),2)/(kappa*log(dr/(2*PI*a0)));
-	dt = dt/15; 		// Baggaley, Barenghi PRB 2010
-	cout << dr << ", " << dt << endl;
+	dt = dt/25; 		// Baggaley, Barenghi PRB 2010
+	cout << "\t    spatial resolution = "<< dr << " m" << endl << "\t    time-step = " << dt << " s\n\n";
 	
-	dr = 7.95739e-8; dt = 1.3856e-10;
+	//dr = 7.95739e-8; dt = 1.3856e-10;
 
 	Tangle.mDr = dr; Tangle.mDt = dt;
 
 	/* set number of timesteps and number of steps per save */
-	int N_t(0.8e-3/Tangle.mDt); 				// number of time steps
-	cout << "Number of time steps to be performed: " << N_t << endl;
-	Tangle.mN_f = 10000; 			// number of time steps per save
-	Tangle.mN_slow = 0; 					// counts how many steps have occurred at slow-mo
-	string filename = "../bin/data/new_recon_test/data_"; // location of saves
+
+	int N_t(t_total/Tangle.mDt); 					// number of time steps
+	Tangle.mN_f = 10000; 									// number of time steps per save
+	Tangle.mN_slow = 0; 									// counts how many steps have occurred at slow-mo
 	
 	/* prepare to time calculations */
 	double percent;
 	clock_t t;
-  	t=clock();
-  	int file_no(0);
+  t=clock();
+  int file_no(0);
 
-  	/* begin time-stepping */
-  	int i(0);
+  /* begin time-stepping */
+  int i(0);
+ 	cout << "\t - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
 	while(i*Tangle.mDt < N_t*dt){
+		
 		begin = Tangle.mTangle.begin();
 		end = Tangle.mTangle.end();
+		
 		percent = (100*i/N_t); 
-		printf("\r %4.1f %% \t",percent); 						// output percentage completion
-		if(Tangle.mN_slow == 30){Tangle.mN_f = 10;} 			// reset saving after reconnection 
-		if(Tangle.mN_slow == 500){Tangle.mN_f = 100;}
-		if(Tangle.mN_slow == 50000){Tangle.mN_f = 10000;}
+		printf("\r\t %6.2f %% \t",percent); 						// output percentage completion
+		
+		if(Tangle.mN_slow == 30){Tangle.mN_f = 10;} 		// reset saving after reconnection 
+		if(Tangle.mN_slow == 200){Tangle.mN_f = 100;}
+		if(Tangle.mN_slow == 5000){Tangle.mN_f = 10000;}
 		if(Tangle.mN_f==1||Tangle.mN_f == 10||Tangle.mN_f == 100){Tangle.mN_slow++;}  // increment slow-mo counter
 		else{Tangle.mN_slow = 0;} 								// reset slow-mo counter
+
 		/* save positions to file every mN_f steps */
 		if(i%Tangle.mN_f==0){
-			stringstream ss0;
-			ss0 << file_no;
-			string i_str = ss0.str();
-			string ith_filename = filename + i_str + "_";
 			int n_fil(0);
+			stringstream ss0; ss0 << file_no; string i_str = ss0.str();
+			string ith_filename = filename + i_str + "_";
 
 			for(current=begin; current!=end; current++){
-				stringstream ss;
-				ss << n_fil;
-				string n_fil_str = ss.str();
+				stringstream ss; ss << n_fil;	string n_fil_str = ss.str(); 
 				string ith_jth_filename = ith_filename + n_fil_str + ".dat";
-				ofstream outfile(ith_jth_filename.c_str());
-				outfile.precision(8);
-				outfile << i*Tangle.mDt << "\n";
-				int j(0);
+				ofstream outfile(ith_jth_filename.c_str());	outfile.precision(8);
+				outfile << i*Tangle.mDt << "\n"; int j(0);
 				Point* pCurrent = (*current)->mPoints[0];
 				while(j!=(*current)->mN){
 					for(int m(0); m<3; m++){
 						outfile << pCurrent->mPos[m] << "\t";
 					}
-					pCurrent = pCurrent->mNext;
-					j++;
-					outfile << "\n";
+					pCurrent = pCurrent->mNext; j++; outfile << "\n";
 				}
-				outfile.close();
-				n_fil++;
+				outfile.close(); n_fil++;
 			}
-			cout << "!!!!!!\t Wrote timestep " << i << " to file. \t!!!!!!" << endl;
+			printf("wrote step %6u \t", i);	printf("%4.4f / ", (1000000*i*Tangle.mDt));	printf("%4.0f us ", 1000000*t_total);
 			file_no++;
 		}
-		/* calculate velocities and propagate positions */
-		Tangle.LoopKill();
-		bool MeshFinished(false);
-		while(MeshFinished==false){
-			MeshFinished = Tangle.MeshAdjust();
-		}
-		Tangle.Reconnection();
-		Tangle.CalcVelocityNL_OF(); 
-		Tangle.CalcVelocity();					// calculates all local contributions and combines with non-local
-		Tangle.PropagatePos(Tangle.mDt);
-		i++;
-	}
-	/* save total time to file */
-	t = clock()-t;
-	filename = filename + "time.dat";
-  	ofstream timefile(filename.c_str());
-	timefile << "Total time taken to iterate " << N_t << " time steps = " << ((float)t)/CLOCKS_PER_SEC << " s." << endl;
 
+		/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+		/* calculate velocities and propagate positions */
+
+		bool MeshFinished(false);
+		Tangle.LoopKill();																							// remove rings smaller than 6 points
+		while(MeshFinished==false) MeshFinished = Tangle.MeshAdjust();  // mesh_adjust until finished
+		Tangle.Reconnection(); 																					// check for and perform reconnections 
+		Tangle.CalcVelocity(); 																					// calculates and combines all contributions to velocity
+		Tangle.PropagatePos(Tangle.mDt);																// propagate positions
+
+		i++;						// step forward
+
+		/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+	}
+
+	t = clock()-t;
+	cout << "\t - - - - - - -    SIMULATION FINISHED    - - - - - - - -"; 
+	cout << "\t    time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
 	return 0;
 }
 

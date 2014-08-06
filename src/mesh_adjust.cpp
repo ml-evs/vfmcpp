@@ -22,8 +22,8 @@ bool Tangle::MeshAdjust(){
 			R = 1/R;
 			/* point deletion for smoothing and proximity*/
 			if((1/R)>1.9/dr || (*c)->mPoints[k]->mSegLength < 0.5*dr){
-				if((1/R)>1.9/dr){cout << "Deleting point " << k << " / " << (*c)->mPoints.size() << " for smoothing." << endl;}
-				if((*c)->mPoints[k]->mSegLength < 0.5*dr){cout << "Deleting point " << k << " / " << (*c)->mPoints.size() << " for proximity." << endl;}
+				if((1/R)>1.9/dr){continue;}
+				if((*c)->mPoints[k]->mSegLength < 0.5*dr){continue;}
 				/* reassign next and last pointers for point to be deleted */
 				(*c)->mPoints[k]->mNext->mPrev = (*c)->mPoints[k]->mPrev;
 				(*c)->mPoints[k]->mPrev->mNext = (*c)->mPoints[k]->mNext;
@@ -37,7 +37,6 @@ bool Tangle::MeshAdjust(){
 			}
 			/* point addition */
 			else if ((*c)->mPoints[k]->mSegLength > dr){
-			cout << "Adding point at " << k << " / " <<  (*c)->mPoints.size() << endl;
 				/* increment mN */
 				(*c)->mN++;
 				/* create new point and reassign pointers */

@@ -7,7 +7,7 @@ using namespace std;
 
 const double kappa = 9.98e-8;
 
-void Tangle::CalcVelocityNL_OF(){
+void Tangle::CalcVelocityNL(){
 
 	vector <double> q(3); 	// q = s_l+1 - s_l
 	vector <double> p(3); 	// p = s_l - s_k
