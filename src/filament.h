@@ -43,12 +43,12 @@ public:
 		mPoints[mN-1]->mNext = mPoints[0];
 		CalcMeshLengths();
 	}
-	Ring(double r, int N, double x, double y, double z, double theta){
+	Ring(int N, double r, double x, double y, double z, double theta){
 		mN = N;
 		for(int i=0; i<mN; i++){
 			mPoints.push_back(new Point());
-			mPoints[i]->mPos[0]=r*sin(i*(2*PI)/mN);
-			mPoints[i]->mPos[1]=r*cos(i*(2*PI)/mN);
+			mPoints[i]->mPos[0]=r*sin(-i*(2*PI)/mN);
+			mPoints[i]->mPos[1]=r*cos(-i*(2*PI)/mN);
 			mPoints[i]->mPos[2]=mPoints[i]->mPos[0]*sin(PI*theta/180);
 			mPoints[i]->mPos[0]+= x;
 			mPoints[i]->mPos[1]+= y;
