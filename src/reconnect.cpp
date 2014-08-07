@@ -222,7 +222,7 @@ void Tangle::SelfReconnect(int P, int Q, int k, int l){
 		delete mTangle[P]->mPoints[q];
 	}
 	mTangle.erase(mTangle.begin()+P);
-	cout << "\t\t !!! RECONNECTION !!! " << endl;
+	cout << "\n\t\t !!! RECONNECTION !!! " << endl;
 }
 
 void Tangle::Reconnect(int P, int Q, int k, int l){
@@ -257,5 +257,5 @@ void Tangle::Reconnect(int P, int Q, int k, int l){
 	}
 	delete mTangle[Q];
 	mTangle.erase(mTangle.begin()+Q);
-	cout << "\t\t !!! RECONNECTION !!! " << endl;
+	cout << "\n\t\t !!! RECONNECTION !!! " << endl;
 }

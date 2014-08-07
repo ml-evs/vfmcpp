@@ -24,6 +24,9 @@ int main(int argc, char* argv[]){
 	else runfile = "NULL";
 	string filename = Tangle.Initialise(runfile);
 
+
+	Tangle.FromFile(filename)
+
 	/* set resolutions */
 	double dt, dr(0);
 	int N_p(0);
@@ -41,9 +44,11 @@ int main(int argc, char* argv[]){
 	/* set resolution as 4/3 average distance for mesh adjust */
 	dr = (4.0/3.0)*dr;
 	dt = pow((dr/2),2)/(kappa*log(dr/(2*PI*a0)));
-	dt = dt/25; 		// Baggaley, Barenghi PRB 2010
-	cout << "\t    spatial resolution = "<< dr << " m" << endl << "\t    time-step = " << dt << " s\n\n";
+	dt = dt/25; 													// Baggaley, Barenghi PRB 2010
 	
+
+	cout << "\t    spatial resolution = "<< dr << " m" << endl;
+	cout << "\t    time-step = " << dt << " s\n\n";
 	Tangle.mDr = dr; Tangle.mDt = dt;
 
 	/* set number of timesteps and number of steps per save */
@@ -67,13 +72,15 @@ int main(int argc, char* argv[]){
 		end = Tangle.mTangle.end();
 		
 		percent = (100*i/N_t); 
-		printf("\r\t %6.2f %% \t",percent); 						// output percentage completion
+		printf("\r\t %6.2f %% \t",percent); 							// output percentage completion
 		
-		if(Tangle.mN_slow == 30){Tangle.mN_f = 10;} 		// reset saving after reconnection 
+		if(Tangle.mN_slow == 30){Tangle.mN_f = 10;} 			// reset saving after reconnection 
 		if(Tangle.mN_slow == 200){Tangle.mN_f = 100;}
 		if(Tangle.mN_slow == 5000){Tangle.mN_f = 10000;}
-		if(Tangle.mN_f==1||Tangle.mN_f == 10||Tangle.mN_f == 100){Tangle.mN_slow++;}  // increment slow-mo counter
-		else{Tangle.mN_slow = 0;} 								// reset slow-mo counter
+		if(Tangle.mN_f==1
+			||Tangle.mN_f == 10
+			||Tangle.mN_f == 100){Tangle.mN_slow++;}  			// increment slow-mo counter
+		else{Tangle.mN_slow = 0;} 												// reset slow-mo counter
 
 		/* save positions to file every mN_f steps */
 		if(i%Tangle.mN_f==0){
