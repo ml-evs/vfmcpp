@@ -1,5 +1,5 @@
-path data/02_08
+path data/02_09_no_mesh
 time 1e-3
 N_pt 100
-ring 1e-6 0 0 5e-6
-ring 0.8e-6 0 0.2e-6 0
+ring 1e-6 0 0 1.5e-6
+ring 0.9e-6 0 0.2e-6 0
