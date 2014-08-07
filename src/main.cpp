@@ -44,8 +44,6 @@ int main(int argc, char* argv[]){
 	dt = dt/25; 		// Baggaley, Barenghi PRB 2010
 	cout << "\t    spatial resolution = "<< dr << " m" << endl << "\t    time-step = " << dt << " s\n\n";
 	
-	//dr = 7.95739e-8; dt = 1.3856e-10;
-
 	Tangle.mDr = dr; Tangle.mDt = dt;
 
 	/* set number of timesteps and number of steps per save */

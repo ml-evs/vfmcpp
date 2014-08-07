@@ -33,7 +33,7 @@ bool Tangle::MeshAdjust(){
 				(*c)->mPoints.erase((*c)->mPoints.begin()+k);
 				(*c)->CalcMeshLengths(); (*c)->CalcSPrime(); (*c)->CalcS2Prime();
 				Remeshed = true;
-				break;
+				return false;
 			}
 			/* point addition */
 			else if ((*c)->mPoints[k]->mSegLength > dr){
