@@ -20,8 +20,8 @@ def getfiles():
 	if len(sys.argv)!=1:
 		base_filename = '../../data/' + str(sys.argv[1]) + '/data_'
 	else:
-		data_folder = raw_input('Enter data folder name relative to ~/vfmcpp/bin/data :')
-		base_filename = '../../data/' + data_folder + '/data_'
+		data_folder = raw_input('Enter data folder path:')
+		base_filename = data_folder + '/data_'
 
 	end = False
 	end2 = False

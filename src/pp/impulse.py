@@ -21,9 +21,10 @@ def getfiles():
 	if len(sys.argv)!=1:
 		base_filename = '../../data/' + str(sys.argv[1]) + '/data_'
 	else:
-		data_folder = raw_input('Enter data folder name relative to ~/vfmcpp/data :')
-		base_filename = '../../data/' + data_folder + '/data_'
+		data_folder = raw_input('Enter data folder path:')
+		base_filename = data_folder + '/data_'
 
+	print base_filename	
 	end = False
 	end2 = False
 	while(end==False):
@@ -43,7 +44,7 @@ def getfiles():
 						end2 = True
 		else:
 			end = True
-			print str(len(files)) + ' files read successful. ' 
+			print str(len(files)) + ' files read successfully. ' 
 	return base_filename, files, times, jmax
 
 def calcimpulse(jmax, impulse_files, i):
@@ -91,6 +92,7 @@ def calcimpulse(jmax, impulse_files, i):
 			end = True
 
 
+	points = 0
 
 	for m in range(len(r)):
 
@@ -104,6 +106,8 @@ def calcimpulse(jmax, impulse_files, i):
 
 	for m in range(len(r)):
 
+		points += len(r[m])
+
 		for i in range(len(r[m])):
 			for q in range(3):
 				eps[m][i][q] = l[m][i][q]
@@ -113,7 +117,7 @@ def calcimpulse(jmax, impulse_files, i):
 			for q in range(3):
 				r_eff[m][q] += rxeps[m][i][q]
 				
-		
+			
 
 		for q in range(3):
 			r_eff[m][q] = np.sqrt(pow(((1/(2*np.pi))*r_eff[m][q]),2))
@@ -132,7 +136,7 @@ def calcimpulse(jmax, impulse_files, i):
 				length_temp += pow(l[d][c][q],2)
 			length += np.sqrt(length_temp)			
 
-	return radius, length
+	return radius, length, points
 
 base_filename, files, times, jmax = getfiles()
 
@@ -144,25 +148,23 @@ impulse_times = []
 radius = []
 
 
-
 for i in range(len(files)):
 	if i%1==0:
 		impulse_files.append(files[i])
 		impulse_times.append(times[i])
 
 length = np.zeros((len(impulse_times)))
+points = np.zeros((len(impulse_times)))
 for i in range(len(impulse_files)):
 	radius.append(np.zeros((jmax+1)))
-	radius[-1], length[i] = calcimpulse(jmax, impulse_files, i)
+	radius[-1], length[i], points[i] = calcimpulse(jmax, impulse_files, i)
 
 fig = plt.figure(facecolor='w', edgecolor='w',figsize=plt.figaspect(2.))
 ax = fig.add_subplot(111, 
  	axisbg='w')
 
 ax2 = ax.twinx()
-
-
-
+ax3 = ax.twinx()
 
 
 impulse = np.pi * kappa * np.power(radius,2)
@@ -190,12 +192,16 @@ p2 = p_mask[:,2]
 
 
 ax2.set_ylim(0,1.2*np.max(length))
+ax3.set_ylim(0,1.2*np.max(points))
+
+print radius[0]
 
 ax.plot(impulse_times, p0, c='r',alpha=0.7, linewidth=3)# s=35)
 ax.plot(impulse_times, p1, c='g',alpha=0.7, linewidth=3)# s=35)
 ax.plot(impulse_times, p2, c='b',alpha=0.7, linewidth=3)# s=35)
 ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=3)
 ax2.plot(impulse_times, length, c='c',linewidth=3)
+ax3.plot(impulse_times, points, c='y', linewidth=3)
 plt.show()
 
 
