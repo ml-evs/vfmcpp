@@ -155,7 +155,7 @@ for i in range(len(impulse_files)):
 	radius.append(np.zeros((jmax+1)))
 	radius[-1], length[i] = calcimpulse(jmax, impulse_files, i)
 
-fig = plt.figure(facecolor='w', edgecolor='w',figsize=plt.figaspect(1.))
+fig = plt.figure(facecolor='w', edgecolor='w',figsize=plt.figaspect(2.))
 ax = fig.add_subplot(111, 
  	axisbg='w')
 
@@ -191,11 +191,11 @@ p2 = p_mask[:,2]
 
 ax2.set_ylim(0,1.2*np.max(length))
 
-ax.scatter(impulse_times, p0, c='r',alpha=0.7, s=35)
-ax.scatter(impulse_times, p1, c='g',alpha=0.7, s=35)
-ax.scatter(impulse_times, p2, c='b',alpha=0.7, s=35)
-#ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=3)
-ax2.plot(impulse_times, length, c='r',linewidth=3)
+ax.plot(impulse_times, p0, c='r',alpha=0.7, linewidth=3)# s=35)
+ax.plot(impulse_times, p1, c='g',alpha=0.7, linewidth=3)# s=35)
+ax.plot(impulse_times, p2, c='b',alpha=0.7, linewidth=3)# s=35)
+ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=3)
+ax2.plot(impulse_times, length, c='c',linewidth=3)
 plt.show()
 
 

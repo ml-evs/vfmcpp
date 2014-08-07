@@ -41,7 +41,7 @@ do
 	echo "time 1e-3" >> $sig.in
 	echo "N_pt 100" >> $sig.in
 	echo "ring 1e-6 0 0 5e-6" >> $sig.in
-	echo "ring 0.8e-6 0 ${sig}e-6" >> $sig.in
+	echo "ring 0.9e-6 0 ${sig}e-6" >> $sig.in
 	cd ..
 	cd ../../bin
 	./vfmcpp ../data/sweep_0.9/$sig/$sig.in

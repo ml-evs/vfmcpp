@@ -97,7 +97,7 @@ int main(int argc, char* argv[]){
 				}
 				outfile.close(); n_fil++;
 			}
-			printf("wrote step %6u \t", i);	printf("%4.4f / ", (1000000*i*Tangle.mDt));	printf("%4.0f us ", 1000000*t_total);
+			printf("\t\t wrote step %6u", i);;
 			file_no++;
 		}
 
@@ -117,8 +117,8 @@ int main(int argc, char* argv[]){
 	}
 
 	t = clock()-t;
-	cout << "\t - - - - - - -    SIMULATION FINISHED    - - - - - - - -"; 
-	cout << "\t    time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
+	cout << "\n\t - - - - - - -    SIMULATION FINISHED    - - - - - - - -"; 
+	cout << "\n\t    time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
 	return 0;
 }
 
