@@ -40,10 +40,8 @@ void Tangle::Reconnection(){
 									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev
 									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext
 									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev
-									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext->mNext
-									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev->mPrev
-									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext->mNext->mNext
-									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev->mPrev->mPrev){
+/*									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext->mNext
+									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev->mPrev*/){
 									continue;
 								}
 								else{
@@ -119,11 +117,7 @@ int Tangle::ReconnectionTest(){
 						|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext
 						|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev
 						|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext
-						|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev
-						|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext->mNext
-						|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev->mPrev
-						|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext->mNext->mNext
-						|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev->mPrev->mPrev){
+						|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev){
 						continue;
 					}
 					else{
@@ -143,11 +137,12 @@ int Tangle::ReconnectionTest(){
 					}
 				}
 				if(NeedRecon==true){
+					cout << "\n" << k << ", " << l_rec <<", " << P << ", " << Q << endl;
 					if(mTangle[P]->mPoints[l_rec]->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[l_rec-1]->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[l_rec-2]->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[l_rec+1]->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[l_rec+2]->mMarkedForRecon == true
+						|| mTangle[P]->mPoints[l_rec]->mPrev->mMarkedForRecon == true
+						|| mTangle[P]->mPoints[l_rec]->mPrev->mPrev->mMarkedForRecon == true
+						|| mTangle[P]->mPoints[l_rec]->mNext->mMarkedForRecon == true
+						|| mTangle[P]->mPoints[l_rec]->mNext->mNext->mMarkedForRecon == true
 						|| mTangle[P]->mPoints[k]->mPrev->mMarkedForRecon == true
 						|| mTangle[P]->mPoints[k]->mNext->mMarkedForRecon == true
 						|| mTangle[P]->mPoints[k]->mPrev->mPrev->mMarkedForRecon == true
@@ -168,7 +163,7 @@ int Tangle::ReconnectionTest(){
 
 void Tangle::SelfReconnect(int P, int Q, int k, int l){
 	mN_f = 1; mN_slow = 0;
-	/* reassign pointers to separate new ring */ 
+	/* reassign pointers to separate new ring  */
 	mTangle[P]->mPoints[k]->mNext->mPrev = mTangle[Q]->mPoints[l]->mPrev;  
 	mTangle[Q]->mPoints[l]->mPrev->mNext = mTangle[P]->mPoints[k]->mNext;
 	Point* pNew = mTangle[P]->mPoints[l];
@@ -186,14 +181,11 @@ void Tangle::SelfReconnect(int P, int Q, int k, int l){
 		mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];
 		mTangle.back()->mPoints[d]->mNext = mTangle.back()->mPoints[d+1];
 	}	
-	mTangle.back()->mPoints[N_new-2]->mPrev = mTangle.back()->mPoints[N_new-3];
-	mTangle.back()->mPoints[N_new-2]->mNext = mTangle.back()->mPoints[0];
+	mTangle.back()->mPoints[N_new-1]->mPrev = mTangle.back()->mPoints[N_new-2];
+	mTangle.back()->mPoints[N_new-1]->mNext = mTangle.back()->mPoints[0];
 	mTangle.back()->mPoints[0]->mNext = mTangle.back()->mPoints[1];
-	mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints[N_new-2]; 
-	/* delete last duplcate point */
-	delete mTangle.back()->mPoints.back();
-	mTangle.back()->mPoints.erase(mTangle.back()->mPoints.end()-1);
-	mTangle.back()->mN--;	
+	mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints[N_new-1]; 
+
 	pNew = mTangle[Q]->mPoints[k]->mNext;
 	/* create new ring in tangle */
 	mTangle.push_back(new Ring());
@@ -209,14 +201,10 @@ void Tangle::SelfReconnect(int P, int Q, int k, int l){
 		mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];
 		mTangle.back()->mPoints[d]->mNext = mTangle.back()->mPoints[d+1];
 	}
-	mTangle.back()->mPoints[N_new-2]->mPrev = mTangle.back()->mPoints[N_new-3];
-	mTangle.back()->mPoints[N_new-2]->mNext = mTangle.back()->mPoints[0];
+	mTangle.back()->mPoints[N_new-1]->mPrev = mTangle.back()->mPoints[N_new-2];
+	mTangle.back()->mPoints[N_new-1]->mNext = mTangle.back()->mPoints[0];
 	mTangle.back()->mPoints[0]->mNext = mTangle.back()->mPoints[1];
-	mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints[N_new-2]; 
-	/* delete last duplicate point */
-	delete mTangle.back()->mPoints.back();
-	mTangle.back()->mPoints.erase(mTangle.back()->mPoints.end()-1);
-	mTangle.back()->mN--;	
+	mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints[N_new-1]; 
 	
 	for(unsigned int q(0); q<mTangle[P]->mPoints.size(); q++){
 		delete mTangle[P]->mPoints[q];

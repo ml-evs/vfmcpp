@@ -19,13 +19,15 @@ int main(int argc, char* argv[]){
 
 	/* initialise tangle and print banner */
 	Tangle Tangle;
+
 	string runfile;
 	if(argc!=1){runfile = argv[1];}
 	else runfile = "NULL";
 	string filename = Tangle.Initialise(runfile);
 
 
-	Tangle.FromFile(filename)
+	/*string filename = "../init/init_state/015_09/015_09_rec";
+	Tangle.FromFile(filename);*/
 
 	/* set resolutions */
 	double dt, dr(0);
@@ -49,6 +51,7 @@ int main(int argc, char* argv[]){
 
 	cout << "\t    spatial resolution = "<< dr << " m" << endl;
 	cout << "\t    time-step = " << dt << " s\n\n";
+
 	Tangle.mDr = dr; Tangle.mDt = dt;
 
 	/* set number of timesteps and number of steps per save */
@@ -86,8 +89,8 @@ int main(int argc, char* argv[]){
 		if(i%Tangle.mN_f==0){
 			int n_fil(0);
 			stringstream ss0; ss0 << file_no; string i_str = ss0.str();
+		//	string ith_filename = filename + "/data_" + i_str + "_"; // can use to feed in initial state
 			string ith_filename = filename + i_str + "_";
-
 			for(current=begin; current!=end; current++){
 				stringstream ss; ss << n_fil;	string n_fil_str = ss.str(); 
 				string ith_jth_filename = ith_filename + n_fil_str + ".dat";

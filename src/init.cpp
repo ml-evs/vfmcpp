@@ -17,7 +17,7 @@ string Tangle::Initialise(string runfile){
 	string filename;
 	double t_total;
 	int N;
-	vector <double> param(5);
+	vector <double> param(4);
 	cout << "\t - - - - - - -    INITIALISING TANGLE    - - - - - - - -\n\n";
 	cout << "\t    init path: " << runfile << endl;
 	while(infile){
@@ -55,7 +55,7 @@ string Tangle::Initialise(string runfile){
 				convert >> param[i];
 				if(input.eof()) break;
 			}
-			mTangle.push_back(new Ring(N, param[0], param[1], param[2], param[3], param[4]));
+			mTangle.push_back(new Ring(N, param[0], param[1], param[2], param[3]));
 			cout << " r = " << param[0] << " m, p = (" << param[1];
 			cout << ", " << param[2] << ", " << param[3] << ") m. " << endl;
 			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;

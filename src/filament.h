@@ -29,7 +29,7 @@ public:
 class Ring : public Filament{
 public:
 	Ring(){mN = 0;};
-	Ring(double r, int N, double x, double y, double z){
+	Ring(int N, double r, double x, double y, double z){
 		mN = N;
 		for(int i=0; i<mN; i++){
 			mPoints.push_back(new Point());

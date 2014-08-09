@@ -139,7 +139,7 @@ ax.add_artist(x)
 ax.add_artist(y)
 ax.add_artist(z)
 
-ani = animation.FuncAnimation(fig, animate, repeat=True, init_func = init, frames = len(files), interval = 1, blit=False)
+ani = animation.FuncAnimation(fig, animate, repeat=False, init_func = init, frames = len(files), interval = 1, blit=False)
 
 if Analysis == 'p':
 	plt.show()
