@@ -12,7 +12,6 @@ void Tangle::Reconnection(){
 	/* count number of possible reconnections this step */
 	int recon_count = ReconnectionTest();
 	double res = mDr;
-	int l_rec;
 	bool Reconnected(false);
 	bool NeedRecon(false);
 	/* keep trying to reconnect until all have been performed */
@@ -26,6 +25,7 @@ void Tangle::Reconnection(){
 					if(Reconnected== true){break;}
 					/* iterate along filament for new test point */
 					for(int k(0); k<mTangle[P]->mN; k++){
+						int l_rec;
 						NeedRecon = false;
 						if(Reconnected== true){break;}
 						/* find points marked for reconnection */
@@ -102,13 +102,13 @@ int Tangle::ReconnectionTest(){
 	double res = mDr;
 	int recon_count(0);
 	bool NeedRecon(false);
-	int l_rec;
 	/* FIND MESH POINTS TO BE RECONNECTED */
 	/* iterate over all filaments */
 	for (unsigned int P(0);P!=mTangle.size();P++){
 		for (unsigned int Q(P);Q!=mTangle.size(); Q++){
 			/* iterate along filament for new test point */
 			for(int k(0); k<mTangle[P]->mN; k++){
+				int l_rec;
 				NeedRecon = false;
 				double mindist2(0.25*res*res);
 				/* iterate along filament for point to check against */
@@ -126,30 +126,27 @@ int Tangle::ReconnectionTest(){
 						dist2 +=  pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2); 
 						dist2 += pow(mTangle[P]->mPoints[k]->mPos[2] - mTangle[Q]->mPoints[l]->mPos[2], 2);
 						if(dist2 < 0.25*res*res){
-							NeedRecon = true;
 							double dot_tangents = mTangle[P]->mPoints[k]->mSPrime[0] * mTangle[Q]->mPoints[l]->mSPrime[0];
 							dot_tangents += mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1];
 							dot_tangents += mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
-							if(dot_tangents > 0){continue;}
+							if(dot_tangents > 0){cout << "\nParallel lines" << endl; continue;}
 							/* find closest point to k inside range and mark it for reconnection */
-							else if(dist2 < mindist2){mindist2 = dist2; l_rec = l;}
+							else if(dist2 < mindist2){mindist2 = dist2; l_rec = l; NeedRecon = true;}
 						}
 					}
 				}
 				if(NeedRecon==true){
-					cout << "\n" << k << ", " << l_rec <<", " << P << ", " << Q << endl;
-					if(mTangle[P]->mPoints[l_rec]->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[l_rec]->mPrev->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[l_rec]->mPrev->mPrev->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[l_rec]->mNext->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[l_rec]->mNext->mNext->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[k]->mPrev->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[k]->mNext->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[k]->mPrev->mPrev->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[k]->mNext->mNext->mMarkedForRecon == true){
-						continue;
-					}
+					if(mTangle[P]->mPoints[l_rec]->mMarkedForRecon == true){cout << l_rec << " Found already marked " << endl;}
+					else if(mTangle[P]->mPoints[l_rec]->mPrev->mMarkedForRecon == true){cout << l_rec << "Found already marked2 " << endl;}
+					else if(mTangle[P]->mPoints[l_rec]->mPrev->mPrev->mMarkedForRecon == true){cout << l_rec << "Found already marked3 " << endl;}
+					else if(mTangle[P]->mPoints[l_rec]->mNext->mMarkedForRecon == true){cout << l_rec << "Found already marked4 " << endl;}
+					else if(mTangle[P]->mPoints[l_rec]->mNext->mNext->mMarkedForRecon == true){cout << l_rec << "Found already marked5 " << endl;}
+					else if(mTangle[P]->mPoints[k]->mPrev->mMarkedForRecon == true){cout << l_rec << "Found already marked6 " << endl;}
+					else if(mTangle[P]->mPoints[k]->mNext->mMarkedForRecon == true){cout << l_rec << "Found already marked7 " << endl;}
+					else if(mTangle[P]->mPoints[k]->mPrev->mPrev->mMarkedForRecon == true){cout << l_rec << "Found already marked8 " << endl;}
+					else if(mTangle[P]->mPoints[k]->mNext->mNext->mMarkedForRecon == true){cout << l_rec << "Found already marked9 " << endl;}
 					else{
+						cout << "\n" << k << ", " << l_rec <<", " << P << ", " << Q << endl;
 						mTangle[P]->mPoints[k]->mMarkedForRecon = true;
 					 	recon_count++;
 					}
