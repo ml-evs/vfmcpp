@@ -97,11 +97,16 @@ def animate(i):
 		ax.set_ylim3d((-0.5e-6+0.0114e-6*i,0.5e-6-0.0114e-6*i))
 		ax.set_zlim3d((0+0.0114e-6*i,1e-6-0.0114e-6*i))
 		ax.view_init(10,90+5*i)
+	if(i>300 and i<400):
+		ax.view_init(0,0)
+		ax.set_xlim3d((-0.05e-6, 0.05e-6))
+		ax.set_ylim3d((-0.05e-6, 0.05e-6))
+		ax.set_zlim3d((0,1e-6))
 	fig.canvas.draw()
 	plt.draw()
 	return rings, time_text
 
-dt = 1.3856-10
+dt = 6.3787-12
 base_filename, files, times, jmax = getfiles()
 
 if len(sys.argv) > 2:
@@ -110,7 +115,7 @@ else:
 	Analysis = raw_input('[p]lot to screen, [g]if or [m]ovie?')
 
 
-fig = plt.figure(facecolor='w', edgecolor='w',figsize=plt.figaspect(1.))
+fig = plt.figure(facecolor='w', edgecolor='w',figsize=(4,4))
 ax = fig.add_subplot(111, 
  	aspect='equal',
  	axisbg='w',
@@ -125,10 +130,10 @@ print jmax
 colors = plt.cm.Blues(np.linspace(1,0.7, jmax+1))
 style = '-'
 if Analysis == 'p':
-	style = 'o-'
+	style = '*-'
 
 for k in range (jmax+2):
-	rings += [l for c in colors for l in ax.plot([], [], [], style, c=c, alpha = 0.9, linewidth=4, markersize=5, markerfacecolor='b', markeredgecolor='b')]
+	rings += [l for c in colors for l in ax.plot([], [], [], style, c=c, alpha = 0.9, linewidth=2, markersize=5, markerfacecolor=c, markeredgecolor=c)]
 time_text = ax.text(0, 0, 0,'', transform=ax.transAxes, color='k')
 ax.set_xlim3d((-0.5e-6,0.5e-6))
 ax.set_ylim3d((-0.5e-6,0.5e-6))
@@ -153,6 +158,6 @@ elif Analysis == ('g' or 'm'):
 		filename = raw_input('Enter the desired filename for the gif (will be saved in data folder):')
 		filename = '../../img/' + filename
 	if Analysis == 'g':
-		ani.save(filename+'.gif', writer='imagemagick', fps=20)
+		ani.save(filename+'.gif', writer='imagemagick', fps=30)
 	elif Analysis == 'm':
 		ani.save(filename+'.mp4', fps=20, dpi=500)
