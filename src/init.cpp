@@ -60,6 +60,25 @@ string Tangle::Initialise(string runfile){
 			cout << ", " << param[2] << ", " << param[3] << ") m. " << endl;
 			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;
 		}
+		else if(line.substr(0,4) == "line"){
+			cout << "Reading string";
+			put.clear();
+			input.clear();
+			convert.clear();
+			cout << "\t    string";
+			input << line.substr(5);
+			for(int i(0);i<4;i++){
+				convert.clear();
+				getline(input, put, ' ');
+				convert << put;
+				convert >> param[i];
+				if(input.eof()) break;
+			}
+			mTangle.push_back(new String(N, param[0], param[1], param[2], param[3]));
+			cout << " L = " << param[0] << " m, p = (" << param[1];
+			cout << ", " << param[2] << ", " << param[3] << ") m. " << endl;
+			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;
+		}
 		if(infile.eof()) break;
 	}
 	infile.close();

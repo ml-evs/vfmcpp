@@ -22,10 +22,11 @@ public:
 	vector <double> mS2Prime;			// binormal at point
 	vector <double> mSegLast; 			// vector to last point
 	double			mSegLength; 		// distance to last point
-	double 			mCharge; 			// charge at point 
+	double 			mCharge; 			// charge at point
 	int 			mFlagFilled;		// flag showing how many velocity steps back are present
-	bool 			mMarkedForDeletion; // flag telling reconnect whether this point needs to be removed
-	bool 			mMarkedForRecon;	// flag telling reconnect whether point tried to reconnect
+	bool			mFlagDummy;			// flag indicating dummy points used for strings
+	bool			mMarkedForDeletion; // flag telling reconnect whether this point needs to be removed
+	bool			mMarkedForRecon; 
 	/* member functions */
 	Point(){
 		/* default constructor just reserves memory */
@@ -33,12 +34,14 @@ public:
 		mVel1.resize(3); mVel2.resize(3); mVel3.resize(3); mVelNL.resize(3);
 		mSPrime.resize(3); mS2Prime.resize(3); mSegLast.resize(3);
 		mCharge = 0; mSegLength = 0; mFlagFilled = 0; mMarkedForDeletion = false; mMarkedForRecon = false;
+		mFlagDummy = false;
 	}
 	Point(Point* occ){
 		/* parameterised constructor copies a point, used in reconnection */
 		mVel = occ->mVel; mVel1 = occ->mVel1; mVel2 = occ->mVel2; mVel3 = occ->mVel3; mVelNL.resize(3);
 		mPos = occ->mPos; mSPrime.resize(3); mS2Prime.resize(3); mSegLast.resize(3);
 		mCharge = 0; mSegLength = 0; mFlagFilled = occ->mFlagFilled; mMarkedForDeletion = false; mMarkedForRecon = occ->mMarkedForRecon;
+		mFlagDummy = false;
 	}
 	Point(vector <double> CurrentPos){
 		/* parameterised constructor copies a point, used in reconnection */
@@ -47,8 +50,8 @@ public:
 		mVel.resize(3); mVel1.resize(3); mVel2.resize(3); mVel3.resize(3); mVelNL.resize(3);
 		mSPrime.resize(3); mS2Prime.resize(3); mSegLast.resize(3);
 		mCharge = 0; mSegLength = 0; mFlagFilled = 0; mMarkedForDeletion = false; mMarkedForRecon = false;
+		mFlagDummy = false;
 	}
 	~Point(){};
 };
-
 #endif

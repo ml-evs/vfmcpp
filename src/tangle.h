@@ -19,6 +19,10 @@ public:
 	double mTotalTime;	// total time
 	/* member functions */
 	Tangle(){};
+	Tangle(Filament* String1){
+		mTangle.push_back(String1);
+		mN_f = 10000;
+	}
 	Tangle(Filament* Ring1, Filament* Ring2){
 		mTangle.push_back(Ring1);
 		mTangle.push_back(Ring2);
@@ -32,6 +36,7 @@ public:
 	bool LoopKill();
 	void Reconnection();
 	void SelfReconnect(int P, int Q, int k, int l);
+	void SelfReconnectLine(int P, int Q, int k, int l);
 	void Reconnect(int P, int Q, int k, int l);
 	void PropagatePos(double & dt); 
 	bool MeshAdjust();

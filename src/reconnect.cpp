@@ -14,11 +14,13 @@ void Tangle::Reconnection(){
 	double res = mDr;
 	bool Reconnected(false);
 	bool NeedRecon(false);
+	bool Finished(false);
 	/* keep trying to reconnect until all have been performed */
 	if(recon_count!=0){
 		while(recon_count > 0){
+			if(Finished==true){break;}
 			Reconnected = false;
-			//cout << "Number of possible reconnections = " << recon_count << endl;
+			cout << "\nNumber of possible reconnections = " << recon_count << endl;
 			for (unsigned int P(0);P!=mTangle.size();P++){
 				if(Reconnected== true){break;}
 				for (unsigned int Q(P);Q!=mTangle.size(); Q++){
@@ -30,26 +32,26 @@ void Tangle::Reconnection(){
 						if(Reconnected== true){break;}
 						/* find points marked for reconnection */
 						if(mTangle[P]->mPoints[k]->mMarkedForRecon == true){
-							double mindist2(0.25*res*res);
+							double maxdist2(0);
 							/* iterate along filament for point to check against */
 							for(int l(0); l<mTangle[Q]->mN; l++){
 								if(Reconnected== true){break;}
 								/* prevent reconnection from making loops too small */
-								if(mTangle[P]->mPoints[k]==mTangle[Q]->mPoints[l] 
+								if(mTangle[P]->mPoints[k]==mTangle[Q]->mPoints[l]
 									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext
 									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev
 									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext
 									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev
-/*									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext->mNext
-									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev->mPrev*/){
+									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext->mNext
+									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev->mPrev){
 									continue;
 								}
+								if(l==mTangle[Q]->mN-1){Finished=true;}
 								else{
 									double dist2 = pow(mTangle[P]->mPoints[k]->mPos[0] - mTangle[Q]->mPoints[l]->mPos[0],2);
-									dist2 +=  pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2); 
-									dist2 += pow(mTangle[P]->mPoints[k]->mPos[2] - mTangle[Q]->mPoints[l]->mPos[2], 2);			
-
-									/* check if non-neighbouring points are too close */	
+									dist2 +=  pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2);
+									dist2 += pow(mTangle[P]->mPoints[k]->mPos[2] - mTangle[Q]->mPoints[l]->mPos[2], 2);
+									/* check if non-neighbouring points are too close */
 									if(dist2 < 0.25*res*res){
 
 										/* make sure lines aren't parallel */
@@ -57,22 +59,30 @@ void Tangle::Reconnection(){
 										dot_tangents += mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1];
 										dot_tangents += mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
 										/* find closest point to k inside range and mark it for reconnection, ignoring parallel lines */
-										if(dot_tangents > 0){continue;}
-										else if(dist2 < mindist2){mindist2 = dist2; NeedRecon = true; l_rec = l;}
+										if(dot_tangents > 0){cout << "\nparallel " << endl; continue;}
+										else if(dist2 > maxdist2){maxdist2 = dist2; NeedRecon = true; l_rec = l;}
 									}
 								}
 							}
-							/* perform reconnections */ 
+							/* perform reconnections */
 							if(NeedRecon==true){
 								if(P==Q){
+									cout << "Want to reconnect " << recon_count << " times" << endl;
+									cout << k << ", " << l_rec << endl;
+									cout << "Marking points " << endl;
 									mTangle[P]->mPoints[k]->mMarkedForRecon = false;
 									mTangle[Q]->mPoints[l_rec]->mMarkedForRecon = false;
-									SelfReconnect(P,Q,k,l_rec);
+									cout << "Calling func" << endl;
+									if(mTangle[P]->mFlagType==0){
+										SelfReconnect(P,Q,k,l_rec);
+									}
+									else SelfReconnectLine(P,Q,k,l_rec);
 									Reconnected = true;
 									recon_count--;
 									break;
 								}
 								else{
+									cout << "Want to reconnect " << recon_count << " times" << endl;
 									mTangle[P]->mPoints[k]->mMarkedForRecon = false;
 									mTangle[Q]->mPoints[l_rec]->mMarkedForRecon = false;
 									Reconnect(P,Q,k,l_rec);
@@ -102,59 +112,159 @@ int Tangle::ReconnectionTest(){
 	double res = mDr;
 	int recon_count(0);
 	bool NeedRecon(false);
-	/* FIND MESH POINTS TO BE RECONNECTED */
+  /* FIND MESH POINTS TO BE RECONNECTED */
 	/* iterate over all filaments */
 	for (unsigned int P(0);P!=mTangle.size();P++){
 		for (unsigned int Q(P);Q!=mTangle.size(); Q++){
 			/* iterate along filament for new test point */
-			for(int k(0); k<mTangle[P]->mN; k++){
+			Point* pK = mTangle[P]->mPoints[0];
+			int i(0);
+			while(i<mTangle[P]->mN){
+				int k;
 				int l_rec;
 				NeedRecon = false;
-				double mindist2(0.25*res*res);
+				double maxdist2(0);
 				/* iterate along filament for point to check against */
-				for(int l(0); l<mTangle[Q]->mN; l++){
-					if(mTangle[P]->mPoints[k]==mTangle[Q]->mPoints[l] 
-						|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext
-						|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev
-						|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext
-						|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev){
-						continue;
+				int j(0); 
+				Point* pL = mTangle[Q]->mPoints[0];
+				while(j<mTangle[Q]->mN){
+					if(pK==pL
+						|| pL==pK->mNext
+						|| pL==pK->mPrev
+						|| pL==pK->mNext->mNext
+						|| pL==pK->mPrev->mPrev){ 
+						
 					}
-					else{
+					else{ 
 						/* check if non-neighbouring points are too close */
-						double dist2 = pow(mTangle[P]->mPoints[k]->mPos[0] - mTangle[Q]->mPoints[l]->mPos[0],2);
-						dist2 +=  pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2); 
-						dist2 += pow(mTangle[P]->mPoints[k]->mPos[2] - mTangle[Q]->mPoints[l]->mPos[2], 2);
+						double dist2 = pow(pK->mPos[0] - pL->mPos[0],2);
+						dist2 +=  pow(pK->mPos[1] - pL->mPos[1], 2);
+						dist2 += pow(pK->mPos[2] - pL->mPos[2], 2);
 						if(dist2 < 0.25*res*res){
-							double dot_tangents = mTangle[P]->mPoints[k]->mSPrime[0] * mTangle[Q]->mPoints[l]->mSPrime[0];
-							dot_tangents += mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1];
-							dot_tangents += mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
-							if(dot_tangents > 0){cout << "\nParallel lines" << endl; continue;}
+							NeedRecon = true;
+							double dot_tangents = pK->mSPrime[0] * pL->mSPrime[0];
+							dot_tangents += pK->mSPrime[1] * pL->mSPrime[1];
+							dot_tangents += pK->mSPrime[2] * pL->mSPrime[2];
+							if(dot_tangents > 0){continue;}
 							/* find closest point to k inside range and mark it for reconnection */
-							else if(dist2 < mindist2){mindist2 = dist2; l_rec = l; NeedRecon = true;}
+							else if(dist2 > maxdist2){
+								maxdist2 = dist2; 
+								for(int l(0);l<mTangle[Q]->mN; l++){
+									if(mTangle[Q]->mPoints[l] == pL){
+										l_rec = l;
+									}
+								}
+								for(int k_t(0);k<mTangle[P]->mN; k++){
+									if(mTangle[P]->mPoints[k] == pK){
+										k = k_t;
+									}
+								}
+							}
 						}
 					}
+					j++; pL = pL->mNext;
 				}
 				if(NeedRecon==true){
-					if(mTangle[P]->mPoints[l_rec]->mMarkedForRecon == true){cout << l_rec << " Found already marked " << endl;}
-					else if(mTangle[P]->mPoints[l_rec]->mPrev->mMarkedForRecon == true){cout << l_rec << "Found already marked2 " << endl;}
-					else if(mTangle[P]->mPoints[l_rec]->mPrev->mPrev->mMarkedForRecon == true){cout << l_rec << "Found already marked3 " << endl;}
-					else if(mTangle[P]->mPoints[l_rec]->mNext->mMarkedForRecon == true){cout << l_rec << "Found already marked4 " << endl;}
-					else if(mTangle[P]->mPoints[l_rec]->mNext->mNext->mMarkedForRecon == true){cout << l_rec << "Found already marked5 " << endl;}
-					else if(mTangle[P]->mPoints[k]->mPrev->mMarkedForRecon == true){cout << l_rec << "Found already marked6 " << endl;}
-					else if(mTangle[P]->mPoints[k]->mNext->mMarkedForRecon == true){cout << l_rec << "Found already marked7 " << endl;}
-					else if(mTangle[P]->mPoints[k]->mPrev->mPrev->mMarkedForRecon == true){cout << l_rec << "Found already marked8 " << endl;}
-					else if(mTangle[P]->mPoints[k]->mNext->mNext->mMarkedForRecon == true){cout << l_rec << "Found already marked9 " << endl;}
+					if(mTangle[P]->mPoints[l_rec]->mMarkedForRecon == true
+						|| mTangle[P]->mPoints[l_rec]->mPrev->mMarkedForRecon == true
+						|| mTangle[P]->mPoints[l_rec]->mPrev->mPrev->mMarkedForRecon == true
+						|| mTangle[P]->mPoints[l_rec]->mNext->mMarkedForRecon == true
+						|| mTangle[P]->mPoints[l_rec]->mNext->mNext->mMarkedForRecon == true
+						|| pK->mPrev->mMarkedForRecon == true
+						|| pK->mNext->mMarkedForRecon == true
+						|| pK->mPrev->mPrev->mMarkedForRecon == true
+						|| pK->mNext->mNext->mMarkedForRecon == true){
+					}
 					else{
-						cout << "\n" << k << ", " << l_rec <<", " << P << ", " << Q << endl;
-						mTangle[P]->mPoints[k]->mMarkedForRecon = true;
+						pK->mMarkedForRecon = true;
+						cout << endl << k << ", " << l_rec << endl;
 					 	recon_count++;
 					}
 				}
+				i++; pK = pK->mNext;
 			}
 		}
-	} 
+	}
 	return recon_count;
+}
+
+
+void Tangle::SelfReconnectLine(int P, int Q, int k, int l){
+ 		cout << "Attempting line reconnection" << endl;
+    mN_f = 1; mN_slow = 0;
+    /* create new ring in tangle */
+    mTangle.push_back(new Ring());
+    /* separate new wring */
+    mTangle[P]->mPoints[k]->mNext->mPrev = mTangle[Q]->mPoints[l]->mPrev;  
+		mTangle[Q]->mPoints[l]->mPrev->mNext = mTangle[P]->mPoints[k]->mNext;
+    Point* pNew = mTangle[P]->mPoints[k]->mNext;
+    int i(0);
+    do{
+    	//	cout << "copied point " << i << endl;
+        mTangle.back()->mPoints.push_back(new Point(pNew));
+        mTangle.back()->mN++;
+        pNew = pNew->mNext;
+        i++;
+    }while(pNew!=mTangle[Q]->mPoints[k]->mNext);
+    /* reassign pointers to separate new ring */
+    mTangle[P]->mPoints[k]->mNext->mPrev = mTangle[Q]->mPoints[l]->mPrev;
+    mTangle[Q]->mPoints[l]->mPrev->mNext = mTangle[P]->mPoints[k]->mNext;
+    mTangle[P]->mPoints[k]->mNext = mTangle[Q]->mPoints[l];
+    mTangle[Q]->mPoints[l]->mPrev = mTangle[P]->mPoints[k];
+    /* count points on new ring and assign pointers */
+    int N_new = mTangle.back()->mN;
+    for(int d(1); d<N_new-1; d++){
+        mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];
+        mTangle.back()->mPoints[d]->mNext = mTangle.back()->mPoints[d+1];
+    }
+    mTangle.back()->mPoints[0]->mNext = mTangle.back()->mPoints[1];
+    mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mPoints[N_new-1];
+    mTangle.back()->mPoints[N_new-1]->mNext = mTangle.back()->mPoints[0];
+    mTangle.back()->mPoints[N_new-1]->mPrev = mTangle.back()->mPoints[N_new-2];
+    mTangle.back()->CalcMeshLengths();
+    /* add new line of remaining points */
+    mTangle.push_back(new String());
+    int N_rem = mTangle[P]->mN - N_new;
+    pNew = mTangle[P]->mPoints[0];
+    /* push back position and velocities of new points to tangle */
+    int v(0);
+    do{
+        mTangle.back()->mPoints.push_back(new Point(pNew));
+        mTangle.back()->mN++;
+        pNew = pNew->mNext;
+        v++;
+    }while(v!=N_rem);
+    /* assign pointers and calculate dummies' positions*/
+    for(int d(1); d!=N_rem-1; d++){
+    mTangle.back()->mPoints[d]->mPrev = mTangle.back()->mPoints[d-1];
+    mTangle.back()->mPoints[d]->mNext = mTangle.back()->mPoints[d+1];
+    }
+    for (int i=0; i != 4; i++){
+        mTangle.back()->mDummies.push_back(new Point()); // note that default constructor labels as not a dummy!
+    }
+    mTangle.back()->mPoints[N_rem-1]->mPrev = mTangle.back()->mPoints[N_rem-2];
+    mTangle.back()->mPoints[N_rem-1]->mNext = mTangle.back()->mDummies[0];
+    mTangle.back()->mDummies[0]->mPrev = mTangle.back()->mPoints[N_rem-1];
+    mTangle.back()->mDummies[0]->mNext = mTangle.back()->mDummies[1];
+    mTangle.back()->mDummies[1]->mPrev = mTangle.back()->mDummies[0];
+    mTangle.back()->mPoints[0]->mNext = mTangle.back()->mPoints[1];
+    mTangle.back()->mPoints[0]->mPrev = mTangle.back()->mDummies[2];
+    mTangle.back()->mDummies[2]->mNext = mTangle.back()->mPoints[0];
+    mTangle.back()->mDummies[2]->mPrev = mTangle.back()->mDummies[3];
+    mTangle.back()->mDummies[3]->mNext = mTangle.back()->mDummies[2];
+    mTangle.back()->CalcMeshLengths();
+    mTangle.back()->CalcDummy();
+    /* label dummies for further mesh calculations */
+    for (int i=0; i != 4; i++){
+        mTangle.back()->mDummies[i]->mFlagDummy = 1;
+    }
+    mTangle.back()->CalcMeshLengths();
+    mTangle.back()->mPoints[0]->mFlagFilled = 5;// starting point should remain stationary
+    for(unsigned int q(0); q<mTangle[P]->mPoints.size(); q++){
+        delete mTangle[P]->mPoints[q];
+    }
+    mTangle.erase(mTangle.begin()+P);
+    cout << "\t\t !!! LINE RECONNECTION !!! " << endl;
 }
 
 
@@ -164,7 +274,7 @@ void Tangle::SelfReconnect(int P, int Q, int k, int l){
 	mTangle[P]->mPoints[k]->mNext->mPrev = mTangle[Q]->mPoints[l]->mPrev;  
 	mTangle[Q]->mPoints[l]->mPrev->mNext = mTangle[P]->mPoints[k]->mNext;
 	Point* pNew = mTangle[P]->mPoints[l];
-	/* create new ring in tangle */
+	/* copy old ring to tangle */
 	mTangle.push_back(new Ring());
 	do{
 		/* push back position and velocities of new points to tangle */

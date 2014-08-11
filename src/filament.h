@@ -15,7 +15,9 @@ class Filament{
 public:
 	/* member data */
 	int mN;
+	int mFlagType; // integer showing filament type: 0 for rings, 1 for lines
 	vector <Point*> 	mPoints;
+	vector <Point*>     mDummies;
 	/* member functions */
 	Filament(){};
 	~Filament(){};
@@ -24,13 +26,14 @@ public:
 	void CalcSPrime();
 	void CalcS2Prime();
 	void CalcVelocitySelfNL();
+	void CalcDummy();
 };
 /* ring class */
 class Ring : public Filament{
 public:
-	Ring(){mN = 0;};
+	Ring(){mN = 0; mFlagType = 0;};
 	Ring(int N, double r, double x, double y, double z){
-		mN = N;
+		mN = N; mFlagType = 0;
 		for(int i=0; i<mN; i++){
 			mPoints.push_back(new Point());
 			mPoints[i]->mPos[0]=x+r*sin(-i*(2*PI)/mN);
@@ -59,6 +62,51 @@ public:
 		for(int i(0); i!=mN-1; i++){(mPoints[i])->mNext = mPoints[i+1];}
 		mPoints[mN-1]->mNext = mPoints[0];
 		CalcMeshLengths();
+	}
+};
+
+/* string class */
+class String : public Filament{
+private:
+	double mL;
+public:
+	String(){
+	    mN = 0; mFlagType = 1;
+	}
+	String(int N, double L, double x, double y, double z){
+		mL = L, mN = N;
+		mFlagType = 1;
+		for (int i = 0; i != 4; i++){
+			mDummies.push_back(new Point());
+		}
+		for (int i = 0; i != mN; i++){
+            mPoints.push_back(new Point());
+			mPoints[i]->mPos[0] = x;
+			mPoints[i]->mPos[1] = y;
+			mPoints[i]->mPos[2] = z + i*mL / mN;
+		}
+		/* add dummy points to the ends */
+		for (int i = 1; i != mN; i++){ (mPoints[i])->mPrev = mPoints[i - 1]; }
+		for (int i = 0; i != mN-1; i++){ (mPoints[i])->mNext = mPoints[i + 1]; }
+		mPoints[mN-1]->mNext = mDummies[0];
+		mDummies[0]->mPrev = mPoints[mN-1];
+		mDummies[0]->mNext = mDummies[1];
+		mDummies[1]->mPrev = mDummies[0];
+		mPoints[0]->mPrev = mDummies[2];
+		mDummies[2]->mNext = mPoints[0];
+		mDummies[2]->mPrev = mDummies[3];
+		mDummies[3]->mNext = mDummies[2];
+
+		CalcMeshLengths();
+		/* label dummies */
+		for (int i=0; i != 4; i++){
+			mDummies[i]->mFlagDummy = 1;
+		}
+		/* calculate the positions of the dummy points */
+		CalcDummy();
+		CalcMeshLengths();
+		/* starting point should remain stationary */
+		mPoints[0]->mFlagFilled = 5;
 	}
 };
 

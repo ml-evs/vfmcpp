@@ -25,7 +25,6 @@ int main(int argc, char* argv[]){
 	else runfile = "NULL";
 	string filename = Tangle.Initialise(runfile);
 
-
 	/*string filename = "../init/init_state/015_09/015_09_rec";
 	Tangle.FromFile(filename);*/
 
@@ -35,6 +34,18 @@ int main(int argc, char* argv[]){
 	vector <Filament*>::iterator begin, current, end;
 	begin = Tangle.mTangle.begin();
 	end = Tangle.mTangle.end();
+
+	double perturb = r0/10;	
+	for(current=begin; current!=end; current++){
+		if((*current)->mFlagType==1){
+			(*current)->mPoints[N/2]->mPos[0] = perturb;
+			(*current)->mPoints[N/2-1]->mPos[0] = 0.95*perturb;
+  		(*current)->mPoints[N/2+1]->mPos[0] = 0.95*perturb;
+  		(*current)->mPoints[N/2-2]->mPos[2] += 1.5*r0/N;
+			(*current)->mPoints[N/2+2]->mPos[2] -= 1.5*r0/N;
+  	}
+	}
+	
 	/* calculate mean distance between points */
 	for(current=begin; current!=end; current++){
 		for(int j(0); j<(*current)->mN; j++){
@@ -78,8 +89,8 @@ int main(int argc, char* argv[]){
 		printf("\r\t %6.2f %% \t",percent); 							// output percentage completion
 		
 		if(Tangle.mN_slow == 30){Tangle.mN_f = 10;} 			// reset saving after reconnection 
-		if(Tangle.mN_slow == 200){Tangle.mN_f = 100;}
-		if(Tangle.mN_slow == 5000){Tangle.mN_f = 10000;}
+		if(Tangle.mN_slow == 2000){Tangle.mN_f = 100;}
+		//if(Tangle.mN_slow == 5000){Tangle.mN_f = 10000;}
 		if(Tangle.mN_f==1
 			||Tangle.mN_f == 10
 			||Tangle.mN_f == 100){Tangle.mN_slow++;}  			// increment slow-mo counter
@@ -97,7 +108,7 @@ int main(int argc, char* argv[]){
 				ofstream outfile(ith_jth_filename.c_str());	outfile.precision(8);
 				outfile << i*Tangle.mDt << "\n"; int j(0);
 				Point* pCurrent = (*current)->mPoints[0];
-				while(j!=(*current)->mN){
+				while(j!=(*current)->mN+1-(*current)->mFlagType){
 					for(int m(0); m<3; m++){
 						outfile << pCurrent->mPos[m] << "\t";
 					}
