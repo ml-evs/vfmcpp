@@ -25,8 +25,10 @@ int main(int argc, char* argv[]){
 	else runfile = "NULL";
 	string filename = Tangle.Initialise(runfile);
 
-	/*string filename = "../init/init_state/015_09/015_09_rec";
-	Tangle.FromFile(filename);*/
+/*	string filename = "../init/init_state/015_09/015_09_rec";
+	Tangle.FromFile(filename);
+
+	filename = "../data/015_09_old/data_";*/
 
 	/* set resolutions */
 	double dt, dr(0);
@@ -63,6 +65,7 @@ int main(int argc, char* argv[]){
 	cout << "\t    spatial resolution = "<< dr << " m" << endl;
 	cout << "\t    time-step = " << dt << " s\n\n";
 
+//	dr = 7.957e-8; dt = 1.385e-10;
 	Tangle.mDr = dr; Tangle.mDt = dt;
 
 	/* set number of timesteps and number of steps per save */
@@ -88,9 +91,9 @@ int main(int argc, char* argv[]){
 		percent = (100*i/N_t); 
 		printf("\r\t %6.2f %% \t",percent); 							// output percentage completion
 		
-		if(Tangle.mN_slow == 30){Tangle.mN_f = 10;} 			// reset saving after reconnection 
-		if(Tangle.mN_slow == 2000){Tangle.mN_f = 100;}
-		//if(Tangle.mN_slow == 5000){Tangle.mN_f = 10000;}
+		if(Tangle.mN_slow == 5){Tangle.mN_f = 10;} 			// reset saving after reconnection 
+		if(Tangle.mN_slow == 200){Tangle.mN_f = 100;}
+		if(Tangle.mN_slow == 5000){Tangle.mN_f = 10000;}
 		if(Tangle.mN_f==1
 			||Tangle.mN_f == 10
 			||Tangle.mN_f == 100){Tangle.mN_slow++;}  			// increment slow-mo counter

@@ -170,7 +170,7 @@ ax3 = ax.twinx()
 impulse = np.pi * kappa * np.power(radius,2)
 
 ax.set_xlim(0, np.max(impulse_times))
-ax.set_ylim(0.000001*np.max(impulse), 1.5*np.max(impulse))
+ax.set_ylim(0.0, 2*np.max(impulse))
 
 p_total = np.zeros((len(impulse_times)))
 

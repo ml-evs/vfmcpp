@@ -63,10 +63,9 @@ def init():
 
 
 def animate(i):
-
 	end = False
 	m = 0
-	z_av = np.zeros((jmax+1))
+	r = []
 	while(end == False):
 		if os.path.isfile(files[i]+'_'+str(m)+'.dat') == True:
 			data = []
@@ -77,36 +76,43 @@ def animate(i):
 				data.append(line)
 				line = file.readline()
 			file.close()
-			r = np.zeros((len(data),3))
+			r.append(np.zeros((len(data)+1,3)))
 			for j in range(len(data)):
-				r[j] = data[j].split()
-			z_av[m] = r[0,2]
-			rings[m].set_data(r[:,0], r[:,1])
-			rings[m].set_3d_properties(r[:,2])
+				r[m][j] = data[j].split()
+			r[m][-1] = r[m][0]
 			m+=1
-			ax.relim()
 		else:
-			for b in range(m, len(rings)):
+			for b in range(m,len(rings)):
 				rings[b].set_data([],[])
 				rings[b].set_3d_properties([])
 			end = True
 
-	time_text.set_text('step = %.1f' % i + 'time = %.1f' % (times[i]*1e9)+ ' ns / %.1f' % (times[-1]*1e9) +' ns')
-	if(i<35):
-		ax.set_xlim3d((-0.5e-6+0.0114e-6*i,0.5e-6-0.0114e-6*i))
-		ax.set_ylim3d((-0.5e-6+0.0114e-6*i,0.5e-6-0.0114e-6*i))
-		ax.set_zlim3d((0+0.0114e-6*i,1e-6-0.0114e-6*i))
-		ax.view_init(10,90+5*i)
-	if(i>300 and i<400):
-		ax.view_init(0,0)
-		ax.set_xlim3d((-0.05e-6, 0.05e-6))
-		ax.set_ylim3d((-0.05e-6, 0.05e-6))
-		ax.set_zlim3d((0,1e-6))
+	q_biggest = 0
+	for q in range(len(r)):
+		test = max(r[q][:,0])-min(r[q][:,0])
+		if test > max(r[q_biggest][:,0])-min(r[q_biggest][:,0]):
+			q_biggest = q
+	z_av = np.mean(r[q_biggest][:,2])
+	for q in range (len(r)):
+		rings[q].set_data(r[q][:,0], r[q][:,1])
+		rings[q].set_3d_properties(r[q][:,2])#-z_av)
+
+
+	time_text.set_text('time = %.1f' % (times[i]*1e9)+ ' ns / %.1f' % (times[-1]*1e9) +' ns')
+	# if(i<35):
+	# 	ax.set_xlim3d((-0.5e-6+0.0114e-6*i,0.5e-6-0.0114e-6*i))
+	# 	ax.set_ylim3d((-0.5e-6+0.0114e-6*i,0.5e-6-0.0114e-6*i))
+	# 	ax.set_zlim3d((0+0.0114e-6*i,1e-6-0.0114e-6*i))
+	# 	ax.view_init(10,90+5*i)
+	# if(i>300 and i<400):
+	# 	ax.view_init(0,0)
+	# 	ax.set_xlim3d((-0.05e-6, 0.05e-6))
+	# 	ax.set_ylim3d((-0.05e-6, 0.05e-6))
+	# 	ax.set_zlim3d((0,1e-6))
 	fig.canvas.draw()
 	plt.draw()
 	return rings, time_text
 
-dt = 6.3787-12
 base_filename, files, times, jmax = getfiles()
 
 if len(sys.argv) > 2:
@@ -130,14 +136,14 @@ print jmax
 colors = plt.cm.Blues(np.linspace(1,0.7, jmax+1))
 style = '-'
 if Analysis == 'p':
-	style = '*-'
+	style = '-'
 
 for k in range (jmax+2):
 	rings += [l for c in colors for l in ax.plot([], [], [], style, c=c, alpha = 0.9, linewidth=2, markersize=5, markerfacecolor=c, markeredgecolor=c)]
 time_text = ax.text(0, 0, 0,'', transform=ax.transAxes, color='k')
-ax.set_xlim3d((-0.5e-6,0.5e-6))
-ax.set_ylim3d((-0.5e-6,0.5e-6))
-ax.set_zlim3d((0,1e-6))
+ax.set_xlim3d((-1.5e-6,1.5e-6))
+ax.set_ylim3d((-1.5e-6,1.5e-6))
+ax.set_zlim3d((24e-6,27e-6))
 ax.view_init(20,-130)
 
 x = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.2e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")
