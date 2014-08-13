@@ -77,10 +77,9 @@ def animate(i):
 				data.append(line)
 				line = file.readline()
 			file.close()
-			r.append(np.zeros((len(data)+1,3)))
+			r.append(np.zeros((len(data),3)))
 			for j in range(len(data)):
 				r[m][j] = data[j].split()
-			r[m][-1] = r[m][0]
 			m+=1
 		else:
 			for b in range(m,len(rings)):

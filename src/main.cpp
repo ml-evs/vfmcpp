@@ -109,7 +109,8 @@ int main(int argc, char* argv[]){
 				stringstream ss; ss << n_fil;	string n_fil_str = ss.str(); 
 				string ith_jth_filename = ith_filename + n_fil_str + ".dat";
 				ofstream outfile(ith_jth_filename.c_str());	outfile.precision(8);
-				outfile << i*Tangle.mDt << "\n"; int j(0);
+				outfile << i*Tangle.mDt << "\n"; 
+				int j(0);
 				Point* pCurrent = (*current)->mPoints[0];
 				while(j!=(*current)->mN+1-(*current)->mFlagType){
 					for(int m(0); m<3; m++){
