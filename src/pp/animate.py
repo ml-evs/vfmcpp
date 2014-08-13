@@ -28,12 +28,13 @@ def getfiles():
 	end2 = False
 	f = 0
 	while(end==False):
+		end2 = False
 		filename_k = base_filename + str(k)
 		if os.path.isfile(filename_k+"_0.dat") == True:
 			file = open(filename_k+'_0.dat', 'r')
 			line = file.readline()
 			if f==0:
-				for i in range(50):
+				for i in range(1):
 					times.append(float(line))
 					files.append(filename_k)
 				f=1
@@ -47,7 +48,7 @@ def getfiles():
 				else:
 					if j>jmax:
 						jmax = j
-						end2 = True
+					end2 = True
 		else:
 			end = True
 			print 'File read successful. '
@@ -136,14 +137,15 @@ print jmax
 colors = plt.cm.Blues(np.linspace(1,0.7, jmax+1))
 style = '-'
 if Analysis == 'p':
-	style = '-'
+	style = '*-'
 
 for k in range (jmax+2):
 	rings += [l for c in colors for l in ax.plot([], [], [], style, c=c, alpha = 0.9, linewidth=2, markersize=5, markerfacecolor=c, markeredgecolor=c)]
 time_text = ax.text(0, 0, 0,'', transform=ax.transAxes, color='k')
 ax.set_xlim3d((-1.5e-6,1.5e-6))
 ax.set_ylim3d((-1.5e-6,1.5e-6))
-ax.set_zlim3d((24e-6,27e-6))
+ax.set_zlim3d((-1.5e-6,1.5e-6))
+#ax.set_zlim3d((24e-6,27e-6))
 ax.view_init(20,-130)
 
 x = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.2e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")

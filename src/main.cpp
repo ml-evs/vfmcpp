@@ -37,7 +37,7 @@ int main(int argc, char* argv[]){
 	begin = Tangle.mTangle.begin();
 	end = Tangle.mTangle.end();
 
-	double perturb = r0/10;	
+/*	double perturb = r0/10;	
 	for(current=begin; current!=end; current++){
 		if((*current)->mFlagType==1){
 			(*current)->mPoints[N/2]->mPos[0] = perturb;
@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
   		(*current)->mPoints[N/2-2]->mPos[2] += 1.5*r0/N;
 			(*current)->mPoints[N/2+2]->mPos[2] -= 1.5*r0/N;
   	}
-	}
+	}*/
 	
 	/* calculate mean distance between points */
 	for(current=begin; current!=end; current++){

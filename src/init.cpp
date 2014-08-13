@@ -7,17 +7,17 @@ using namespace std;
 
 string Tangle::Initialise(string runfile){
 	
-  	if(runfile == "NULL"){
-  		runfile = "../run.in";
+  if(runfile == "NULL"){
+  	runfile = "../run.in";
   	}
-  	ifstream infile(runfile);
+  ifstream infile(runfile);
 	string line;
 	stringstream input, convert;
 	string put;
 	string filename;
 	double t_total;
 	int N;
-	vector <double> param(4);
+	vector <double> param(5);
 	cout << "\t - - - - - - -    INITIALISING TANGLE    - - - - - - - -\n\n";
 	cout << "\t    init path: " << runfile << endl;
 	while(infile){
@@ -48,20 +48,20 @@ string Tangle::Initialise(string runfile){
 			convert.clear();
 			cout << "\t    ring";
 			input << line.substr(5);
-			for(int i(0);i<4;i++){
+			for(int i(0);i<5;i++){
 				convert.clear();
 				getline(input, put, ' ');
 				convert << put;
+				
 				convert >> param[i];
 				if(input.eof()) break;
 			}
-			mTangle.push_back(new Ring(N, param[0], param[1], param[2], param[3]));
+			mTangle.push_back(new Ring(N, param[0], param[1], param[2], param[3], param[4]));
 			cout << " r = " << param[0] << " m, p = (" << param[1];
 			cout << ", " << param[2] << ", " << param[3] << ") m. " << endl;
 			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;
 		}
 		else if(line.substr(0,4) == "line"){
-			cout << "Reading string";
 			put.clear();
 			input.clear();
 			convert.clear();

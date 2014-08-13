@@ -37,6 +37,7 @@ void Tangle::Reconnection(){
 							for(int l(0); l<mTangle[Q]->mN; l++){
 								if(Reconnected== true){break;}
 								/* prevent reconnection from making loops too small */
+								if(l==mTangle[Q]->mN-1){Finished=true; break;}
 								if(mTangle[P]->mPoints[k]==mTangle[Q]->mPoints[l]
 									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext
 									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev
@@ -46,7 +47,6 @@ void Tangle::Reconnection(){
 									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev->mPrev){
 									continue;
 								}
-								if(l==mTangle[Q]->mN-1){Finished=true;}
 								else{
 									double dist2 = pow(mTangle[P]->mPoints[k]->mPos[0] - mTangle[Q]->mPoints[l]->mPos[0],2);
 									dist2 +=  pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2);
