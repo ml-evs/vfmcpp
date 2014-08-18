@@ -91,7 +91,7 @@ int main(int argc, char* argv[]){
 		percent = (100*i/N_t); 
 		printf("\r\t %6.2f %% \t",percent); 							// output percentage completion
 		
-		if(Tangle.mN_slow == 5){Tangle.mN_f = 10;} 			// reset saving after reconnection 
+		if(Tangle.mN_slow == 15){Tangle.mN_f = 10;} 			// reset saving after reconnection 
 		if(Tangle.mN_slow == 200){Tangle.mN_f = 100;}
 		if(Tangle.mN_slow == 5000){Tangle.mN_f = 10000;}
 		if(Tangle.mN_f==1
@@ -122,9 +122,9 @@ int main(int argc, char* argv[]){
 			}
 			printf("\t\t wrote step %6u", i);;
 			file_no++;
-		}
+	
 
-		/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+		
 		/* calculate velocities and propagate positions */
 
 		bool MeshFinished(false);
@@ -138,10 +138,11 @@ int main(int argc, char* argv[]){
 
 		/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 	}
-
-	t = clock()-t;
 	cout << "\n\t - - - - - - -    SIMULATION FINISHED    - - - - - - - -"; 
-	cout << "\n\t    time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
+	ofstream timefile(filename+"time.dat")
+	t = clock()-t;
+	timefile	 << "time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
+	timefile.close()
 	return 0;
 }
 

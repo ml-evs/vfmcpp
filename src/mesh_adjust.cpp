@@ -11,8 +11,8 @@ bool Tangle::MeshAdjust(){
     b = mTangle.begin(); e = mTangle.end();
     for(c=b;c!=e;c++){
         for (int k((*c)->mFlagType); k<(*c)->mN; k++){
-            /* maintain reasonable local curvature */
-            double R(0); // 1/|s''| at new point
+            /* define to check local curvature */
+            double R(0); // 1/|s''| at point k
             for(int j(0);j!=3;j++){
                 R += pow(((*c)->mPoints[k]->mNext->mS2Prime[j] + (*c)->mPoints[k]->mPrev->mS2Prime[j])/2,2);
             }
@@ -48,14 +48,10 @@ bool Tangle::MeshAdjust(){
                 for(int j(0);j!=3;j++){
                     (*c)->mPoints.back()->mS2Prime[j] = ((*c)->mPoints.back()->mNext->mS2Prime[j] + (*c)->mPoints.back()->mPrev->mS2Prime[j])/2;
                     (*c)->mPoints.back()->mPos[j] = ((*c)->mPoints.back()->mS2Prime[j]) * R * (sqrt(abs(pow(R,2) - 0.25*pow((*c)->mPoints.back()->mNext->mSegLength,2))) - R);
-                    //cout << "sqrt = " << (sqrt( pow(R,2) - 0.25*pow((*c)->mPoints.back()->mNext->mSegLength,2))) << endl;
-                    //cout << pow(R,2) << " vs  " << 0.25*pow((*c)->mPoints.back()->mNext->mSegLength,2) <<  endl;
-                    //cout << "argument = " << pow(R,2) - 0.25*pow((*c)->mPoints.back()->mNext->mSegLength,2) << endl;
                     (*c)->mPoints.back()->mPos[j] += 0.5*((*c)->mPoints.back()->mNext->mPos[j] + (*c)->mPoints.back()->mPrev->mPos[j]);
                 }
                 (*c)->CalcMeshLengths(); (*c)->CalcSPrime(); (*c)->CalcS2Prime();
                 cout << "Added point at " << (*c)->mPoints.back()->mPos[0] << ", " << (*c)->mPoints.back()->mPos[1] << ", " << (*c)->mPoints.back()->mPos[2] << endl;
-                //cout << "Added point with " << (*c)->mPoints.back()->mSPrime[0] << ", " << (*c)->mPoints.back()->mSegLength << ", " << (*c)->mPoints.back()->mS2Prime[2] << endl;
                 return false;
             }
         }

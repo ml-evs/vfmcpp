@@ -78,37 +78,35 @@ void Filament::CalcVelocitySelfNL(){
 	vector <Point*>::iterator b, c, e, c2;
 	b = mPoints.begin(); e = mPoints.end();
 	for(c=b; c!=e; c++){
-        pp = 0; qq = 0; pq = 0;
-        //int i(0); /* used to label field points for debugging */
-        for(c2=b; c2!=e; c2++){
-            if((*c2)->mNext->mFlagDummy == 1 /*|| (*c2)->mFlagDummy == 1*/){ /*cout << "End of the line!" << endl;*/ continue; }
-            else{
-                if((*c2)==(*c)->mNext||(*c2)==(*c)||(*c2)==(*c)->mPrev){ /*cout << "Skipping neighbouring points." << endl;*/ continue;}
-                else{
-                    /* calculate p and q */
-                    for(int m(0);m<3;m++){
-                        p[m] = (*c)->mPos[m] - (*c2)->mPos[m]; // does double the calculations it needs to atm
-                        q[m] = (*c2)->mNext->mSegLast[m];
-                        pp += p[m]*p[m];
-                        qq += q[m]*q[m];
-                        pq += p[m]*q[m];
-                    }
-                    /* calculate pxq and assign temp variables */
-                    pxq[0] = p[1]*q[2] - p[2]*q[1];
-                    pxq[1] = p[2]*q[0] - p[0]*q[2];
-                    pxq[2] = p[0]*q[1] - p[1]*q[0];
-                    double sqrt_ppqq2pq = sqrt(pp+qq+2*pq);
-                    double sqrt_pp = sqrt(pp);
+		pp = 0; qq = 0; pq = 0;
+		//int i(0); /* used to label field points for debugging */
+		for(c2=b; c2!=e; c2++){
+			if((*c2)->mNext->mFlagDummy == 1 /*|| (*c2)->mFlagDummy == 1*/){ /*cout << "End of the line!" << endl;*/ continue; }
+			else{
+				if((*c2)==(*c)->mNext||(*c2)==(*c)||(*c2)==(*c)->mPrev){ /*cout << "Skipping neighbouring points." << endl;*/ continue;}
+				else{
+					/* calculate p and q */
+					for(int m(0);m<3;m++){
+						p[m] = (*c)->mPos[m] - (*c2)->mPos[m]; // does double the calculations it needs to atm
+						q[m] = (*c2)->mNext->mSegLast[m];
+						pp += p[m]*p[m];
+						qq += q[m]*q[m];
+						pq += p[m]*q[m];
+					}
+					/* calculate pxq and assign temp variables */
+					pxq[0] = p[1]*q[2] - p[2]*q[1];
+					pxq[1] = p[2]*q[0] - p[0]*q[2];
+					pxq[2] = p[0]*q[1] - p[1]*q[0];
+					double sqrt_ppqq2pq = sqrt(pp+qq+2*pq);
+					double sqrt_pp = sqrt(pp);
 
-                    /* assign values to mVelNL */
-                    for(int j(0);j<3;j++){
-                        (*c)->mVelNL[j] += (pxq[j]*kappa/(8*PI*(pp*qq-pq))) * ( (2*(qq+pq)/sqrt_ppqq2pq) - (2*pq/sqrt_pp) );
-                    }
-                    //i++;
-                }
-            }
-        }
-		//w++;
+					/* assign values to mVelNL */
+					for(int j(0);j<3;j++){
+						(*c)->mVelNL[j] += (pxq[j]*kappa/(8*PI*(pp*qq-pq))) * ( (2*(qq+pq)/sqrt_ppqq2pq) - (2*pq/sqrt_pp) );
+					}
+				}
+			}
+		}
 	}
 }
 

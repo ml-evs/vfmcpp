@@ -34,10 +34,11 @@ void Tangle::CalcVelocity(){
 			(*c)->mPoints[i]->mVel[0] = (((*c)->mPoints[i]->mSPrime[1])*((*c)->mPoints[i]->mS2Prime[2]) - ((*c)->mPoints[i]->mSPrime[2])*((*c)->mPoints[i]->mS2Prime[1]));
 			(*c)->mPoints[i]->mVel[1] = (((*c)->mPoints[i]->mSPrime[2])*((*c)->mPoints[i]->mS2Prime[0]) - ((*c)->mPoints[i]->mSPrime[0])*((*c)->mPoints[i]->mS2Prime[2]));
 			(*c)->mPoints[i]->mVel[2] = (((*c)->mPoints[i]->mSPrime[0])*((*c)->mPoints[i]->mS2Prime[1]) - ((*c)->mPoints[i]->mSPrime[1])*((*c)->mPoints[i]->mS2Prime[0]));
+			/* apply prefactor and add non-local contributions, resetting mVelNL after */
 			for(int q=0;q<3;q++){
 				(*c)->mPoints[i]->mVel[q] *= kappa*log(2*sqrt((*c)->mPoints[i]->mSegLength * (*c)->mPoints[i]->mNext->mSegLength)/a1)/(4*PI);
-				(*c)->mPoints[i]->mVel[q] += (*c)->mPoints[i]->mVelNL[q];
-				(*c)->mPoints[i]->mVelNL[q] = 0;
+				(*c)->mPoints[i]->mVel[q] += (*c)->mPoints[i]->mVelNL[q];   
+				(*c)->mPoints[i]->mVelNL[q] = 0;		
 			}
 
 		}

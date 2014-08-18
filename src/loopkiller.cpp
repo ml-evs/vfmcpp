@@ -5,7 +5,7 @@ using namespace std;
 
 bool Tangle::LoopKill(){
 	bool Killed(false);
-		for(unsigned int i(0); i<mTangle.size(); i++){
+	for(unsigned int i(0); i<mTangle.size(); i++){
 		if(mTangle[i]->mN < 6){
 			for(unsigned int j(0); j<mTangle[i]->mPoints.size(); j++){
 				delete mTangle[i]->mPoints[j];
