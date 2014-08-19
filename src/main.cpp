@@ -123,7 +123,7 @@ int main(int argc, char* argv[]){
 			printf("\t\t wrote step %6u", i);;
 			file_no++;
 	
-
+		}
 		
 		/* calculate velocities and propagate positions */
 
@@ -138,11 +138,12 @@ int main(int argc, char* argv[]){
 
 		/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 	}
+
 	cout << "\n\t - - - - - - -    SIMULATION FINISHED    - - - - - - - -"; 
-	ofstream timefile(filename+"time.dat")
+	ofstream timefile(filename+"time.dat");
 	t = clock()-t;
 	timefile	 << "time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
-	timefile.close()
+	timefile.close();
 	return 0;
 }
 
