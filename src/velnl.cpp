@@ -21,18 +21,23 @@ void Tangle::CalcVelocityNL(){
 		vector <Filament*>::iterator other_begin, other_current, other_end;
 		other_begin = mTangle.begin(); other_end = mTangle.end();
 		for(other_current=other_begin; other_current!=other_end; other_current++){
-			vector <Point*>::iterator b, ob, oe, oc;
-			b = (*current)->mPoints.begin();
-			ob = (*other_current)->mPoints.begin(); oe = (*other_current)->mPoints.end();
-			/* assign pointer to first field point */
-			Point* pField = (*b)->mNext;
-			/* loop over all "field points" */
-			int i(0);
-			while(i<(*current)->mN){
-				/* iterate over "source points" */
-				for(oc=ob;oc!=oe;oc++){
-					/* calculate p and q */
-					if((*oc)!=(*current)->mPoints[i]->mNext&& (*oc)!=(*current)->mPoints[i]->mPrev){
+			/* if self, then call self-induced nonlocal velocity */
+			if(other_current == current){(*current)->CalcVelocitySelfNL();}
+			else{
+				/* other filament in tangle found, iterate through points */
+				vector <Point*>::iterator b, ob, oe, oc;
+				b = (*current)->mPoints.begin();
+				ob = (*other_current)->mPoints.begin(); oe = (*other_current)->mPoints.end();
+
+				/* assign pointer to first field point */
+				Point* pField = (*b)->mNext;
+
+				/* loop over all "field points" */
+				int i(0);
+				while(i<(*current)->mN){
+					/* iterate over "source points" */
+					for(oc=ob;oc!=oe;oc++){
+						/* calculate p and q */
 						pp = 0; qq = 0; pq = 0;
 						for(int m(0);m<3;m++){
 							p[m] = (*oc)->mPos[m] - pField->mPos[m];
@@ -47,15 +52,16 @@ void Tangle::CalcVelocityNL(){
 						pxq[2] = p[0]*q[1] - p[1]*q[0];
 						double sqrt_ppqq2pq = sqrt(pp+qq+2*pq);
 						double sqrt_pp = sqrt(pp);
-							/* add contribution to mVelNL */
+
+						/* add contribution to mVelNL */
 						for(int m(0);m<3;m++){
 							pField->mVelNL[m] += pxq[m] * kappa * ( (2*(qq+pq)/sqrt_ppqq2pq) - (2*pq/sqrt_pp) ) / (8*M_PI* (pp*qq - pq*pq) );
 						}
 					}
+					/* increment pointer to next */
+					pField = pField->mNext;
+					i++;
 				}
-				/* increment pointer to next */
-				pField = pField->mNext;
-				i++;
 			}
 		}
 	}
@@ -77,7 +83,8 @@ void Filament::CalcVelocitySelfNL(){
 		for(c2=b; c2!=e; c2++){
 			if((*c2)->mNext->mFlagDummy == 1 /*|| (*c2)->mFlagDummy == 1*/){ /*cout << "End of the line!" << endl;*/ continue; }
 			else{
-				if((*c2)!=(*c)->mNext && (*c2)==(*c)||(*c2)!=(*c)->mPrev){
+				if((*c2)==(*c)->mNext||(*c2)==(*c)||(*c2)==(*c)->mPrev){ /*cout << "Skipping neighbouring points." << endl;*/ continue;}
+				else{
 					/* calculate p and q */
 					for(int m(0);m<3;m++){
 						p[m] = (*c)->mPos[m] - (*c2)->mPos[m]; // does double the calculations it needs to atm
@@ -102,4 +109,3 @@ void Filament::CalcVelocitySelfNL(){
 		}
 	}
 }
-
