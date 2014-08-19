@@ -12,8 +12,9 @@ class Tangle{
 public:
 	/* member data */
 	vector <Filament*> 	mTangle;
-	int mN_f;			// number of timesteps between saves
+	int mN_f;				// number of timesteps between saves
 	int mN_slow;
+	int mN_recon;		// number of reconnections
 	double mDr;			// spatial resolution
 	double mDt; 		// temporal resolution
 	double mTotalTime;	// total time
@@ -34,7 +35,7 @@ public:
 	string Initialise(string runfile);
 	void CalcVelocityNL();
 	bool LoopKill();
-	bool Reconnection();
+	void Reconnection();
 	void SelfReconnect(int P, int Q, int k, int l);
 	void SelfReconnectLine(int P, int Q, int k, int l);
 	void Reconnect(int P, int Q, int k, int l);
@@ -42,7 +43,7 @@ public:
 	bool MeshAdjust();
 	int ReconnectionTest();
 	void CalcVelocity();
-	//void FromFile(string base); 	// mostly for debug purposes
+	void FromFile(string base); 	// mostly for debug purposes
 	void SaveState(string base);
 };
 

@@ -83,8 +83,9 @@ void Filament::CalcVelocitySelfNL(){
 		for(c2=b; c2!=e; c2++){
 			if((*c2)->mNext->mFlagDummy == 1 /*|| (*c2)->mFlagDummy == 1*/){ /*cout << "End of the line!" << endl;*/ continue; }
 			else{
-				if((*c2)!=(*c)->mNext||(*c2)!=(*c)||(*c2)!=(*c)->mPrev){
-				/* calculate p and q */
+				if((*c2)==(*c)->mNext||(*c2)==(*c)||(*c2)==(*c)->mPrev){ /*cout << "Skipping neighbouring points." << endl;*/ continue;}
+				else{
+					/* calculate p and q */
 					for(int m(0);m<3;m++){
 						p[m] = (*c)->mPos[m] - (*c2)->mPos[m]; // does double the calculations it needs to atm
 						q[m] = (*c2)->mNext->mSegLast[m];
@@ -108,3 +109,4 @@ void Filament::CalcVelocitySelfNL(){
 		}
 	}
 }
+

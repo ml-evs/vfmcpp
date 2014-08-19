@@ -79,7 +79,6 @@ int main(int argc, char* argv[]){
 	clock_t t;
   t=clock();
   int file_no(0);
-  int no_recon(0);
 
   /* begin time-stepping */
   int i(0);
@@ -131,9 +130,7 @@ int main(int argc, char* argv[]){
 		bool MeshFinished(false);
 		Tangle.LoopKill();																							// remove rings smaller than 6 points
 		while(MeshFinished==false) MeshFinished = Tangle.MeshAdjust();  // mesh_adjust until finished
-		bool Reconnected(false);
-		Reconnected = Tangle.Reconnection();														// check for and perform reconnections 
-		if(Reconnected==true){no_recon++;}
+		Tangle.Reconnection();	 																				// check for and perform reconnections 
 		Tangle.CalcVelocity(); 																					// calculates and combines all contributions to velocity
 		Tangle.PropagatePos(Tangle.mDt);																// propagate positions
 
@@ -141,12 +138,10 @@ int main(int argc, char* argv[]){
 
 		/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 	}
-
 	cout << "\n\t - - - - - - -    SIMULATION FINISHED    - - - - - - - -"; 
 	ofstream timefile(filename+"time.dat");
 	t = clock()-t;
 	timefile	 << "time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
-	timefile	 << "no. of recons = " << no_recon << endl;
 	timefile.close();
 	return 0;
 }

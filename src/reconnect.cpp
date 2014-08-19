@@ -7,7 +7,7 @@
 
 using namespace std;
 
-bool Tangle::Reconnection(){
+void Tangle::Reconnection(){
 
 	/* count number of possible reconnections this step */
 	int recon_count = ReconnectionTest();
@@ -78,6 +78,7 @@ bool Tangle::Reconnection(){
 									}
 									else SelfReconnectLine(P,Q,k,l_rec);
 									Reconnected = true;
+									mN_recon++;
 									recon_count--;
 									break;
 								}
@@ -87,6 +88,7 @@ bool Tangle::Reconnection(){
 									mTangle[Q]->mPoints[l_rec]->mMarkedForRecon = false;
 									Reconnect(P,Q,k,l_rec);
 									Reconnected = true;
+									mN_recon++;
 									recon_count--;
 									break;
 								}
@@ -104,9 +106,7 @@ bool Tangle::Reconnection(){
 			mTangle[n]->CalcMeshLengths();	mTangle[n]->CalcSPrime(); 
 			mTangle[n]->CalcS2Prime(); 
 		}
-		return true;
 	}
-	else{ return false; }
 }
 
 int Tangle::ReconnectionTest(){
