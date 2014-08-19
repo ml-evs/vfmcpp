@@ -23,12 +23,14 @@ public:
 	Tangle(Filament* String1){
 		mTangle.push_back(String1);
 		mN_f = 10000;
+		mN_recon = 0;
 	}
 	Tangle(Filament* Ring1, Filament* Ring2){
 		mTangle.push_back(Ring1);
 		mTangle.push_back(Ring2);
 		mN_f = 10000;
 		mTotalTime = 1e-3; // default to 1 ms
+		mN_recon = 0;
 
 	}
 	~Tangle(){};
