@@ -145,38 +145,54 @@ ax = fig.add_subplot(111,
  	axisbg='w')
 
 ax2 = ax.twinx()
-ax3 = ax.twinx()
+#ax3 = ax.twinx()
 
 
 ax.set_xlim(0, np.max(impulse_times))
 ax.set_ylim(0.0, 2*np.max(impulse))
 
 p_total = np.zeros((len(impulse_times)))
+p_total_z = np.zeros((len(impulse_times)))
+p1 = np.zeros((len(impulse_times)))
+p2 = np.zeros((len(impulse_times)))
+p1_z = np.zeros((len(impulse_times)))
+p2_z= np.zeros((len(impulse_times)))
 
 for i in range(len(impulse)):
+	p1[i] += np.sqrt(pow(impulse[i][0][0],2)+pow(impulse[i][0][1],2)+pow(impulse[i][0][2],2))
+	p2[i] += np.sqrt(pow(impulse[i][1][0],2)+pow(impulse[i][1][1],2)+pow(impulse[i][1][2],2))
+	p1_z[i] += impulse[i][0][2]
+	p2_z[i] += impulse[i][1][2]
 	for j in range(len(impulse[i])):
 		p_total[i] += np.sqrt(pow(impulse[i][j][0],2)+pow(impulse[i][j][1],2)+pow(impulse[i][j][2],2))
+		p_total_z[i] += impulse[i][j][2]
 
 
 
+ax.set_ylabel('impulse')
+ax.set_xlabel('time (s)')
 
 
-p_mask = np.ma.array(impulse)
+ax2.set_ylim(0,1.05*np.max(length))
+#ax3.set_ylim(0,1.05*np.max(points))
 
-p0 = p_mask[:,0]
-p1 = p_mask[:,1]
-
-
-
-ax2.set_ylim(0,1.2*np.max(length))
-ax3.set_ylim(0,1.2*np.max(points))
-
-ax.plot(impulse_times, p0, c='r',alpha=0.7, linewidth=3)# s=35)
-ax.plot(impulse_times, p1, c='g',alpha=0.7, linewidth=3)# s=35)
+ring1 = ax.plot(impulse_times, p1, c='#9C2727',alpha=0.6, linewidth=3, label='ring 1 impulse')# s=35)
+ring2 = ax.plot(impulse_times, p2, c='#1A5712',alpha=0.6, linewidth=3, label='ring 2 impulse')# s=35)
+ring1_z = ax.plot(impulse_times, p1_z, c='r',alpha=0.7, linewidth=3, label='ring 1 z impulse')# s=35)
+ring2_z = ax.plot(impulse_times, p2_z, c='g',alpha=0.7, linewidth=3, label='ring 2 z impulse')# s=35)
 # ax.plot(impulse_times, p2, c='b',alpha=0.7, linewidth=3)# s=35)
-ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=3)
-ax2.plot(impulse_times, length, c='c',linewidth=3)
-ax3.plot(impulse_times, points, c='y', linewidth=3)
+
+ringtot = ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=3, label='total impulse')
+ringtot = ax.plot(impulse_times, p_total_z, c='#363347',alpha=0.7,linewidth=3, label='total z impulse')
+linetot = ax2.plot(impulse_times, length, c='c',linewidth=3, label = 'line length')
+#ax3.plot(impulse_times, points, c='y', linewidth=3)
+handles, labels = ax.get_legend_handles_labels()
+handles2, labels2 = ax2.get_legend_handles_labels()
+
+ax.legend(handles, labels)
+ax2.legend(handles2, labels2, loc=2)
+
+#ax2.legend([linetot], ['total line length'])
 plt.show()
 
 

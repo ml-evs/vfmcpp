@@ -40,7 +40,7 @@ for i in range(len(sigma)):
 		end2 = False		
 		filename_k = base_filename + str(sigma[i]) + "/data_" + str(k)
 		if os.path.isfile(base_filename+str(sigma[i]) + "/data_time.dat") == False:
-			FAILED_DATA.append([float(sigma[i][0:5])*1e-6, 1.7e-6])
+			FAILED_DATA.append([float(sigma[i][0:6])*1e-6, 1.7e-6])
 			end = True
 		elif os.path.isfile(filename_k+"_0.dat") == True:
 			last = filename_k
@@ -94,10 +94,10 @@ for i in range(len(sigma)):
 				else:
 					##print i
 					if len(radius)==1:
-						ZERO_DATA.append([float(sigma[i][0:5])*1e-6, radius[0]])
+						ZERO_DATA.append([float(sigma[i][0:6])*1e-6, radius[0]])
 					else:
 						print sigma[i], radius[0], radius[1]
-						PLOT_DATA.append([float(sigma[i][0:5])*1e-6, radius[0], radius[1]])
+						PLOT_DATA.append([float(sigma[i][0:6])*1e-6, radius[0], radius[1]])
 					end = True
 					end2 = True
 	#print i
@@ -136,11 +136,11 @@ wspace = 0.2   # the amount of width reserved for blank space between subplots
 hspace = 0.2   # the amount of height reserved for white space between subplots
 
 
-np.savetxt(base_filename+'../post/PAUL_DATA.dat', PAUL_DATA, fmt='%.5e', delimiter=' ', newline='\n')
-np.savetxt(base_filename+'../post/PLOT_DATA.dat', PLOT_DATA, fmt='%.5e', delimiter=' ', newline='\n')
-np.savetxt(base_filename+'../post/ZERO_DATA.dat', ZERO_DATA, fmt='%.5e', delimiter=' ', newline='\n')
-np.savetxt(base_filename+'../post/ZERO_DATA_PAUL.dat', ZERO_DATA_PAUL, fmt='%.5e', delimiter=' ', newline='\n')
-np.savetxt(base_filename+'../post/FAILED_DATA.dat', FAILED_DATA, fmt='%.5e', delimiter=' ', newline='\n')
+np.savetxt(base_filename+'../post/PAUL_DATA.dat', PAUL_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
+np.savetxt(base_filename+'../post/PLOT_DATA.dat', PLOT_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
+np.savetxt(base_filename+'../post/ZERO_DATA.dat', ZERO_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
+np.savetxt(base_filename+'../post/ZERO_DATA_PAUL.dat', ZERO_DATA_PAUL, fmt='%6.6e', delimiter=' ', newline='\n')
+np.savetxt(base_filename+'../post/FAILED_DATA.dat', FAILED_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
 
 BIG_DATA = []
 LITTLE_DATA = []

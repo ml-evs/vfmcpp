@@ -143,8 +143,8 @@ for k in range (jmax+2):
 time_text = ax.text(0, 0, 0,'', transform=ax.transAxes, color='k')
 ax.set_xlim3d((-1.5e-6,1.5e-6))
 ax.set_ylim3d((-1.5e-6,1.5e-6))
-ax.set_zlim3d((-1.5e-6,1.5e-6))
-#ax.set_zlim3d((24e-6,27e-6))
+#ax.set_zlim3d((-1.5e-6,1.5e-6))
+ax.set_zlim3d((24e-6,27e-6))
 ax.view_init(20,-130)
 
 x = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.2e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")
