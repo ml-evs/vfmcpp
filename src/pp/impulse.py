@@ -48,6 +48,9 @@ def getfiles():
 	return base_filename, files, times, jmax
 
 def calcimpulse(jmax, impulse_files, i):
+
+	kappa = 9.98e-8
+
 	end = False
 	m=0
 	r = []
@@ -57,11 +60,7 @@ def calcimpulse(jmax, impulse_files, i):
 	rxeps = []
 	r_eff = []
 	radius = np.zeros((jmax+1))
-	A = []
-	B = []
-	C = []
-	D = []
-	E = []
+	p = np.zeros((jmax,3))
 
 	while(end == False):
 		if os.path.isfile(impulse_files[i]+'_'+str(m)+'.dat') == True:
@@ -74,18 +73,11 @@ def calcimpulse(jmax, impulse_files, i):
 				line = file.readline()
 			file.close()
 			r.append(np.zeros((len(data),3)))
-			r_eff.append(np.zeros((3)))
 			l.append(np.zeros((len(data),3)))
 			eps.append(np.zeros((len(data),3)))
 			rxeps.append(np.zeros((len(data),3)))
-			A.append(np.zeros((len(data))))
-			B.append(np.zeros((len(data))))
-			C.append(np.zeros((len(data))))
-			D.append(np.zeros((len(data))))
-			E.append(np.zeros((len(data))))
 			for j in range(len(data)):
 				r[m][j] = data[j].split()
-			#print m
 			m+=1
 
 		else:
@@ -109,24 +101,11 @@ def calcimpulse(jmax, impulse_files, i):
 		points += len(r[m])
 
 		for i in range(len(r[m])):
+			rxeps[m][i] = np.cross(r[m][i], l[m][i])	
 			for q in range(3):
-				eps[m][i][q] = l[m][i][q]
-
-		for i in range(len(r[m])):
-			rxeps[m][i] = np.cross(r[m][i], eps[m][i])	
-			for q in range(3):
-				r_eff[m][q] += rxeps[m][i][q]
+				p[m][q] += rxeps[m][i][q]
 				
-			
-
-		for q in range(3):
-			r_eff[m][q] = np.sqrt(pow(((1/(2*np.pi))*r_eff[m][q]),2))
-			radius[m] += r_eff[m][q]
-
-		radius[m] = np.sqrt(radius[m])
-
-	for b in range(len(r),jmax+1):
-		r[m] = np.nan
+	p *= kappa / 2	
 
 	length = 0.0
 	length_temp = 0.0
@@ -136,7 +115,7 @@ def calcimpulse(jmax, impulse_files, i):
 				length_temp += pow(l[d][c][q],2)
 			length += np.sqrt(length_temp)			
 
-	return radius, length, points
+	return p, length, points
 
 base_filename, files, times, jmax = getfiles()
 
@@ -145,7 +124,7 @@ kappa = 9.98e-8
 
 impulse_files = []
 impulse_times = []
-radius = []
+impulse = []
 
 
 for i in range(len(files)):
@@ -155,9 +134,11 @@ for i in range(len(files)):
 
 length = np.zeros((len(impulse_times)))
 points = np.zeros((len(impulse_times)))
+p = np.zeros((jmax,3))
 for i in range(len(impulse_files)):
-	radius.append(np.zeros((jmax+1)))
-	radius[-1], length[i], points[i] = calcimpulse(jmax, impulse_files, i)
+	p, length[i], points[i] = calcimpulse(jmax, impulse_files, i)
+	impulse.append(p)
+
 
 fig = plt.figure(facecolor='w', edgecolor='w',figsize=plt.figaspect(2.))
 ax = fig.add_subplot(111, 
@@ -167,43 +148,36 @@ ax2 = ax.twinx()
 ax3 = ax.twinx()
 
 
-impulse = np.pi * kappa * np.power(radius,2)
-
 ax.set_xlim(0, np.max(impulse_times))
 ax.set_ylim(0.0, 2*np.max(impulse))
 
 p_total = np.zeros((len(impulse_times)))
 
-for i in range(len(radius)):
-	for j in range(len(radius[i])):
-		p_total[i] += impulse[i][j]
-		if impulse[i][j] == 0:
-			impulse[i][j] = np.nan
+for i in range(len(impulse)):
+	for j in range(len(impulse[i])):
+		p_total[i] += np.sqrt(pow(impulse[i][j][0],2)+pow(impulse[i][j][1],2)+pow(impulse[i][j][2],2))
+
 
 
 
 
 p_mask = np.ma.array(impulse)
-r_mask = np.ma.array(radius)
 
 p0 = p_mask[:,0]
 p1 = p_mask[:,1]
-p2 = p_mask[:,2]
+
 
 
 ax2.set_ylim(0,1.2*np.max(length))
 ax3.set_ylim(0,1.2*np.max(points))
 
-print radius[0]
-
 ax.plot(impulse_times, p0, c='r',alpha=0.7, linewidth=3)# s=35)
 ax.plot(impulse_times, p1, c='g',alpha=0.7, linewidth=3)# s=35)
-ax.plot(impulse_times, p2, c='b',alpha=0.7, linewidth=3)# s=35)
+# ax.plot(impulse_times, p2, c='b',alpha=0.7, linewidth=3)# s=35)
 ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=3)
 ax2.plot(impulse_times, length, c='c',linewidth=3)
 ax3.plot(impulse_times, points, c='y', linewidth=3)
 plt.show()
-
 
 
 

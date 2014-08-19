@@ -28,7 +28,7 @@ for root, dirs, files in os.walk(base_filename):
   	sigma.append(name)
   	##print name
      
-
+kappa = 9.98e-8
 
 
 for i in range(len(sigma)):
@@ -40,7 +40,7 @@ for i in range(len(sigma)):
 		end2 = False		
 		filename_k = base_filename + str(sigma[i]) + "/data_" + str(k)
 		if os.path.isfile(base_filename+str(sigma[i]) + "/data_time.dat") == False:
-			FAILED_DATA.append([float(sigma[i])*1e-6, 1.7e-6])
+			FAILED_DATA.append([float(sigma[i][0:5])*1e-6, 1.7e-6])
 			end = True
 		elif os.path.isfile(filename_k+"_0.dat") == True:
 			last = filename_k
@@ -50,6 +50,7 @@ for i in range(len(sigma)):
 			j = 0
 			end = True
 			radius = []
+			impulse = np.zeros((3))
 			while(end2 == False):
 				if os.path.isfile(last+"_" + str(j) + ".dat") == True:
 					data = []
@@ -80,15 +81,12 @@ for i in range(len(sigma)):
 					for b in range(len(r)):
 						rxeps[b] = np.cross(r[b], eps[b])	
 						for q in range(3):
-							r_eff[q] += rxeps[b][q]
+							impulse[q] += rxeps[b][q]
 				
+					impulse *= kappa / 2 
+					total_impulse = np.sqrt(pow(impulse[0],2) + pow(impulse[1],2) + pow(impulse[2],2))
 					radius.append(0)
-					for q in range(3):
-						r_eff[q] = np.sqrt(pow(((1/(2*np.pi))*r_eff[q]),2))
-						radius[-1] += r_eff[q]
-						
-
-					radius[-1] = np.sqrt(radius[-1])
+					radius[-1] = np.sqrt(total_impulse / (np.pi * kappa))
 					#print radius
 					j+=1
 				
@@ -96,9 +94,10 @@ for i in range(len(sigma)):
 				else:
 					##print i
 					if len(radius)==1:
-						ZERO_DATA.append([float(sigma[i])*1e-6, radius[0]])
+						ZERO_DATA.append([float(sigma[i][0:5])*1e-6, radius[0]])
 					else:
-						PLOT_DATA.append([float(sigma[i])*1e-6, radius[0], radius[1]])
+						print sigma[i], radius[0], radius[1]
+						PLOT_DATA.append([float(sigma[i][0:5])*1e-6, radius[0], radius[1]])
 					end = True
 					end2 = True
 	#print i
@@ -124,10 +123,10 @@ for j in range(len(data)):
 			PAUL_DATA[-1][i] = float(PAUL_DATA[-1][i])*1e-6 
 
 fig = plt.figure(figsize=plt.figaspect(1.2), facecolor='w', edgecolor='w')
-ax = fig.add_subplot(211, axisbg ='w')
-ax2 = fig.add_subplot(212, axisbg='w',sharex=ax)
+ax = fig.add_subplot(111, axisbg ='w')
+#ax2 = fig.add_subplot(212, axisbg='w',sharex=ax)
 
-plt.subplots_adjust(left=None, bottom=0.1, right=None, top=None, wspace=None, hspace=0.1)
+#plt.subplots_adjust(left=None, bottom=0.1, right=None, top=None, wspace=None, hspace=0.1)
 
 left  = 0.125  # the left side of the subplots of the figure
 right = 0.9    # the right side of the subplots of the figure
@@ -168,15 +167,15 @@ p1 = ax.plot(PAUL_DATA[0], PAUL_DATA[1], linewidth=0,  c='g', marker='o', marker
 p2 = ax.plot(PAUL_DATA[0], PAUL_DATA[2], linewidth=0,  c='g', marker='o', markersize=3, alpha=0.6)
 
 
-r1 = ax.plot(ALL_DATA[0], ALL_DATA[1], linewidth=0, c='b', marker='^', markersize=3, alpha=0.6)
-r2 = ax.plot(ALL_DATA[0], ALL_DATA[2], linewidth=0, c='b', marker='^', markersize=3, alpha=0.6)
+r1 = ax.plot(PLOT_DATA[0], PLOT_DATA[1], linewidth=0, c='b', marker='^', markersize=3, alpha=0.6)
+r2 = ax.plot(PLOT_DATA[0], PLOT_DATA[2], linewidth=0, c='b', marker='^', markersize=3, alpha=0.6)
 
 r0 = ax.plot(ZERO_DATA[0], ZERO_DATA[1], linewidth=0, c='r', markersize=3, marker='^', alpha=0.6)
 p0 = ax.plot(ZERO_DATA_PAUL[0], ZERO_DATA_PAUL[2], linewidth=0, markersize=3, c='r', marker='o', alpha=0.6)
 
 failed = ax.plot(FAILED_DATA[0], FAILED_DATA[1], linewidth=0, c='c', markersize=3, marker='o', alpha=0.6)
 
-ax.vlines(ALL_DATA[0], ALL_DATA[1], ALL_DATA[2], linewidth=1, alpha=0.3, color='b')
+ax.vlines(PLOT_DATA[0], PLOT_DATA[1], PLOT_DATA[2], linewidth=1, alpha=0.3, color='b')
 ax.vlines(PAUL_DATA[0], PAUL_DATA[1], PAUL_DATA[2], linewidth=1, alpha=0.3, color='g')
 #ax.legend([p1, p0, r2, r0, failed], ["Paul's data", "Paul's single ring", "Matt & Rory's data", "Matt & Rory's single ring", "Failed runs"], 
 #		loc=4, prop={'size':6})
@@ -192,25 +191,25 @@ ax.set_ylabel('Effective radius (um)')
 ax.set_xlim(0,5e-7)
 ax.set_ylim(0.000,1.75e-6)
 
-rdif1 = ax2.plot(ALL_DATA[0],ALL_DATA[1]-0.9e-6, linewidth=0, c='b', marker='^', markersize=3, alpha=0.6)
-rdif2 = ax2.plot(ALL_DATA[0],ALL_DATA[2]-1e-6, linewidth=0, c='b', marker='^', markersize=3, alpha=0.6)
-pdif1 = ax2.plot(PAUL_DATA[0],PAUL_DATA[1]-0.9e-6, linewidth=0, c='g', marker='o', markersize=3, alpha=0.6)
-pdif2 = ax2.plot(PAUL_DATA[0],PAUL_DATA[2]-1e-6, linewidth=0, c='g', marker='o', markersize=3, alpha=0.6)
-pdif_av = ax2.plot(PAUL_DATA[0],((PAUL_DATA[1]-0.9e-6+PAUL_DATA[2]-1e-6)/2), '-', linewidth=1, c='g', alpha=1)
-rdif_av = ax2.plot(ALL_DATA[0],((ALL_DATA[1]-0.9e-6+ALL_DATA[2]-1e-6)/2), '-', linewidth=1, c='b', alpha=1)
+# rdif1 = ax2.plot(ALL_DATA[0],ALL_DATA[1]-0.9e-6, linewidth=0, c='b', marker='^', markersize=3, alpha=0.6)
+# rdif2 = ax2.plot(ALL_DATA[0],ALL_DATA[2]-1e-6, linewidth=0, c='b', marker='^', markersize=3, alpha=0.6)
+# pdif1 = ax2.plot(PAUL_DATA[0],PAUL_DATA[1]-0.9e-6, linewidth=0, c='g', marker='o', markersize=3, alpha=0.6)
+# pdif2 = ax2.plot(PAUL_DATA[0],PAUL_DATA[2]-1e-6, linewidth=0, c='g', marker='o', markersize=3, alpha=0.6)
+# pdif_av = ax2.plot(PAUL_DATA[0],((PAUL_DATA[1]-0.9e-6+PAUL_DATA[2]-1e-6)/2), '-', linewidth=1, c='g', alpha=1)
+# rdif_av = ax2.plot(ALL_DATA[0],((ALL_DATA[1]-0.9e-6+ALL_DATA[2]-1e-6)/2), '-', linewidth=1, c='b', alpha=1)
 
-ax2.vlines(ALL_DATA[0], ALL_DATA[1]-0.9e-6, ALL_DATA[2]-1e-6, linewidth=1, alpha=0.3, color='b')
-ax2.vlines(PAUL_DATA[0], PAUL_DATA[1]-0.9e-6, PAUL_DATA[2]-1e-6, linewidth=1, alpha=0.3, color='g')
+# ax2.vlines(ALL_DATA[0], ALL_DATA[1]-0.9e-6, ALL_DATA[2]-1e-6, linewidth=1, alpha=0.3, color='b')
+# ax2.vlines(PAUL_DATA[0], PAUL_DATA[1]-0.9e-6, PAUL_DATA[2]-1e-6, linewidth=1, alpha=0.3, color='g')
 
-ax2.axhline(0, linestyle='-', linewidth=1, zorder=0, color='k') # horizontal lines
+# ax2.axhline(0, linestyle='-', linewidth=1, zorder=0, color='k') # horizontal lines
 
-ax2.set_xlim(0,5e-7)
-ax2.set_xticks([0,0.09e-6,0.25e-6,0.5e-6])
-ax2.set_xticklabels([0,0.09,0.25,0.50])
-ax2.set_yticks([0,-0.5e-6,0.5e-6])
-ax2.set_yticklabels([0,-0.5, 0.5])
-ax2.set_xlabel('Impact parameter (um)')
-ax2.set_ylim(-1e-6,1e-6)
+# ax2.set_xlim(0,5e-7)
+# ax2.set_xticks([0,0.025e-6, 0.09e-6,0.25e-6,0.5e-6])
+# ax2.set_xticklabels([0,0.025,0.09,0.25,0.50])
+# ax2.set_yticks([0,-0.5e-6,0.5e-6])
+# ax2.set_yticklabels([0,-0.5, 0.5])
+# ax2.set_xlabel('Impact parameter (um)')
+# ax2.set_ylim(-1e-6,1e-6)
 
 
 fig.savefig(base_filename+'../post/impact_vs_r_eff.png', dpi=200, facecolor='w', edgecolor='w',
