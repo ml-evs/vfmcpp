@@ -21,7 +21,7 @@ ZERO_DATA = list()
 ZERO_DATA_PAUL = list()
 FAILED_DATA = list()
 
-base_filename = '../../data/sweep_09/data/'
+base_filename = '../../19_8_sweep_09/'
 
 for root, dirs, files in os.walk(base_filename):
   for name in dirs:
@@ -182,13 +182,13 @@ ax.vlines(PAUL_DATA[0], PAUL_DATA[1], PAUL_DATA[2], linewidth=1, alpha=0.3, colo
 
 
 ax.set_xticks([0,0.09e-6,0.25e-6,0.5e-6])
-plt.setp(ax.get_xticklabels(), visible=False)
+ax.set_xticklabels([0,0.09,0.25,0.5])
 ax.set_yticks([0,0.9e-6,1e-6,1.5e-6])
 ax.set_yticklabels([0,0.9,1,1.5])
 ax.set_ylabel('Effective radius (um)')
 
 
-ax.set_xlim(0,5e-7)
+ax.set_xlim(0,5.5e-7)
 ax.set_ylim(0.000,1.75e-6)
 
 # rdif1 = ax2.plot(ALL_DATA[0],ALL_DATA[1]-0.9e-6, linewidth=0, c='b', marker='^', markersize=3, alpha=0.6)
@@ -208,7 +208,7 @@ ax.set_ylim(0.000,1.75e-6)
 # ax2.set_xticklabels([0,0.025,0.09,0.25,0.50])
 # ax2.set_yticks([0,-0.5e-6,0.5e-6])
 # ax2.set_yticklabels([0,-0.5, 0.5])
-# ax2.set_xlabel('Impact parameter (um)')
+ax.set_xlabel('Impact parameter (um)')
 # ax2.set_ylim(-1e-6,1e-6)
 
 

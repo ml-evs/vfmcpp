@@ -5,9 +5,9 @@ import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 
-pd.options.display.mpl_style = 'default'
+#pd.options.display.mpl_style = 'default'
 
-font = {'family' : 'monospace',
+font = {'family' : 'sans',
         'size'   : 8}
 
 matplotlib.rc('font', **font)
@@ -140,16 +140,40 @@ for i in range(len(impulse_files)):
 	impulse.append(p)
 
 
-fig = plt.figure(facecolor='w', edgecolor='w',figsize=plt.figaspect(2.))
+
+PAUL_DATA = []
+data = []
+
+file = open('../../data/paul_sweep/' + base_filename[-12:-7] + '.dat')
+#file = open('../../data/paul_sweep/0.450.dat')
+line = file.readline()
+while line:
+	data.append(line)
+	line = file.readline()
+file.close()
+t = np.zeros((len(data)))
+paul1 = np.zeros((len(data)))
+paul2 = np.zeros((len(data)))
+paul1z = np.zeros((len(data)))
+paul2z = np.zeros((len(data)))
+paul1xy = np.zeros((len(data)))
+paul2xy = np.zeros((len(data)))
+for j in range(len(data)):
+	if float((data[j].split())[1]) < 0.0000001:
+		t[j], paul1[j], paul2[j], paul1z[j], paul2z[j], paul1xy[j], paul2xy[j] = data[j].split()
+
+
+
+fig = plt.figure(facecolor='w', edgecolor='w',figsize=plt.figaspect(1.))
 ax = fig.add_subplot(111, 
  	axisbg='w')
 
-ax2 = ax.twinx()
+#ax2 = ax.twinx()
 #ax3 = ax.twinx()
 
 
 ax.set_xlim(0, np.max(impulse_times))
-ax.set_ylim(0.0, 2*np.max(impulse))
+ax.set_ylim(0.0, 1.2*np.max(impulse))
 
 p_total = np.zeros((len(impulse_times)))
 p_total_z = np.zeros((len(impulse_times)))
@@ -173,27 +197,39 @@ ax.set_ylabel('impulse')
 ax.set_xlabel('time (s)')
 
 
-ax2.set_ylim(0,1.05*np.max(length))
+#ax2.set_ylim(0,1.05*np.max(length))
 #ax3.set_ylim(0,1.05*np.max(points))
 
-ring1 = ax.plot(impulse_times, p1, c='#9C2727',alpha=0.6, linewidth=3, label='ring 1 impulse')# s=35)
-ring2 = ax.plot(impulse_times, p2, c='#1A5712',alpha=0.6, linewidth=3, label='ring 2 impulse')# s=35)
-ring1_z = ax.plot(impulse_times, p1_z, c='r',alpha=0.7, linewidth=3, label='ring 1 z impulse')# s=35)
-ring2_z = ax.plot(impulse_times, p2_z, c='g',alpha=0.7, linewidth=3, label='ring 2 z impulse')# s=35)
+
+
+
+ring1 = ax.plot(impulse_times, p1, c='#9C2727',alpha=0.9, linewidth=3, label='ring 1 impulse')# s=35)
+ring2 = ax.plot(impulse_times, p2, c='r',alpha=0.9, linewidth=3, label='ring 2 impulse')# s=35)
+ring1_z = ax.plot(impulse_times, p1_z, c='#9C2727',alpha=0.3, linewidth=3, label='ring 1 z impulse')# s=35)
+ring2_z = ax.plot(impulse_times, p2_z, c='r',alpha=0.3, linewidth=3, label='ring 2 z impulse')# s=35)
+paulplot1 = ax.plot(t, paul1, '-', markersize=3, c='#4A4DCF', alpha=0.9, linewidth=3, label='paul ring 1')
+paulplot2 = ax.plot(t, paul2, '-', markersize=3, c='b', alpha=0.9, linewidth=3, label='paul ring 2')
+paulplot1z = ax.plot(t, paul1z, '-', markersize=3, c='#4A4DCF', alpha=0.3, linewidth=3, label='paul ring 1 z')
+paulplot2z = ax.plot(t, paul2z, '-', markersize=3, c='b', alpha=0.3, linewidth=3, label='paul ring 2 z')
+
+
+
 # ax.plot(impulse_times, p2, c='b',alpha=0.7, linewidth=3)# s=35)
 
-ringtot = ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=3, label='total impulse')
-ringtot = ax.plot(impulse_times, p_total_z, c='#363347',alpha=0.7,linewidth=3, label='total z impulse')
-linetot = ax2.plot(impulse_times, length, c='c',linewidth=3, label = 'line length')
+# ringtot = ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=3, label='total impulse')
+# ringtot = ax.plot(impulse_times, p_total_z, c='#363347',alpha=0.7,linewidth=3, label='total z impulse')
+# linetot = ax2.plot(impulse_times, length, c='c',linewidth=3, label = 'line length')
 #ax3.plot(impulse_times, points, c='y', linewidth=3)
 handles, labels = ax.get_legend_handles_labels()
-handles2, labels2 = ax2.get_legend_handles_labels()
+#handles2, labels2 = ax2.get_legend_handles_labels()
 
-ax.legend(handles, labels)
-ax2.legend(handles2, labels2, loc=2)
+ax.legend(handles, labels, prop={'size':4}, loc=2)
+#ax2.legend(handles2, labels2, loc=2)
 
 #ax2.legend([linetot], ['total line length'])
-plt.show()
+#plt.show()
 
+fig.savefig('../../data/paul_sweep/' + base_filename[-12:-7] + '.png', dpi=300, facecolor='w', edgecolor='w',
+        orientation='portrait', pad_inchemarkersize=0.1)
 
 
