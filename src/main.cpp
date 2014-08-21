@@ -142,6 +142,7 @@ int main(int argc, char* argv[]){
 	ofstream timefile(filename+"time.dat");
 	t = clock()-t;
 	timefile	 << "time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
+	timefile << "number of recons = " << Tangle.mN_recon << endl;
 	timefile.close();
 	return 0;
 }
