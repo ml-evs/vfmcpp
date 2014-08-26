@@ -1,5 +1,5 @@
-path data/02_09_no_mesh
+path data/TEST_25_paul
 time 1e-3
 N_pt 100
-ring 1e-6 0 0 1.5e-6
-ring 0.9e-6 0 0.2e-6 0
+ring 1e-6 0 0 5e-6
+ring 9e-7 0 0.25e-6 0

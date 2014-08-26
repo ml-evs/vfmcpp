@@ -1,7 +1,6 @@
 import sys
 import os.path
 import numpy as np
-import pandas as pd
 import matplotlib
 import matplotlib.pyplot as plt
 
@@ -113,7 +112,78 @@ def calcimpulse(jmax, impulse_files, i):
 		for c in range(len(l[d])):
 			for q in range(3):
 				length_temp += pow(l[d][c][q],2)
-			length += np.sqrt(length_temp)			
+			length += np.sqrt(length_temp)		
+
+	# T = []
+
+	# A = []
+	# B = []
+	# C = []
+	# D = []
+	# E = []
+	# sp = []
+
+
+	# for m in range(len(r)):
+	# 	A.append(np.zeros((len(r[m]))))
+	# 	B.append(np.zeros((len(r[m]))))
+	# 	C.append(np.zeros((len(r[m]))))
+	# 	D.append(np.zeros((len(r[m]))))
+	# 	E.append(np.zeros((len(r[m]))))
+	# 	sp.append(np.zeros((len(r[m]),3)))
+	# 	for i in range(len(r[m])):
+	# 		j = i; k = i; l = i; q = i;
+	# 		if j-2==-1:
+	# 			j=len(r[m])+1
+	# 		if j-2==-2:
+	# 			j=len(r[m])
+	# 		if k-1==-1:
+	# 			k=len(r[m])
+	# 		if l+1==len(r[m]):
+	# 			l=-1
+	# 		if q+1==len(r[q]):
+	# 			q=-1
+	# 		if q+2==len(r[q]):
+	# 			q=-2
+			
+	# 		A[-1][i] = l[m][i]*l[m][l+1]*l[m][l+1]+l[m][i]*l[m][l+1]*l[m][q+2];
+	# 		A[-1][i] = A[-1][i] / (l[m][k-1]*(l[m][k-1]+l[m][i])*(l[m][k-1]+l[m][i]+l[m][l+1])*(l[m][k-1]+l[m][i]+l[m][l+1]+l[m][q+2]));
+			
+	# 		B[-1][i] = -l[m][k-1]*l[m][l+1]*l[m][l+1] - l[m][i]*l[m][l+1]*l[m][l+1] - l[m][k-1]*l[m][l+1]*l[m][q+2] - l[m][i]*l[m][l+1]*l[m][q+2];
+	# 		B[-1][i] = B[-1][i] / (l[m][k-1]*l[m][i]*(l[m][i]+l[m][l+1])*(l[m][i]+l[m][l+1]+l[m][q+2]));
+	# 		D[-1][i] = l[m][k-1]*l[m][i]*l[m][l+1]+l[m][i]*l[m][i]*l[m][l+1]+l[m][k-1]*l[m][i]*l[m][q+2]+l[m][i]*l[m][i]*l[m][q+2];
+	# 		D[-1][i] = D[-1][i] / (l[m][l+1]*l[m][q+2]*(l[m][i]+l[m][l+1])*(l[m][k-1]+l[m][i]+l[m][l+1]));
+	# 		E[-1][i] = -l[m][l+1]*l[m][i]*l[m][i] - l[m][k-1]*l[m][i]*l[m][l+1];
+	# 		E[-1][i] = E[-1][i] / (l[m][q+2]*(l[m][l+1] + l[m][q+2]) * (l[m][i]+l[m][l+1]+l[m][q+2])*(l[m][k-1]+l[m][i]+l[m][l+1]+l[m][q+2]));
+	# 		C[-1][i] = -(A[-1][i] + B[-1][i] + D[-1][i] + E[-1][i]);	
+		
+	# 	for i in range(len(r[m]))
+	# 		j = i; k = i; l = i; q = i;
+	# 		if j-2==-1:
+	# 			j=len(r[m])+1
+	# 		if j-2==-2:
+	# 			j=len(r[m])
+	# 		if k-1==-1:
+	# 			k=len(r[m])
+	# 		if l+1==len(r[m]):
+	# 			l=-1
+	# 		if q+1==len(r[q]):
+	# 			q=-1
+	# 		if q+2==len(r[q]):
+	# 			q=-2
+			
+	# 	for(int n=0;n<3;n++){
+	# 		sp[-1][i][n] =  A[-1][i]*r[m][j-2][n]
+	# 		sp[-1][i][n] += B[-1][i]*r[m][k-1][n]
+	# 		sp[-1][i][n] += C[-1]*r[m][i][n]
+	# 		sp[-1][i][n] += D[-1][i]*r[m][l+1][n]
+	# 		sp[-1][i][n] += E[-1][i]*r[m][m+2][n]
+	# 	}
+
+
+
+	
+
 
 	return p, length, points
 
@@ -144,8 +214,7 @@ for i in range(len(impulse_files)):
 PAUL_DATA = []
 data = []
 
-file = open('../../data/paul_sweep/' + base_filename[-12:-7] + '.dat')
-#file = open('../../data/paul_sweep/0.450.dat')
+file = open('../../data/' +  str(sys.argv[1]) + '/../0.250.dat')
 line = file.readline()
 while line:
 	data.append(line)
@@ -164,11 +233,11 @@ for j in range(len(data)):
 
 
 
-fig = plt.figure(facecolor='w', edgecolor='w',figsize=plt.figaspect(1.))
+fig = plt.figure(facecolor='w', edgecolor='w',figsize=((5,3)))
 ax = fig.add_subplot(111, 
  	axisbg='w')
 
-#ax2 = ax.twinx()
+ax2 = ax.twinx()
 #ax3 = ax.twinx()
 
 
@@ -197,29 +266,29 @@ ax.set_ylabel('impulse')
 ax.set_xlabel('time (s)')
 
 
-#ax2.set_ylim(0,1.05*np.max(length))
+ax2.set_ylim(0,1.05*np.max(length))
 #ax3.set_ylim(0,1.05*np.max(points))
 
 
 
 
-ring1 = ax.plot(impulse_times, p1, c='#9C2727',alpha=0.9, linewidth=3, label='ring 1 impulse')# s=35)
-ring2 = ax.plot(impulse_times, p2, c='r',alpha=0.9, linewidth=3, label='ring 2 impulse')# s=35)
-ring1_z = ax.plot(impulse_times, p1_z, c='#9C2727',alpha=0.3, linewidth=3, label='ring 1 z impulse')# s=35)
-ring2_z = ax.plot(impulse_times, p2_z, c='r',alpha=0.3, linewidth=3, label='ring 2 z impulse')# s=35)
-paulplot1 = ax.plot(t, paul1, '-', markersize=3, c='#4A4DCF', alpha=0.9, linewidth=3, label='paul ring 1')
-paulplot2 = ax.plot(t, paul2, '-', markersize=3, c='b', alpha=0.9, linewidth=3, label='paul ring 2')
-paulplot1z = ax.plot(t, paul1z, '-', markersize=3, c='#4A4DCF', alpha=0.3, linewidth=3, label='paul ring 1 z')
-paulplot2z = ax.plot(t, paul2z, '-', markersize=3, c='b', alpha=0.3, linewidth=3, label='paul ring 2 z')
+ring1 = ax.plot(impulse_times, p1, c='#9C2727',alpha=0.9, linewidth=2, label='ring 1 impulse')# s=35)
+ring2 = ax.plot(impulse_times, p2, c='r',alpha=0.9, linewidth=2, label='ring 2 impulse')# s=35)
+ring1_z = ax.plot(impulse_times, p1_z, c='#9C2727',alpha=0.3, linewidth=2, label='ring 1 z impulse')# s=35)
+ring2_z = ax.plot(impulse_times, p2_z, c='r',alpha=0.3, linewidth=2, label='ring 2 z impulse')# s=35)
+paulplot1 = ax.plot(t, paul1, '-', markersize=3, c='#4A4DCF', alpha=0.2, linewidth=2, label='paul ring 1')
+paulplot2 = ax.plot(t, paul2, '-', markersize=3, c='b', alpha=0.2, linewidth=2, label='paul ring 2')
+paulplot1z = ax.plot(t, paul1z, '-', markersize=3, c='#4A4DCF', alpha=0.3, linewidth=2, label='paul ring 1 z')
+paulplot2z = ax.plot(t, paul2z, '-', markersize=3, c='b', alpha=0.3, linewidth=2, label='paul ring 2 z')
 
 
 
-# ax.plot(impulse_times, p2, c='b',alpha=0.7, linewidth=3)# s=35)
+# ax.plot(impulse_times, p2, c='b',alpha=0.7, linewidth=2)# s=35)
 
-# ringtot = ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=3, label='total impulse')
-# ringtot = ax.plot(impulse_times, p_total_z, c='#363347',alpha=0.7,linewidth=3, label='total z impulse')
-# linetot = ax2.plot(impulse_times, length, c='c',linewidth=3, label = 'line length')
-#ax3.plot(impulse_times, points, c='y', linewidth=3)
+# ringtot = ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=2, label='total impulse')
+# ringtot = ax.plot(impulse_times, p_total_z, c='#363347',alpha=0.7,linewidth=2, label='total z impulse')
+linetot = ax2.plot(impulse_times, length, c='c',linewidth=2, label = 'line length')
+#ax3.plot(impulse_times, points, c='y', linewidth=2)
 handles, labels = ax.get_legend_handles_labels()
 #handles2, labels2 = ax2.get_legend_handles_labels()
 
@@ -229,7 +298,6 @@ ax.legend(handles, labels, prop={'size':4}, loc=2)
 #ax2.legend([linetot], ['total line length'])
 #plt.show()
 
-fig.savefig('../../data/paul_sweep/' + base_filename[-12:-7] + '.png', dpi=300, facecolor='w', edgecolor='w',
-        orientation='portrait', pad_inchemarkersize=0.1)
-
+fig.savefig('last_impulse.png', dpi=300, facecolor='w', edgecolor='w',
+         orientation='portrait', pad_inchemarkersize=0.1)
 

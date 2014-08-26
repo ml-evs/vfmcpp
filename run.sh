@@ -91,6 +91,13 @@ if [ ! -d "$dir" ]; then
 	mkdir "$dir"
 fi
 
+if [ -d "$dir" ]; then
+	echo "data directory found, cleaning up...\n\n"
+	cd "$dir"
+	rm data*
+	cd "../.."
+fi
+
 if [ $COMPILE -eq 1 ]; then
 	cd "src"
 	echo " ${blu} -c flag specified, recompiling source...${red}"
