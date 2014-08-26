@@ -32,7 +32,7 @@ void Tangle::CalcVelocityNL(){
 			while(i<(*current)->mN){
 				/* iterate over "source points" */
 				for(oc=ob;oc!=oe;oc++){
-					if((*oc)==pField->mNext||(*oc)==pField||(*oc)==pField->mPrev){cout << "";}
+					if((*oc)==pField||(*oc)==pField->mPrev){pField->mVelNL[0] += 0;}
 					else{
 						/* calculate p and q */
 						pp = 0; qq = 0; pq = 0;
