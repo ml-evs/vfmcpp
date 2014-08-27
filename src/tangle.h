@@ -38,6 +38,7 @@ public:
 	void CalcVelocityNL();
 	bool LoopKill();
 	void Reconnection();
+	void CalcField(double eamp, int edir, double dr);
 	void SelfReconnect(int P, int Q, int k, int l);
 	void SelfReconnectLine(int P, int Q, int k, int l);
 	void Reconnect(int P, int Q, int k, int l);

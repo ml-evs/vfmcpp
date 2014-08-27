@@ -10,10 +10,17 @@
 using namespace std;
 	
 	/* circulation quantum, core radii, mutual friction */
-	double		kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0, alpha=0;
+	double		kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0, alpha=0, q_e=1.6e-19;
 	int				N  = 100; 		// number of points on ring
 	double		r0 = 1e-6; 		// default initial ring radius
 	double 		t_total = 1e-3; // default total time
+	/* add charge to a filament */
+	bool        charge = true;          // is an electron present?
+	int         efil = 0;               // filament containing charge
+	int         epos = N/2;             // point storing charge
+	int         edir = 2;               // direction of electric field
+	double      eamp = 10000;           // electric field strength
+	double      edur = 0.4e-3;          // duration of field
 
 int main(int argc, char* argv[]){
 
@@ -36,6 +43,11 @@ int main(int argc, char* argv[]){
 	vector <Filament*>::iterator begin, current, end;
 	begin = Tangle.mTangle.begin();
 	end = Tangle.mTangle.end();
+
+		if(charge == true){
+        Tangle.mTangle[efil]->mCarriesCharge = true;
+        Tangle.mTangle[efil]->mPoints[epos]->mCharge = q_e;
+	}
 
 /*	double perturb = r0/10;	
 	for(current=begin; current!=end; current++){
@@ -131,7 +143,10 @@ int main(int argc, char* argv[]){
 		Tangle.LoopKill();																							// remove rings smaller than 6 points
 		while(MeshFinished==false) MeshFinished = Tangle.MeshAdjust();  // mesh_adjust until finished
 		Tangle.Reconnection();	 																				// check for and perform reconnections 
-		Tangle.CalcVelocity(); 																					// calculates and combines all contributions to velocity
+		Tangle.CalcVelocity();
+		if(charge == true && i*Tangle.mDt < edur){                                          // add field contribution to charged point
+      Tangle.CalcField(eamp, edir, dr);
+    } 																					// calculates and combines all contributions to velocity
 		Tangle.PropagatePos(Tangle.mDt);																// propagate positions
 
 		i++;						// step forward

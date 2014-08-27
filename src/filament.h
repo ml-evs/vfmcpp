@@ -17,6 +17,7 @@ public:
 	int mN;
 	int mFlagType; // integer showing filament type: 0 for rings, 1 for lines
 	vector <Point*> 	mPoints;
+	bool mCarriesCharge = false; // default filaments don't carry electrons
 	vector <Point*>     mDummies;
 	/* member functions */
 	Filament(){};

@@ -233,6 +233,7 @@ for j in range(len(data)):
 
 
 
+
 fig = plt.figure(facecolor='w', edgecolor='w',figsize=((5,3)))
 ax = fig.add_subplot(111, 
  	axisbg='w')
@@ -269,6 +270,11 @@ ax.set_xlabel('time (s)')
 #ax2.set_ylim(0.95*np.min(length),1.05*np.max(length))
 #ax3.set_ylim(0,1.05*np.max(points))
 
+for i in range(len(impulse_files)):
+	radius.append(0)
+	radius[-1] = calcimpulse(jmax, impulse_files, i)
+	erad[i] = (1.6e-19 * 10000 * impulse_times[i] /(3.14159265359*145*kappa)) + (np.min(radius)*np.min(radius))
+	erad[i] = np.sqrt(erad[i])
 
 
 
@@ -291,6 +297,9 @@ ringtot = ax.plot(impulse_times, p_total_z, c='#363347',alpha=0.7,linewidth=0.5,
 #ax3.plot(impulse_times, points, c='y', linewidth=0.5)
 handles, labels = ax.get_legend_handles_labels()
 #handles2, labels2 = ax2.get_legend_handles_labels()
+
+
+
 
 ax.legend(handles, labels, prop={'size':4}, loc=2)
 #ax2.legend(handles2, labels2, loc=2)

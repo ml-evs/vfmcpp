@@ -23,6 +23,11 @@ bool Tangle::MeshAdjust(){
                 cout << "\nRemoving point at " << (*c)->mPoints[k]->mPos[0] << ", " << (*c)->mPoints[k]->mPos[1] << ", " << (*c)->mPoints[k]->mPos[2] << endl;
                 if((1/R)>1.9/dr){cout << "for curvature" << endl;}
                 cout << (*c)->mPoints[k]->mSegLength << " vs " << 0.5*dr << endl; 
+                if((*c)->mPoints[k]->mCharge != 0){ // don't remove the electron!
+                    cout << "Moving the electron to previous point!" << endl;
+                    (*c)->mPoints[k]->mPrev->mCharge = 1.6e-19;
+                    (*c)->mPoints[k]->mCharge = 0;
+                }
                 /* reassign next and last pointers for point to be deleted */
                 (*c)->mPoints[k]->mNext->mPrev = (*c)->mPoints[k]->mPrev;
                 (*c)->mPoints[k]->mPrev->mNext = (*c)->mPoints[k]->mNext;
