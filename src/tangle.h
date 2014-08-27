@@ -18,6 +18,12 @@ public:
 	double mDr;			// spatial resolution
 	double mDt; 		// temporal resolution
 	double mTotalTime;	// total time
+
+
+	double mEFieldAmp;
+	double mEFieldDuration;
+	int 	 mEFieldDirection;
+
 	/* member functions */
 	Tangle(){};
 	Tangle(Filament* String1){

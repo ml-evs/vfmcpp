@@ -20,7 +20,7 @@ using namespace std;
 	int         epos = N/2;             // point storing charge
 	int         edir = 2;               // direction of electric field
 	double      eamp = 10000;           // electric field strength
-	double      edur = 0.4e-3;          // duration of field
+	double      edur = 1e-3;          // duration of field
 
 int main(int argc, char* argv[]){
 
@@ -82,7 +82,7 @@ int main(int argc, char* argv[]){
 
 	/* set number of timesteps and number of steps per save */
 
-	int N_t(t_total/Tangle.mDt); 					// number of time steps
+	int N_t(1);//t_total/Tangle.mDt); 					// number of time steps
 	Tangle.mN_f = 10000; 									// number of time steps per save
 	Tangle.mN_slow = 0; 									// counts how many steps have occurred at slow-mo
 	

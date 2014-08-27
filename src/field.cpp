@@ -24,7 +24,6 @@ void Tangle::CalcField(double eamp, int edir, double dr){
 						(*c)->mPoints[p]->mVel[2] += K*((*c)->mPoints[p]->mSPrime[0]*eamp) / ((*c)->mPoints[p]->mSegLength + (*c)->mPoints[p]->mSegLength);
 					}
 					else if(edir == 2){
-						cout << "electron, ";
 						(*c)->mPoints[p]->mVel[0] += K*( (*c)->mPoints[p]->mSPrime[1]*eamp) / ((*c)->mPoints[p]->mSegLength + (*c)->mPoints[p]->mSegLength);
 						(*c)->mPoints[p]->mVel[1] -= K*( (*c)->mPoints[p]->mSPrime[0]*eamp) / ((*c)->mPoints[p]->mSegLength + (*c)->mPoints[p]->mSegLength);
 					}

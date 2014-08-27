@@ -37,6 +37,27 @@ string Tangle::Initialise(string runfile){
 			mTotalTime = t_total;
 			cout << "\t    simulation time = " << t_total << " s" << endl;
 		}
+		else if(line.substr(0,4) == "Eext"){
+			put.clear();
+			input.clear();
+			convert.clear();
+			cout << "\t    electric field: ";
+			input << line.substr(5);
+			for(int i(0);i<5;i++){
+				convert.clear();
+				getline(input, put, ' ');
+				convert << put;
+				convert >> param[i];
+				if(input.eof()) break;
+			}
+			mEFieldAmp = param[0]; mEFieldDuration = param[1];
+			mEFieldDirection = int(param[2]);
+			cout << " amplitude = " << mEFieldAmp << " V/m, duration = " << mEFieldDuration << " s, in ";
+			if(mEFieldDirection==0) cout << "x direction." << endl;
+			if(mEFieldDirection==1) cout << "y direction." << endl;
+			if(mEFieldDirection==2) cout << "z direction." << endl;
+		}
+
 		else if(line.substr(0,4) == "N_pt"){
 			input.clear();
 			input << line.substr(5);
@@ -79,7 +100,22 @@ string Tangle::Initialise(string runfile){
 			cout << ", " << param[2] << ", " << param[3] << ") m. " << endl;
 			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;
 		}
-		if(infile.eof()) break;
+		else if(line.substr(0,4) == "q_pt"){
+			put.clear();
+			input.clear();
+			convert.clear();
+			cout << "\t    charged segment on filament ";
+			input << line.substr(5);
+			for(int i(0);i<4;i++){
+				convert.clear();
+				getline(input, put, ' ');
+				convert << put;
+				convert >> param[i];
+				if(input.eof()) break;
+			}
+			mTangle[param[0]]->mPoints[int(param[1])]->mCharge = param[2];
+			cout << param[0] << " with size " << param[2] << " C, at mesh point " << param[1] << ". " << endl;
+		}
 	}
 	infile.close();
 	return filename;
