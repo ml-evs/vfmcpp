@@ -154,10 +154,10 @@ ax = fig.add_subplot(111,
 #ax3 = ax.twinx()
 
 
-ax.set_xlim(0, 0.001)
-ax.set_ylim(0.95e-6, 1.015e-6)
-ax.set_yticks([min_r])
-ax.set_yticklabels('r-init')
+ax.set_xlim(0, 0.0007)
+ax.set_ylim(0.98*np.min(radius), 1.02*np.max(radius))
+ax.set_yticks([np.min(radius), np.max(radius)])
+ax.set_yticklabels( [str(np.min(radius)), str(np.max(radius)) ])
 ax.set_xlabel('Time (s)')
 ax.set_ylabel('Effective radius (m)')
 
