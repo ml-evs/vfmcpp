@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 #pd.options.display.mpl_style = 'default'
 
-font = {'family' : 'sans',
+font = {'family' : 'serif',
         'size'   : 8}
 
 matplotlib.rc('font', **font)
@@ -214,7 +214,7 @@ for i in range(len(impulse_files)):
 PAUL_DATA = []
 data = []
 
-file = open('../../data/' +  str(sys.argv[1]) + '/../0.250.dat')
+file = open('../../data/' +  str(sys.argv[1]) + '/paul.dat')
 line = file.readline()
 while line:
 	data.append(line)
@@ -266,29 +266,29 @@ ax.set_ylabel('impulse')
 ax.set_xlabel('time (s)')
 
 
-ax2.set_ylim(0,1.05*np.max(length))
+#ax2.set_ylim(0.95*np.min(length),1.05*np.max(length))
 #ax3.set_ylim(0,1.05*np.max(points))
 
 
 
 
-ring1 = ax.plot(impulse_times, p1, c='#9C2727',alpha=0.9, linewidth=2, label='ring 1 impulse')# s=35)
-ring2 = ax.plot(impulse_times, p2, c='r',alpha=0.9, linewidth=2, label='ring 2 impulse')# s=35)
-ring1_z = ax.plot(impulse_times, p1_z, c='#9C2727',alpha=0.3, linewidth=2, label='ring 1 z impulse')# s=35)
-ring2_z = ax.plot(impulse_times, p2_z, c='r',alpha=0.3, linewidth=2, label='ring 2 z impulse')# s=35)
-paulplot1 = ax.plot(t, paul1, '-', markersize=3, c='#4A4DCF', alpha=0.2, linewidth=2, label='paul ring 1')
-paulplot2 = ax.plot(t, paul2, '-', markersize=3, c='b', alpha=0.2, linewidth=2, label='paul ring 2')
-paulplot1z = ax.plot(t, paul1z, '-', markersize=3, c='#4A4DCF', alpha=0.3, linewidth=2, label='paul ring 1 z')
-paulplot2z = ax.plot(t, paul2z, '-', markersize=3, c='b', alpha=0.3, linewidth=2, label='paul ring 2 z')
+ring1 = ax.plot(impulse_times, p1, c='#9C2727',alpha=0.9, linewidth=0.5, label='ring 1 impulse')# s=35)
+ring2 = ax.plot(impulse_times, p2, c='r',alpha=0.9, linewidth=0.5, label='ring 2 impulse')# s=35)
+ring1_z = ax.plot(impulse_times, p1_z, c='#9C2727',alpha=0.3, linewidth=0.5, label='ring 1 z impulse')# s=35)
+ring2_z = ax.plot(impulse_times, p2_z, c='r',alpha=0.3, linewidth=0.5, label='ring 2 z impulse')# s=35)
+paulplot1 = ax.plot(t, paul1, '-', markersize=3, c='#4A4DCF', alpha=0.2, linewidth=0.5, label='paul ring 1')
+paulplot2 = ax.plot(t, paul2, '-', markersize=3, c='b', alpha=0.2, linewidth=0.5, label='paul ring 2')
+paulplot1z = ax.plot(t, paul1z, '-', markersize=3, c='#4A4DCF', alpha=0.3, linewidth=0.5, label='paul ring 1 z')
+paulplot2z = ax.plot(t, paul2z, '-', markersize=3, c='b', alpha=0.3, linewidth=0.5, label='paul ring 2 z')
 
 
 
-# ax.plot(impulse_times, p2, c='b',alpha=0.7, linewidth=2)# s=35)
+# ax.plot(impulse_times, p2, c='b',alpha=0.7, linewidth=0.5)# s=35)
 
-# ringtot = ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=2, label='total impulse')
-# ringtot = ax.plot(impulse_times, p_total_z, c='#363347',alpha=0.7,linewidth=2, label='total z impulse')
-linetot = ax2.plot(impulse_times, length, c='c',linewidth=2, label = 'line length')
-#ax3.plot(impulse_times, points, c='y', linewidth=2)
+ringtot = ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=0.5, label='total impulse')
+ringtot = ax.plot(impulse_times, p_total_z, c='#363347',alpha=0.7,linewidth=0.5, label='total z impulse')
+#linetot = ax2.plot(impulse_times, length, c='c',linewidth=0.5, label = 'line length')
+#ax3.plot(impulse_times, points, c='y', linewidth=0.5)
 handles, labels = ax.get_legend_handles_labels()
 #handles2, labels2 = ax2.get_legend_handles_labels()
 
@@ -298,6 +298,6 @@ ax.legend(handles, labels, prop={'size':4}, loc=2)
 #ax2.legend([linetot], ['total line length'])
 #plt.show()
 
-fig.savefig('last_impulse.png', dpi=300, facecolor='w', edgecolor='w',
+fig.savefig('../../data/' + str(sys.argv[1]) + '/impulse.png', dpi=400, facecolor='w', edgecolor='w',
          orientation='portrait', pad_inchemarkersize=0.1)
 
