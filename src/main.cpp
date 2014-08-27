@@ -14,13 +14,6 @@ using namespace std;
 	int				N  = 100; 		// number of points on ring
 	double		r0 = 1e-6; 		// default initial ring radius
 	double 		t_total = 1e-3; // default total time
-	/* add charge to a filament */
-	bool        charge = true;          // is an electron present?
-	int         efil = 0;               // filament containing charge
-	int         epos = N/2;             // point storing charge
-	int         edir = 2;               // direction of electric field
-	double      eamp = 10000;           // electric field strength
-	double      edur = 1e-3;          // duration of field
 
 int main(int argc, char* argv[]){
 
@@ -32,11 +25,6 @@ int main(int argc, char* argv[]){
 	else runfile = "NULL";
 	string filename = Tangle.Initialise(runfile);
 
-/*	string filename = "../init/init_state/015_09/015_09_rec";
-	Tangle.FromFile(filename);
-
-	filename = "../data/015_09_old/data_";*/
-
 	/* set resolutions */
 	double dt, dr(0);
 	int N_p(0);
@@ -44,22 +32,6 @@ int main(int argc, char* argv[]){
 	begin = Tangle.mTangle.begin();
 	end = Tangle.mTangle.end();
 
-		if(charge == true){
-        Tangle.mTangle[efil]->mCarriesCharge = true;
-        Tangle.mTangle[efil]->mPoints[epos]->mCharge = q_e;
-	}
-
-/*	double perturb = r0/10;	
-	for(current=begin; current!=end; current++){
-		if((*current)->mFlagType==1){
-			(*current)->mPoints[N/2]->mPos[0] = perturb;
-			(*current)->mPoints[N/2-1]->mPos[0] = 0.95*perturb;
-  		(*current)->mPoints[N/2+1]->mPos[0] = 0.95*perturb;
-  		(*current)->mPoints[N/2-2]->mPos[2] += 1.5*r0/N;
-			(*current)->mPoints[N/2+2]->mPos[2] -= 1.5*r0/N;
-  	}
-	}*/
-	
 	/* calculate mean distance between points */
 	for(current=begin; current!=end; current++){
 		for(int j(0); j<(*current)->mN; j++){
@@ -77,7 +49,6 @@ int main(int argc, char* argv[]){
 	cout << "\t    spatial resolution = "<< dr << " m" << endl;
 	cout << "\t    time-step = " << dt << " s\n\n";
 
-//	dr = 7.957e-8; dt = 1.385e-10;
 	Tangle.mDr = dr; Tangle.mDt = dt;
 
 	/* set number of timesteps and number of steps per save */

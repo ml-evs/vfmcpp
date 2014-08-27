@@ -113,7 +113,7 @@ string Tangle::Initialise(string runfile){
 				convert >> param[i];
 				if(input.eof()) break;
 			}
-			mTangle[param[0]]->mPoints[int(param[1])]->mCharge = param[2];
+			mTangle[param[0]]->mPoints[int(param[1])]->mCharge = param[2]; mTangle[param[0]]->mCarriesCharge = true;
 			cout << param[0] << " with size " << param[2] << " C, at mesh point " << param[1] << ". " << endl;
 		}
 	}
