@@ -1,6 +1,6 @@
 vfmcpp
 ==============
-vfmcpp is a C++ implementation of the vortex filament model of superfluids. 
+vfmcpp is a C++ implementation of the vortex filament model of superfluids. Help can be found by running `run.sh` with the flag `-h`.
 
 The vague aim of this project is to model vortex ring dynamics in various configurations - including charged filaments immersed in trivial electric fields and open 'line' filaments. 
 
