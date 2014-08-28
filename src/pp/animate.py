@@ -95,7 +95,7 @@ def animate(i):
 	z_av = np.mean(r[q_biggest][:,2])
 	for q in range (len(r)):
 		rings[q].set_data(r[q][:,0], r[q][:,1])
-		rings[q].set_3d_properties(r[q][:,2])#-z_av)
+		rings[q].set_3d_properties(r[q][:,2]-z_av)
 
 
 	time_text.set_text('time = %.1f' % (times[i]*1e9)+ ' ns / %.1f' % (times[-1]*1e9) +' ns')
@@ -143,8 +143,8 @@ for k in range (jmax+2):
 time_text = ax.text(0, 0, 0,'', transform=ax.transAxes, color='k')
 ax.set_xlim3d((-1.5e-6,1.5e-6))
 ax.set_ylim3d((-1.5e-6,1.5e-6))
-#ax.set_zlim3d((-1.5e-6,1.5e-6))
-ax.set_zlim3d((24e-6,27e-6))
+ax.set_zlim3d((-1.5e-6,1.5e-6))
+#ax.set_zlim3d((24e-6,27e-6))
 ax.view_init(20,-130)
 
 x = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.2e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")
