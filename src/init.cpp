@@ -1,9 +1,12 @@
+/* initialise strings via .in files as outlined in documentation */
+
 #include "tangle.h"
 #include <iostream>
 #include <sstream>
 #include <fstream>
 
 using namespace std;
+
 
 string Tangle::Initialise(string runfile){
 	
@@ -16,13 +19,18 @@ string Tangle::Initialise(string runfile){
 	string put;
 	string filename;
 	double t_total;
-	int N;
+	double res;
 	vector <double> param(5);
 	cout << "\t - - - - - - -    INITIALISING TANGLE    - - - - - - - -\n\n";
 	cout << "\t    init path: " << runfile << endl;
 	while(infile){
 		getline(infile, line);
-		if(line.substr(0,4) == "path"){
+		/* ignore comments */
+		if(line.substr(0,1) == "#"){
+			continue;
+		}
+		/* set data folder path */
+		else if(line.substr(0,4) == "path"){
 			input.clear();
 			input << line.substr(5);
 			input >> filename;
@@ -30,13 +38,15 @@ string Tangle::Initialise(string runfile){
 			filename = "../" + filename;
 			cout << "\t    data path: " << filename << endl;
 		}
-		if(line.substr(0,4) == "time"){
+		/* set simulation length */
+		else if(line.substr(0,4) == "time"){
 			input.clear();
 			input << line.substr(5);
 			input >> t_total;
 			mTotalTime = t_total;
 			cout << "\t    simulation time = " << t_total << " s" << endl;
 		}
+		/* set an external field */
 		else if(line.substr(0,4) == "Eext"){
 			put.clear();
 			input.clear();
@@ -57,13 +67,20 @@ string Tangle::Initialise(string runfile){
 			if(mEFieldDirection==1) cout << "y direction." << endl;
 			if(mEFieldDirection==2) cout << "z direction." << endl;
 		}
-
-		else if(line.substr(0,4) == "N_pt"){
+		/* set resolution */
+		else if(line.substr(0,4) == "resl"){
 			input.clear();
 			input << line.substr(5);
-			input >> N;
+			input >> res;
+			mDr = float(res); 					// set simulation resolution in tangle
+			mDt = pow((mDr/2),2)/(9.98e-8*log(mDr/(2*PI*1.3e-10)));
+			mDt /= 25; 															// Baggaley, Barenghi PRB 2010
+			
+
 		}
+		/* define a ring */
 		else if(line.substr(0,4) == "ring"){
+			param[4] = 2; 			//default ring alignment is z
 			put.clear();
 			input.clear();
 			convert.clear();
@@ -73,15 +90,18 @@ string Tangle::Initialise(string runfile){
 				convert.clear();
 				getline(input, put, ' ');
 				convert << put;
-				
 				convert >> param[i];
 				if(input.eof()) break;
 			}
-			mTangle.push_back(new Ring(N, param[0], param[1], param[2], param[3], param[4]));
+			mTangle.push_back(new Ring(res, param[0], param[1], param[2], param[3], param[4]));
 			cout << " r = " << param[0] << " m, p = (" << param[1];
-			cout << ", " << param[2] << ", " << param[3] << ") m. " << endl;
+			cout << ", " << param[2] << ", " << param[3] << ") m, aligned in ";
+			if(param[4]==0) cout << "x direction." << endl;
+			if(param[4]==1) cout << "y direction." << endl;
+			if(param[4]==2) cout << "z direction." << endl;
 			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;
 		}
+		/* define a string */
 		else if(line.substr(0,4) == "line"){
 			put.clear();
 			input.clear();
@@ -95,11 +115,12 @@ string Tangle::Initialise(string runfile){
 				convert >> param[i];
 				if(input.eof()) break;
 			}
-			mTangle.push_back(new String(N, param[0], param[1], param[2], param[3]));
+			mTangle.push_back(new String(res, param[0], param[1], param[2], param[3]));
 			cout << " L = " << param[0] << " m, p = (" << param[1];
 			cout << ", " << param[2] << ", " << param[3] << ") m. " << endl;
 			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;
 		}
+		/* add a charge */
 		else if(line.substr(0,4) == "q_pt"){
 			put.clear();
 			input.clear();

@@ -44,7 +44,6 @@ public:
 	void CalcVelocityNL();
 	bool LoopKill();
 	void Reconnection();
-	void CalcField(double eamp, int edir, double dr);
 	void SelfReconnect(int P, int Q, int k, int l);
 	void SelfReconnectLine(int P, int Q, int k, int l);
 	void Reconnect(int P, int Q, int k, int l);
@@ -52,6 +51,7 @@ public:
 	bool MeshAdjust();
 	int ReconnectionTest();
 	void CalcVelocity();
+	void CalcField();
 	void FromFile(string base); 	// mostly for debug purposes
 	void SaveState(string base);
 };

@@ -15,9 +15,10 @@ using namespace std;
 	double		r0 = 1e-6; 		// default initial ring radius
 	double 		t_total = 1e-3; // default total time
 
+
 int main(int argc, char* argv[]){
 
-	/* initialise tangle and print banner */
+	/* initialise tangle  */
 	Tangle Tangle;
 
 	string runfile;
@@ -25,35 +26,12 @@ int main(int argc, char* argv[]){
 	else runfile = "NULL";
 	string filename = Tangle.Initialise(runfile);
 
-	/* set resolutions */
-	double dt, dr(0);
-	int N_p(0);
-	vector <Filament*>::iterator begin, current, end;
-	begin = Tangle.mTangle.begin();
-	end = Tangle.mTangle.end();
-
-	/* calculate mean distance between points */
-	for(current=begin; current!=end; current++){
-		for(int j(0); j<(*current)->mN; j++){
-			dr += (*current)->mPoints[j]->mSegLength;
-		}
-		N_p += (*current)->mN;
-	}
-	dr /= N_p;
-	/* set resolution as 4/3 average distance for mesh adjust */
-	dr = (4.0/3.0)*dr;
-	dt = pow((dr/2),2)/(kappa*log(dr/(2*PI*a0)));
-	dt = dt/25; 													// Baggaley, Barenghi PRB 2010
-	
-
-	cout << "\t    spatial resolution = "<< dr << " m" << endl;
-	cout << "\t    time-step = " << dt << " s\n\n";
-
-	Tangle.mDr = dr; Tangle.mDt = dt;
+	cout << "\t    spatial resolution = "<< Tangle.mDr << " m" << endl;
+	cout << "\t    time-step = " << Tangle.mDt << " s\n\n";
 
 	/* set number of timesteps and number of steps per save */
 
-	int N_t(1);//t_total/Tangle.mDt); 					// number of time steps
+	int N_t(t_total/Tangle.mDt); 					// number of time steps
 	Tangle.mN_f = 10000; 									// number of time steps per save
 	Tangle.mN_slow = 0; 									// counts how many steps have occurred at slow-mo
 	
@@ -63,11 +41,12 @@ int main(int argc, char* argv[]){
   t=clock();
   int file_no(0);
 
+
+  vector <Filament*>::iterator begin, current, end;
   /* begin time-stepping */
   int i(0);
  	cout << "\t - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
-	while(i*Tangle.mDt < N_t*dt){
-		
+	while(i*Tangle.mDt < N_t*Tangle.mDt){
 		begin = Tangle.mTangle.begin();
 		end = Tangle.mTangle.end();
 		
@@ -103,7 +82,7 @@ int main(int argc, char* argv[]){
 				}
 				outfile.close(); n_fil++;
 			}
-			printf("\t\t wrote step %6u", i);;
+			printf("\t\t wrote step %6u", i);
 			file_no++;
 	
 		}
@@ -115,12 +94,12 @@ int main(int argc, char* argv[]){
 		while(MeshFinished==false) MeshFinished = Tangle.MeshAdjust();  // mesh_adjust until finished
 		Tangle.Reconnection();	 																				// check for and perform reconnections 
 		Tangle.CalcVelocity();
-		if(charge == true && i*Tangle.mDt < edur){                                          // add field contribution to charged point
-      Tangle.CalcField(eamp, edir, dr);
+		if(Tangle.mEFieldAmp !=0 && i*Tangle.mDt < Tangle.mEFieldDuration){                                          // add field contribution to charged point
+      Tangle.CalcField();
     } 																					// calculates and combines all contributions to velocity
 		Tangle.PropagatePos(Tangle.mDt);																// propagate positions
 
-		i++;						// step forward
+		i++;			// step forward
 
 		/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 	}
