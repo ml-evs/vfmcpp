@@ -2,13 +2,14 @@ import sys
 import os.path
 import numpy as np
 import pandas as pd
-import matplotlib
+import matplotlib as matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 pd.options.display.mpl_style = 'default'
 
 font = {'family' : 'Serif',
-        'size'   : 6}
+        'size'   : 8}
 
 
 matplotlib.rc('font', **font)
@@ -16,12 +17,13 @@ matplotlib.rc('font', **font)
 files = list()
 times = list()
 sigma = list()
+no_recon = list()
 PLOT_DATA = list()
 ZERO_DATA = list()
 ZERO_DATA_PAUL = list()
 FAILED_DATA = list()
 
-base_filename = '../../19_8_sweep_09/'
+base_filename = '../../data_2608/'
 
 for root, dirs, files in os.walk(base_filename):
   for name in dirs:
@@ -39,7 +41,7 @@ for i in range(len(sigma)):
 	while(end==False):
 		end2 = False		
 		filename_k = base_filename + str(sigma[i]) + "/data_" + str(k)
-		if os.path.isfile(base_filename+str(sigma[i]) + "/data_time.dat") == False:
+		if os.path.isfile(base_filename + str(sigma[i]) + "/data_time.dat") == False:
 			FAILED_DATA.append([float(sigma[i][0:6])*1e-6, 1.7e-6])
 			end = True
 		elif os.path.isfile(filename_k+"_0.dat") == True:
@@ -95,9 +97,18 @@ for i in range(len(sigma)):
 					##print i
 					if len(radius)==1:
 						ZERO_DATA.append([float(sigma[i][0:6])*1e-6, radius[0]])
-					else:
+					elif len(radius) == 2:
+						file = open(base_filename + str(sigma[i]) + "/data_time.dat")
+						line = file.readline()
+						line = file.readline()
+						no_recon.append(line[-2])
+						file.close()
 						print sigma[i], radius[0], radius[1]
 						PLOT_DATA.append([float(sigma[i][0:6])*1e-6, radius[0], radius[1]])
+					elif len(radius) == 3:
+						print '3 rings'
+					elif len(radius) > 3:
+						print '4 rings'
 					end = True
 					end2 = True
 	#print i
@@ -122,7 +133,7 @@ for j in range(len(data)):
 		for i in range(3):
 			PAUL_DATA[-1][i] = float(PAUL_DATA[-1][i])*1e-6 
 
-fig = plt.figure(figsize=plt.figaspect(1.2), facecolor='w', edgecolor='w')
+fig = plt.figure(figsize=(5,4), facecolor='w', edgecolor='w')
 ax = fig.add_subplot(111, axisbg ='w')
 #ax2 = fig.add_subplot(212, axisbg='w',sharex=ax)
 
@@ -136,11 +147,11 @@ wspace = 0.2   # the amount of width reserved for blank space between subplots
 hspace = 0.2   # the amount of height reserved for white space between subplots
 
 
-np.savetxt(base_filename+'../post/PAUL_DATA.dat', PAUL_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
-np.savetxt(base_filename+'../post/PLOT_DATA.dat', PLOT_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
-np.savetxt(base_filename+'../post/ZERO_DATA.dat', ZERO_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
-np.savetxt(base_filename+'../post/ZERO_DATA_PAUL.dat', ZERO_DATA_PAUL, fmt='%6.6e', delimiter=' ', newline='\n')
-np.savetxt(base_filename+'../post/FAILED_DATA.dat', FAILED_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
+np.savetxt(base_filename+'../post_2608/PAUL_DATA.dat', PAUL_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
+np.savetxt(base_filename+'../post_2608/PLOT_DATA.dat', PLOT_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
+np.savetxt(base_filename+'../post_2608/ZERO_DATA.dat', ZERO_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
+np.savetxt(base_filename+'../post_2608/ZERO_DATA_PAUL.dat', ZERO_DATA_PAUL, fmt='%6.6e', delimiter=' ', newline='\n')
+np.savetxt(base_filename+'../post_2608/FAILED_DATA.dat', FAILED_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
 
 BIG_DATA = []
 LITTLE_DATA = []
@@ -163,26 +174,37 @@ LITTLE_DATA = np.transpose(LITTLE_DATA)
 
 ALL_DATA = np.transpose(ALL_DATA)
 
-p1 = ax.plot(PAUL_DATA[0], PAUL_DATA[1], linewidth=0,  c='g', marker='o', markersize=3, alpha=0.6)
-p2 = ax.plot(PAUL_DATA[0], PAUL_DATA[2], linewidth=0,  c='g', marker='o', markersize=3, alpha=0.6)
+r1 = ax.plot(PLOT_DATA[0], PLOT_DATA[1], linewidth=0, c='b', marker='^', markerfacecolor='none', markeredgecolor='b', markersize=3, alpha=0.6)
+r2 = ax.plot(PLOT_DATA[0], PLOT_DATA[2], linewidth=0, c='b', marker='^', markerfacecolor='none', markeredgecolor='b', markersize=3, alpha=0.6)
+p1 = ax.plot(PAUL_DATA[0], PAUL_DATA[1], linewidth=0,  c='g', marker='o', markerfacecolor='g', markeredgecolor='g', markersize=3, alpha=0.6)
+p2 = ax.plot(PAUL_DATA[0], PAUL_DATA[2], linewidth=0,  c='g', marker='o', markerfacecolor='g', markersize=3, markeredgecolor='g', alpha=0.6)
 
-
-r1 = ax.plot(PLOT_DATA[0], PLOT_DATA[1], linewidth=0, c='b', marker='^', markersize=3, alpha=0.6)
-r2 = ax.plot(PLOT_DATA[0], PLOT_DATA[2], linewidth=0, c='b', marker='^', markersize=3, alpha=0.6)
 
 r0 = ax.plot(ZERO_DATA[0], ZERO_DATA[1], linewidth=0, c='r', markersize=3, marker='^', alpha=0.6)
 p0 = ax.plot(ZERO_DATA_PAUL[0], ZERO_DATA_PAUL[2], linewidth=0, markersize=3, c='r', marker='o', alpha=0.6)
 
 failed = ax.plot(FAILED_DATA[0], FAILED_DATA[1], linewidth=0, c='c', markersize=3, marker='o', alpha=0.6)
 
-ax.vlines(PLOT_DATA[0], PLOT_DATA[1], PLOT_DATA[2], linewidth=1, alpha=0.3, color='b')
-ax.vlines(PAUL_DATA[0], PAUL_DATA[1], PAUL_DATA[2], linewidth=1, alpha=0.3, color='g')
+c = []
+for i in range(len(no_recon)):
+	if no_recon[i] == '0':
+		c.append('y')
+	if no_recon[i] == '1':
+		c.append('b')
+	if no_recon[i] > '2':
+		c.append('g')
+
+
+
+ax.vlines(PLOT_DATA[0], 0, 3e-6, linewidth=10, alpha=0.1, color=c)
+ax.vlines(ZERO_DATA[0], 0, 3e-6, linewidth=10, color='r', alpha=0.1)
+#ax.vlines(PAUL_DATA[0], PAUL_DATA[1], PAUL_DATA[2], linewidth=1, alpha=0.5, color='k')
 #ax.legend([p1, p0, r2, r0, failed], ["Paul's data", "Paul's single ring", "Matt & Rory's data", "Matt & Rory's single ring", "Failed runs"], 
 #		loc=4, prop={'size':6})
 
 
-ax.set_xticks([0,0.09e-6,0.25e-6,0.5e-6])
-ax.set_xticklabels([0,0.09,0.25,0.5])
+ax.set_xticks([0,0.09e-6,0.2e-6,0.25e-6,0.5e-6])
+ax.set_xticklabels([0,0.09,0.20,0.25,0.5])
 ax.set_yticks([0,0.9e-6,1e-6,1.5e-6])
 ax.set_yticklabels([0,0.9,1,1.5])
 ax.set_ylabel('Effective radius (um)')
@@ -212,5 +234,5 @@ ax.set_xlabel('Impact parameter (um)')
 # ax2.set_ylim(-1e-6,1e-6)
 
 
-fig.savefig(base_filename+'../post/impact_vs_r_eff.png', dpi=200, facecolor='w', edgecolor='w',
+fig.savefig(base_filename+'../post_2608/impact_vs_r_eff.png', dpi=200, facecolor='w', edgecolor='w',
         orientation='portrait', pad_inchemarkersize=0.1)

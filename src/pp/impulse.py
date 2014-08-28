@@ -34,7 +34,9 @@ def getfiles():
 			times.append(float(line))
 			files.append(filename_k)
 			k+=1
+			j = 0
 			while(end2 == False):
+
 				if os.path.isfile(filename_k+"_"+str(j)+".dat") == True:
 					j += 1
 				else:
@@ -59,7 +61,7 @@ def calcimpulse(jmax, impulse_files, i):
 	rxeps = []
 	r_eff = []
 	radius = np.zeros((jmax+1))
-	p = np.zeros((jmax,3))
+	p = np.zeros((jmax+1,3))
 
 	while(end == False):
 		if os.path.isfile(impulse_files[i]+'_'+str(m)+'.dat') == True:
@@ -102,6 +104,7 @@ def calcimpulse(jmax, impulse_files, i):
 		for i in range(len(r[m])):
 			rxeps[m][i] = np.cross(r[m][i], l[m][i])	
 			for q in range(3):
+			#	print m, i, q
 				p[m][q] += rxeps[m][i][q]
 				
 	p *= kappa / 2	
@@ -114,7 +117,7 @@ def calcimpulse(jmax, impulse_files, i):
 				length_temp += pow(l[d][c][q],2)
 			length += np.sqrt(length_temp)		
 
-	# T = []
+	# T = 0.0
 
 	# A = []
 	# B = []
@@ -188,7 +191,7 @@ def calcimpulse(jmax, impulse_files, i):
 	return p, length, points
 
 base_filename, files, times, jmax = getfiles()
-
+jmax +=1
 kappa = 9.98e-8
 
 
@@ -211,25 +214,25 @@ for i in range(len(impulse_files)):
 
 
 
-PAUL_DATA = []
-data = []
+# PAUL_DATA = []
+# data = []
 
-file = open('../../data/' +  str(sys.argv[1]) + '/paul.dat')
-line = file.readline()
-while line:
-	data.append(line)
-	line = file.readline()
-file.close()
-t = np.zeros((len(data)))
-paul1 = np.zeros((len(data)))
-paul2 = np.zeros((len(data)))
-paul1z = np.zeros((len(data)))
-paul2z = np.zeros((len(data)))
-paul1xy = np.zeros((len(data)))
-paul2xy = np.zeros((len(data)))
-for j in range(len(data)):
-	if float((data[j].split())[1]) < 0.0000001:
-		t[j], paul1[j], paul2[j], paul1z[j], paul2z[j], paul1xy[j], paul2xy[j] = data[j].split()
+# file = open('../../data/' +  str(sys.argv[1]) + '/paul.dat')
+# line = file.readline()
+# while line:
+# 	data.append(line)
+# 	line = file.readline()
+# file.close()
+# t = np.zeros((len(data)))
+# paul1 = np.zeros((len(data)))
+# paul2 = np.zeros((len(data)))
+# paul1z = np.zeros((len(data)))
+# paul2z = np.zeros((len(data)))
+# paul1xy = np.zeros((len(data)))
+# paul2xy = np.zeros((len(data)))
+# for j in range(len(data)):
+# 	if float((data[j].split())[1]) < 0.0000001:
+# 		t[j], paul1[j], paul2[j], paul1z[j], paul2z[j], paul1xy[j], paul2xy[j] = data[j].split()
 
 
 
@@ -249,51 +252,61 @@ p_total = np.zeros((len(impulse_times)))
 p_total_z = np.zeros((len(impulse_times)))
 p1 = np.zeros((len(impulse_times)))
 p2 = np.zeros((len(impulse_times)))
+p3 = np.zeros((len(impulse_times)))
+p4 = np.zeros((len(impulse_times)))
 p1_z = np.zeros((len(impulse_times)))
 p2_z= np.zeros((len(impulse_times)))
+p_ALL = []
 
 for i in range(len(impulse)):
 	p1[i] += np.sqrt(pow(impulse[i][0][0],2)+pow(impulse[i][0][1],2)+pow(impulse[i][0][2],2))
 	p2[i] += np.sqrt(pow(impulse[i][1][0],2)+pow(impulse[i][1][1],2)+pow(impulse[i][1][2],2))
+	if(jmax>2):
+		p3[i] += np.sqrt(pow(impulse[i][2][0],2)+pow(impulse[i][2][1],2)+pow(impulse[i][2][2],2))
+	if(jmax>3):
+		p4[i] += np.sqrt(pow(impulse[i][3][0],2)+pow(impulse[i][3][1],2)+pow(impulse[i][3][2],2))
 	p1_z[i] += impulse[i][0][2]
 	p2_z[i] += impulse[i][1][2]
 	for j in range(len(impulse[i])):
 		p_total[i] += np.sqrt(pow(impulse[i][j][0],2)+pow(impulse[i][j][1],2)+pow(impulse[i][j][2],2))
 		p_total_z[i] += impulse[i][j][2]
 
-
+p_ALL.append(p1)
+p_ALL.append(p2)
+if(jmax>2):
+	p_ALL.append(p3)
+if(jmax>3):
+	p_ALL.append(p4)
 
 ax.set_ylabel('impulse')
 ax.set_xlabel('time (s)')
 
 
-#ax2.set_ylim(0.95*np.min(length),1.05*np.max(length))
+ax2.set_ylim(0,1.05*np.max(length))
 #ax3.set_ylim(0,1.05*np.max(points))
 
-for i in range(len(impulse_files)):
-	radius.append(0)
-	radius[-1] = calcimpulse(jmax, impulse_files, i)
-	erad[i] = (1.6e-19 * 10000 * impulse_times[i] /(3.14159265359*145*kappa)) + (np.min(radius)*np.min(radius))
-	erad[i] = np.sqrt(erad[i])
+c = ['#9C2727', 'r', 'b', 'g']
 
-
-
-ring1 = ax.plot(impulse_times, p1, c='#9C2727',alpha=0.9, linewidth=0.5, label='ring 1 impulse')# s=35)
-ring2 = ax.plot(impulse_times, p2, c='r',alpha=0.9, linewidth=0.5, label='ring 2 impulse')# s=35)
-ring1_z = ax.plot(impulse_times, p1_z, c='#9C2727',alpha=0.3, linewidth=0.5, label='ring 1 z impulse')# s=35)
-ring2_z = ax.plot(impulse_times, p2_z, c='r',alpha=0.3, linewidth=0.5, label='ring 2 z impulse')# s=35)
-paulplot1 = ax.plot(t, paul1, '-', markersize=3, c='#4A4DCF', alpha=0.2, linewidth=0.5, label='paul ring 1')
-paulplot2 = ax.plot(t, paul2, '-', markersize=3, c='b', alpha=0.2, linewidth=0.5, label='paul ring 2')
-paulplot1z = ax.plot(t, paul1z, '-', markersize=3, c='#4A4DCF', alpha=0.3, linewidth=0.5, label='paul ring 1 z')
-paulplot2z = ax.plot(t, paul2z, '-', markersize=3, c='b', alpha=0.3, linewidth=0.5, label='paul ring 2 z')
+for i in range(jmax):
+	ax.plot(impulse_times, p_ALL[i] , c=c[i],alpha=0.9, linewidth=2, label='ring 1 impulse')# s=35)
+	# ax.plot(impulse_times, p2, c='r',alpha=0.9, linewidth=0.5, label='ring 2 impulse')# s=35)
+	# ax.plot(impulse_times, p2, c='r',alpha=0.9, linewidth=0.5, label='ring 2 impulse')# s=35)
+	# ax.plot(impulse_times, p2, c='r',alpha=0.9, linewidth=0.5, label='ring 2 impulse')# s=35)
+	
+# ring1_z = ax.plot(impulse_times, p1_z, c='#9C2727',alpha=0.3, linewidth=0.5, label='ring 1 z impulse')# s=35)
+# ring2_z = ax.plot(impulse_times, p2_z, c='r',alpha=0.3, linewidth=0.5, label='ring 2 z impulse')# s=35)
+# # paulplot1 = ax.plot(t, paul1, '-', markersize=3, c='#4A4DCF', alpha=0.2, linewidth=0.5, label='paul ring 1')
+# # paulplot2 = ax.plot(t, paul2, '-', markersize=3, c='b', alpha=0.2, linewidth=0.5, label='paul ring 2')
+# # paulplot1z = ax.plot(t, paul1z, '-', markersize=3, c='#4A4DCF', alpha=0.3, linewidth=0.5, label='paul ring 1 z')
+# paulplot2z = ax.plot(t, paul2z, '-', markersize=3, c='b', alpha=0.3, linewidth=0.5, label='paul ring 2 z')
 
 
 
 # ax.plot(impulse_times, p2, c='b',alpha=0.7, linewidth=0.5)# s=35)
 
-ringtot = ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=0.5, label='total impulse')
-ringtot = ax.plot(impulse_times, p_total_z, c='#363347',alpha=0.7,linewidth=0.5, label='total z impulse')
-#linetot = ax2.plot(impulse_times, length, c='c',linewidth=0.5, label = 'line length')
+ringtot = ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=2, label='total impulse')
+ringtot = ax.plot(impulse_times, p_total_z, c='#363347',alpha=0.7,linewidth=2, label='total z impulse')
+linetot = ax2.plot(impulse_times, length, c='c',linewidth=0.5, label = 'line length')
 #ax3.plot(impulse_times, points, c='y', linewidth=0.5)
 handles, labels = ax.get_legend_handles_labels()
 #handles2, labels2 = ax2.get_legend_handles_labels()
@@ -305,8 +318,8 @@ ax.legend(handles, labels, prop={'size':4}, loc=2)
 #ax2.legend(handles2, labels2, loc=2)
 
 #ax2.legend([linetot], ['total line length'])
-#plt.show()
+plt.show()
 
-fig.savefig('../../data/' + str(sys.argv[1]) + '/impulse.png', dpi=400, facecolor='w', edgecolor='w',
-         orientation='portrait', pad_inchemarkersize=0.1)
+# fig.savefig('../../data/' + str(sys.argv[1]) + '/impulse.png', dpi=400, facecolor='w', edgecolor='w',
+#          orientation='portrait', pad_inchemarkersize=0.1)
 
