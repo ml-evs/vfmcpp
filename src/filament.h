@@ -34,7 +34,6 @@ class Ring : public Filament{
 public:
 	Ring(){mN = 0; mFlagType = 0;};
 	Ring(double res, double r, double x, double y, double z, int alignment){
-		res *= 3.0/4.0;			// this replaces multiplying the average mesh length by 4/3 to calculate resolution
 		mN = 2*PI*r/res; mFlagType = 0;
 		if(alignment==2){
 			for(int i=0; i<mN; i++){
@@ -55,9 +54,9 @@ public:
 		if(alignment==0){
 			for(int i=0; i<mN; i++){
 				mPoints.push_back(new Point());
-				mPoints[i]->mPos[0]=x;
-				mPoints[i]->mPos[1]=y+r*sin(-i*(2*PI)/mN);
-				mPoints[i]->mPos[2]=z+r*cos(-i*(2*PI)/mN);
+				mPoints[i]->mPos[0]=x+r*cos(-i*(2*PI)/mN);
+				mPoints[i]->mPos[1]=y;
+				mPoints[i]->mPos[2]=z+r*sin(-i*(2*PI)/mN);
 			}
 		}
 		for(int i(1); i!=mN; i++){(mPoints[i])->mPrev = mPoints[i-1];}
@@ -77,7 +76,6 @@ public:
 	    mN = 0; mFlagType = 1;
 	}
 	String(double res, double L, double x, double y, double z){
-		res *= 3.0/4.0;			 	// this replaces multiplying the average mesh length by 4/3 to calculate resolution
 		mL = L; mN = mL/res;
 		mFlagType = 1;
 		for (int i = 0; i != 4; i++){

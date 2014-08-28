@@ -93,7 +93,7 @@ string Tangle::Initialise(string runfile){
 				convert >> param[i];
 				if(input.eof()) break;
 			}
-			mTangle.push_back(new Ring(res, param[0], param[1], param[2], param[3], param[4]));
+			mTangle.push_back(new Ring(mDr, param[0], param[1], param[2], param[3], param[4]));
 			cout << " r = " << param[0] << " m, p = (" << param[1];
 			cout << ", " << param[2] << ", " << param[3] << ") m, aligned in ";
 			if(param[4]==0) cout << "x direction." << endl;
@@ -115,7 +115,7 @@ string Tangle::Initialise(string runfile){
 				convert >> param[i];
 				if(input.eof()) break;
 			}
-			mTangle.push_back(new String(res, param[0], param[1], param[2], param[3]));
+			mTangle.push_back(new String(mDr, param[0], param[1], param[2], param[3]));
 			cout << " L = " << param[0] << " m, p = (" << param[1];
 			cout << ", " << param[2] << ", " << param[3] << ") m. " << endl;
 			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;

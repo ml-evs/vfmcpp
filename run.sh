@@ -147,7 +147,7 @@ fi
 if [ -d "$dir" ]; then
 	echo "data directory found, cleaning up...\n\n"
 	cd "$dir"
-	rm '*.dat'
+	rm *.dat
 	cd $cwd
 fi
 

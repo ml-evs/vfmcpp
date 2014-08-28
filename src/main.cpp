@@ -34,12 +34,15 @@ int main(int argc, char* argv[]){
 	int N_t(t_total/Tangle.mDt); 					// number of time steps
 	Tangle.mN_f = 10000; 									// number of time steps per save
 	Tangle.mN_slow = 0; 									// counts how many steps have occurred at slow-mo
-	
+	Tangle.mDr *= 4.0/3.0;									// augments resolution for mesh adjust stability
+
 	/* prepare to time calculations */
 	double percent;
 	clock_t t;
   t=clock();
   int file_no(0);
+
+
 
 
   vector <Filament*>::iterator begin, current, end;
