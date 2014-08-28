@@ -2,26 +2,13 @@ vfmcpp
 ==============
 vfmcpp is a C++ implementation of the vortex filament model of superfluids. 
 
-The vague aim of this project is to model vortex ring dynamics in various configurations - perhaps including charged filaments immersed in trivial electric fields. Current functionality is limited to closed filaments, with work being done on open filaments with various boundary conditions. Detailed documentation will be added inside `src/` shortly.
+To compile in Linux, you can use the makefile `make`; it is advised you use GCC 4.7+, as that is all that has been tested. 
+Help with initial conditions can be found by running `run.sh` with the flag `-h`. 
+
+The vague aim of this project is to model vortex ring dynamics in various configurations - including charged filaments immersed in trivial electric fields and open 'line' filaments. 
 
 The code makes use of custom linked lists (with nasty bare pointers) to allow for reconnections to be modelled efficiently. Visualisation is currently performed by a 3D matplotlib script (requires latest matplotlib version), which leaves a lot to be desired. 
-
-###To-do
-
-- More post-processing to check conservation laws.
-- Charged filaments, initially with electrons fixed to particular mesh points, but hopefully eventually with the ability to move along the filament.
-- Better visualisation, either using VTK or the like with Python, or by falling back to existing MATLAB work.
-- Dynamically scaling mesh size during 'interesting' dynamics, i.e. perform reconnections at much higher resolution.
-- If work moves onto larger systems, perhaps consider parallelising the code with MPI.
-- Write better documentation!
-- ...Probably many more.
 
 Aftermath of off-centre ring collision.
 
 ![alt text](http://charmedxi.co.uk/vfmcpp/img/double_rec.gif "Post double reconnection")
-
-
-A simple off-centre leapfrog with no reconnection.
-
-
-![alt text](http://charmedxi.co.uk/vfmcpp/img/leapfrog.gif "Simple leapfrog")
