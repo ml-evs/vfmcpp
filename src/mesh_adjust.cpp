@@ -40,7 +40,7 @@ bool Tangle::MeshAdjust(){
             }
             /* point addition */
             else if ((*c)->mPoints[k]->mSegLength > 2*dr){
-                cout << "\n\nadding at " << k << " / " << (*c)->mN << endl << " !!!!!!!!!!!!!!!!!!!! " << endl;
+                cout << "\n\nadding at " << k << " / " << (*c)->mN << endl;
                 /* increment mN */
                 (*c)->mN++;
                 /* create new point and reassign pointers */
