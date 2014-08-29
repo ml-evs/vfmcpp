@@ -53,9 +53,6 @@ int main(int argc, char* argv[]){
 		begin = Tangle.mTangle.begin();
 		end = Tangle.mTangle.end();
 		
-		percent = (100*i/N_t); 
-		printf("\r\t %6.2f %% \t",percent); 							// output percentage completion
-		
 		if(Tangle.mN_slow == 15){Tangle.mN_f = 10;} 			// reset saving after reconnection 
 		if(Tangle.mN_slow == 200){Tangle.mN_f = 100;}
 		if(Tangle.mN_slow == 5000){Tangle.mN_f = 10000;}
@@ -85,6 +82,8 @@ int main(int argc, char* argv[]){
 				}
 				outfile.close(); n_fil++;
 			}
+			percent = (100*i/N_t); 
+			printf("\r\t %6.2f %% \t",percent); 							// output percentage completion
 			printf("\t\t wrote step %6u", i);
 			file_no++;
 	
