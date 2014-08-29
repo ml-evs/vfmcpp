@@ -17,7 +17,7 @@ public:
 	int mN;
 	int mFlagType; // integer showing filament type: 0 for rings, 1 for lines
 	vector <Point*> 	mPoints;
-	bool mCarriesCharge = false; // default filaments don't carry electrons
+	bool mCarriesCharge; // default filaments don't carry electrons
 	vector <Point*>     mDummies;
 	/* member functions */
 	Filament(){};
@@ -32,9 +32,9 @@ public:
 /* ring class */
 class Ring : public Filament{
 public:
-	Ring(){mN = 0; mFlagType = 0;};
+	Ring(){mN = 0; mFlagType = 0; mCarriesCharge = false;};
 	Ring(double res, double r, double x, double y, double z, int alignment){
-		mN = 2*PI*r/res; mFlagType = 0;
+		mN = 2*PI*r/res; mFlagType = 0; mCarriesCharge = false;
 		if(alignment==2){
 			for(int i=0; i<mN; i++){
 				mPoints.push_back(new Point());
@@ -73,12 +73,12 @@ private:
 	double mL;
 public:
 	String(){
-	    mN = 0; mFlagType = 1;
+	    mN = 0; mFlagType = 1; mCarriesCharge = false;
 	}
 	String(double res, double L, double x, double y, double z){
-		mL = L; mN = mL/res;
+		mL = L; mN = mL/res; mCarriesCharge = false;
 		mFlagType = 1;
-		for (int i = 0; i != 4; i++){
+		for (int i=0; i!=4; i++){
 			mDummies.push_back(new Point());
 		}
 		for (int i = 0; i != mN; i++){
