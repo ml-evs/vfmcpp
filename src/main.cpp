@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
 	/* begin time-stepping */
 	int i(0);
 	cout << "\t - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
-	while(i*Tangle.mDt < N_t*Tangle.mDt){
+	while(i < N_t){
 		begin = Tangle.mTangle.begin();
 		end = Tangle.mTangle.end();
 		
