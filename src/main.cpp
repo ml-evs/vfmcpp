@@ -31,35 +31,32 @@ int main(int argc, char* argv[]){
 
 	/* set number of timesteps and number of steps per save */
 
-	int N_t(t_total/Tangle.mDt); 					// number of time steps
-	Tangle.mN_f = 10000; 									// number of time steps per save
-	Tangle.mN_slow = 0; 									// counts how many steps have occurred at slow-mo
-	Tangle.mDr *= 4.0/3.0;									// augments resolution for mesh adjust stability
+	int N_t(t_total/Tangle.mDt); 	// number of time steps
+	Tangle.mN_f = 10000; 		// number of time steps per save
+	Tangle.mN_slow = 0; 		// counts how many steps have occurred at slow-mo
+	Tangle.mDr *= 4.0/3.0;	// augments resolution for mesh adjust stability
 
 	/* prepare to time calculations */
 	double percent;
 	clock_t t;
-  t=clock();
-  int file_no(0);
+	t=clock();
+	int file_no(0);
 
-
-
-
-  vector <Filament*>::iterator begin, current, end;
-  /* begin time-stepping */
-  int i(0);
- 	cout << "\t - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
+	vector <Filament*>::iterator begin, current, end;
+	/* begin time-stepping */
+	int i(0);
+	cout << "\t - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
 	while(i*Tangle.mDt < N_t*Tangle.mDt){
 		begin = Tangle.mTangle.begin();
 		end = Tangle.mTangle.end();
 		
-		if(Tangle.mN_slow == 15){Tangle.mN_f = 10;} 			// reset saving after reconnection 
+		if(Tangle.mN_slow == 15){Tangle.mN_f = 10;} 	// reset saving after reconnection 
 		if(Tangle.mN_slow == 200){Tangle.mN_f = 100;}
 		if(Tangle.mN_slow == 5000){Tangle.mN_f = 10000;}
-		if(Tangle.mN_f==1
+		if(Tangle.mN_f == 1
 			||Tangle.mN_f == 10
-			||Tangle.mN_f == 100){Tangle.mN_slow++;}  			// increment slow-mo counter
-		else{Tangle.mN_slow = 0;} 												// reset slow-mo counter
+			||Tangle.mN_f == 100){Tangle.mN_slow++;}  // increment slow-mo counter
+		else{Tangle.mN_slow = 0;} 	// reset slow-mo counter
 
 		/* save positions to file every mN_f steps */
 		if(i%Tangle.mN_f==0){
@@ -83,25 +80,23 @@ int main(int argc, char* argv[]){
 				outfile.close(); n_fil++;
 			}
 			percent = (100*i/N_t); 
-			printf("\r\t %6.2f %% \t",percent); 							// output percentage completion
+			printf("\r\t %6.2f %% \t",percent); // output percentage completion
 			printf("\t\t wrote step %6u", i);
 			file_no++;
 	
 		}
 		
 		/* calculate velocities and propagate positions */
-
-		bool MeshFinished(false);
-		Tangle.LoopKill();																							// remove rings smaller than 6 points
+		Tangle.LoopKill();
+		bool MeshFinished(false);	// remove rings smaller than 6 points
 		while(MeshFinished==false) MeshFinished = Tangle.MeshAdjust();  // mesh_adjust until finished
-		Tangle.Reconnection();	 																				// check for and perform reconnections 
-		Tangle.CalcVelocity();
-		if(Tangle.mEFieldAmp !=0 && i*Tangle.mDt < Tangle.mEFieldDuration){                                          // add field contribution to charged point
-      Tangle.CalcField();
-    } 																					// calculates and combines all contributions to velocity
-		Tangle.PropagatePos(Tangle.mDt);																// propagate positions
-
-		i++;			// step forward
+		Tangle.Reconnection();		// check for and perform reconnections 
+		Tangle.CalcVelocity(); 		// calculates and combines all contributions to velocity
+		if(Tangle.mEFieldAmp !=0 && i*Tangle.mDt < Tangle.mEFieldDuration){
+			Tangle.CalcField();			// add field contribution to charged point
+		}				
+		Tangle.PropagatePos(Tangle.mDt);	// propagate positions
+		i++;	// step forward
 
 		/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 	}

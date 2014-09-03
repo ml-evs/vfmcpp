@@ -72,15 +72,15 @@ string Tangle::Initialise(string runfile){
 			input.clear();
 			input << line.substr(5);
 			input >> res;
-			mDr = float(res); 					// set simulation resolution in tangle
+			mDr = float(res); // set simulation resolution in tangle
 			mDt = pow((mDr/2),2)/(9.98e-8*log(mDr/(2*PI*1.3e-10)));
-			mDt /= 25; 															// Baggaley, Barenghi PRB 2010
+			mDt /= 25; 	// Baggaley, Barenghi PRB 2010
 			
 
 		}
 		/* define a ring */
 		else if(line.substr(0,4) == "ring"){
-			param[4] = 2; 			//default ring alignment is z
+			param[4] = 2;	//default ring alignment is z
 			put.clear();
 			input.clear();
 			convert.clear();
