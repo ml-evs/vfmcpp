@@ -45,8 +45,9 @@ int main(int argc, char* argv[]){
 	vector <Filament*>::iterator begin, current, end;
 	/* begin time-stepping */
 	int i(0);
+	int added_rings(0);
 	cout << "\t - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
-	while(i*Tangle.mDt < N_t*Tangle.mDt){
+	while(i < N_t){
 		begin = Tangle.mTangle.begin();
 		end = Tangle.mTangle.end();
 		
@@ -85,7 +86,12 @@ int main(int argc, char* argv[]){
 			file_no++;
 	
 		}
-		
+		if(added_rings==0){
+			if(i*Tangle.mDt > 0.00032){
+				Tangle.mTangle.push_back(new Ring(Tangle.mDr, 0.9e-6, 0, 0, 20e-6, 2))
+				added_rings++;
+			}
+		}
 		/* calculate velocities and propagate positions */
 		Tangle.LoopKill();
 		bool MeshFinished(false);	// remove rings smaller than 6 points
