@@ -83,6 +83,7 @@ int main(int argc, char* argv[]){
 			printf("\r\t %6.2f %% \t",percent); // output percentage completion
 			printf("\t\t wrote step %6u", i);		// note printf does not play well with HPC
 			file_no++;
+		}
 		if(added_rings==0){
 			if(i*Tangle.mDt > 0.00032){
 				Tangle.mTangle.push_back(new Ring(Tangle.mDr, 0.9e-6, 0, 0, 20e-6, 2));
