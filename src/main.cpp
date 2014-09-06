@@ -86,12 +86,25 @@ int main(int argc, char* argv[]){
 		}
 		if(added_rings==0){
 			if(i*Tangle.mDt > 0.00032){
-				Tangle.mTangle.push_back(new Ring(Tangle.mDr, 0.9e-6, 0, 0, 20e-6, 2));
+				Tangle.mTangle.push_back(new Ring(Tangle.mDr, 0.9e-6, 0, 0.4e-6, 20e-6, 2));
+				added_rings++;
+			}
+		}
+		if(added_rings==1){
+			if(i*Tangle.mDt > 0.0004){
+				Tangle.mTangle.push_back(new Ring(Tangle.mDr, 0.9e-6, 0, 0.6e-6, 20e-6, 2));
+				added_rings++;
+			}
+		}
+		if(added_rings==2){
+			if(i*Tangle.mDt > 0.0005){
+				Tangle.mTangle.push_back(new Ring(Tangle.mDr, 0.9e-6, 0, 0.8e-6, 20e-6, 2));
 				added_rings++;
 			}
 		}
 		/* calculate velocities and propagate positions */
-		Tangle.LoopKill();
+		bool LoopKilled = Tangle.LoopKill();
+		if(LoopKilled == true) Tangle.mN_loopkills++;
 		bool MeshFinished(false);	// remove rings smaller than 6 points
 		while(MeshFinished==false) MeshFinished = Tangle.MeshAdjust();  // mesh_adjust until finished
 		Tangle.Reconnection();		// check for and perform reconnections 
@@ -109,6 +122,7 @@ int main(int argc, char* argv[]){
 	t = clock()-t;
 	timefile	 << "time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
 	timefile << "number of recons = " << Tangle.mN_recon << endl;
+	timefile << "number of loop kills = " << Tangle.mN_loopkills << endl;
 	timefile.close();
 	return 0;
 }
