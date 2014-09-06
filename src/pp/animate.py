@@ -1,12 +1,14 @@
 import os.path
 import numpy as np
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import sys
 import matplotlib.animation as animation
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.patches import FancyArrowPatch
 from mpl_toolkits.mplot3d import proj3d
-import pandas as pd
+#import pandas as pd
 import matplotlib
 from pp import Line, Arrow3D
 
@@ -163,8 +165,8 @@ elif Analysis == ('g' or 'm'):
 		filename = '../../img/ ' + sys.argv[3]
 	else:
 		filename = raw_input('Enter the desired filename for the gif (will be saved in data folder):')
-		filename = '../../img/' + filename
+		filename = '../../' + filename
 	if Analysis == 'g':
-		ani.save(filename+'.gif', writer='imagemagick', fps=30)
+		ani.save(filename+'.gif', writer='imagemagick', fps=20)
 	elif Analysis == 'm':
 		ani.save(filename+'.mp4', fps=20, dpi=500)

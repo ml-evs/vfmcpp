@@ -4,10 +4,10 @@ import sys
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.patches import FancyArrowPatch
 from mpl_toolkits.mplot3d import proj3d
-import pandas as pd
+#import pandas as pd
 import matplotlib
 
-pd.options.display.mpl_style = 'default'
+#pd.options.display.mpl_style = 'default'
 
 font = {'family' : 'monospace',
         'size'   : 8}
