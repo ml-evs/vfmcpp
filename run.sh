@@ -148,6 +148,9 @@ if [ -d "$dir" ]; then
 	echo "data directory found, cleaning up...\n\n"
 	cd "$dir"
 	rm *.dat
+	if [ ! -d "snapshot" ]; then
+		mkdir "snapshot"
+	fi
 	cd $cwd
 fi
 
