@@ -20,11 +20,12 @@ bool Tangle::MeshAdjust(){
             R = 1/R;
             /* point deletion for smoothing and proximity*/
             if((1/R)>1.9/dr || (*c)->mPoints[k]->mSegLength < 0.5*dr){
-                cout << "\nRemoving point at " << (*c)->mPoints[k]->mPos[0] << ", " << (*c)->mPoints[k]->mPos[1] << ", " << (*c)->mPoints[k]->mPos[2] << endl;
-                if((1/R)>1.9/dr){cout << "for curvature" << endl;}
-                cout << (*c)->mPoints[k]->mSegLength << " vs " << 0.5*dr << endl; 
+                //cout << "\nRemoving point at " << (*c)->mPoints[k]->mPos[0] << ", " << (*c)->mPoints[k]->mPos[1] << ", " << (*c)->mPoints[k]->mPos[2] << endl;
+                mLog << time(0) << "\t" << mStep << ": removing point at " << (*c)->mPoints[k]->mPos[0] << ", " << (*c)->mPoints[k]->mPos[1] << ", " << (*c)->mPoints[k]->mPos[2] << " ";
+                if((1/R)>1.9/dr){mLog << "for curvature ";}
+                mLog << (*c)->mPoints[k]->mSegLength << " vs " << 0.5*dr << endl; 
                 if((*c)->mPoints[k]->mCharge != 0){ // don't remove the electron!
-                    cout << "Moving the electron to previous point!" << endl;
+                    //cout << "Moving the electron to previous point!" << endl;
                     (*c)->mPoints[k]->mPrev->mCharge = 1.6e-19;
                     (*c)->mPoints[k]->mCharge = 0;
                 }
@@ -40,7 +41,7 @@ bool Tangle::MeshAdjust(){
             }
             /* point addition */
             else if ((*c)->mPoints[k]->mSegLength > 2*dr){
-                cout << "\n\nadding at " << k << " / " << (*c)->mN << endl;
+                /*cout << "\n\nadding at " << k << " / " << (*c)->mN << endl;*/
                 /* increment mN */
                 (*c)->mN++;
                 /* create new point and reassign pointers */
@@ -56,7 +57,7 @@ bool Tangle::MeshAdjust(){
                     (*c)->mPoints.back()->mPos[j] += 0.5*((*c)->mPoints.back()->mNext->mPos[j] + (*c)->mPoints.back()->mPrev->mPos[j]);
                 }
                 (*c)->CalcMeshLengths(); (*c)->CalcSPrime(); (*c)->CalcS2Prime();
-                cout << "Added point at " << (*c)->mPoints.back()->mPos[0] << ", " << (*c)->mPoints.back()->mPos[1] << ", " << (*c)->mPoints.back()->mPos[2] << endl;
+                mLog << time(0) << "\t" << mStep << ": added point at " << (*c)->mPoints.back()->mPos[0] << ", " << (*c)->mPoints.back()->mPos[1] << ", " << (*c)->mPoints.back()->mPos[2] << endl;
                 return false;
             }
         }

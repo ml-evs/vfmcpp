@@ -16,6 +16,7 @@ public:
 	int mN_slow; // number of "slow-mo" timesteps for file save
 	int mN_recon; // number of reconnections
 	int mN_loopkills;	// number of tiny loops deleted
+	int mStep; // current step
 	double mDr;	// spatial resolution
 	double mDt; // temporal resolution
 	double mTotalTime; // total time

@@ -65,7 +65,6 @@ void Filament::CalcSPrime(){
 		E[i] /= (l2 * (l1 + l2) * (l + l1 + l2) * (lm1 + l + l1 + l2));
 
 		C[i] = -(A[i] + B[i] + D[i] + E[i]);
-
 	}
 	for(int p=0;p<mN;p++){
 		for(int q=0;q<3;q++){
@@ -76,7 +75,6 @@ void Filament::CalcSPrime(){
 			mPoints[p]->mSPrime[q] += E[p]*mPoints[p]->mNext->mNext->mPos[q];
 		}
 	}
-
 }
 
 // calculate s'' using coefficients from Baggaley & Barenghi JLT 166:3-20 (2012)

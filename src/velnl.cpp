@@ -72,8 +72,6 @@ void Tangle::CalcVelocityNL(){
 	}
 }
 
-
-
 void Filament::CalcVelocitySelfNL(){
 
 	vector <double> q(3); 		// q = s_l+1 - s_l
