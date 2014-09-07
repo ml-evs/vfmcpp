@@ -154,6 +154,7 @@ fi
 if [ ! -d "$dir" ]; then
 	echo "data directory not found, creating...\n\n"
 	mkdir "$dir"
+	mkdir "$dir/snapshot"
 fi
 
 

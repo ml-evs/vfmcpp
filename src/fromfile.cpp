@@ -6,6 +6,60 @@
 #include <iostream>
 #include <sstream>
 
+void Tangle::Output(string filename, int i, int file_no){
+	vector <Filament*>::iterator begin, end, current;
+	begin = mTangle.begin(); end = mTangle.end();
+	int n_fil(0);
+	stringstream ss0; ss0 << file_no; string i_str = ss0.str();
+	string ith_filename = filename + i_str + "_";
+	for(current=begin; current!=end; current++){
+		stringstream ss; ss << n_fil;	string n_fil_str = ss.str(); 
+		string ith_jth_filename = ith_filename + n_fil_str + ".dat";
+		ofstream outfile(ith_jth_filename.c_str());	outfile.precision(8);
+		outfile << i*mDt << "\n";
+		int j(0);
+		Point* pCurrent = (*current)->mPoints[0];
+		while(j!=(*current)->mN+1-(*current)->mFlagType){
+			for(int m(0); m<3; m++){
+				outfile << pCurrent->mPos[m] << "\t";
+			}
+			pCurrent = pCurrent->mNext; j++; outfile << "\n";
+		}
+		/* save full state of system ~10 times per run */
+		if(i%100*mN_f==0){
+			for(current=begin; current!=end; current++){
+				stringstream ss; 
+			}
+			string state_filename = "snapshot/"     + ith_jth_filename;
+			string vel_filename = "snapshot/vel_"   + ith_jth_filename;
+			string vel1_filename = "snapshot/vel1_" + ith_jth_filename;
+			string vel2_filename = "snapshot/vel2_" + ith_jth_filename;
+			string vel3_filename = "snapshot/vel3_" + ith_jth_filename;
+			ofstream statefile(state_filename.c_str());	ofstream velfile(vel_filename.c_str());
+			ofstream vel1file(vel1_filename.c_str());	ofstream vel2file(vel2_filename.c_str());
+			ofstream vel3file(vel3_filename.c_str());
+			statefile << i*mDt << "\n"; velfile << i*mDt << "\n"; vel1file << i*mDt << "\n";
+			vel2file << i*mDt << "\n"; vel3file << i*mDt << "\n";
+			int j(0);
+			Point* pCurrent = (*current)->mPoints[0];
+			while(j!=(*current)->mN+1-(*current)->mFlagType){
+				for(int m(0); m<3; m++){
+					statefile << pCurrent->mPos[m] << "\t";
+					velfile 	<< pCurrent->mVel[m] << "\t";
+					vel1file 	<< pCurrent->mVel1[m] << "\t";
+					vel2file 	<< pCurrent->mVel2[m] << "\t";
+					vel3file 	<< pCurrent->mVel3[m] << "\t";
+				}
+				pCurrent = pCurrent->mNext; j++; 
+				statefile << "\n"; velfile << "\n"; vel1file << "\n"; vel2file << "\n"; vel3file << "\n";
+				statefile.close(); velfile.close(); vel1file.close(); vel2file.close(); vel3file.close();
+			}
+		}
+		outfile.close(); n_fil++;
+	}
+}
+
+
 void Tangle::FromFile(string base){
 	string filename;
 	int n_fil(2);
@@ -85,83 +139,4 @@ void Tangle::FromFile(string base){
 		mTangle[b]->CalcMeshLengths();
 	}
 
-}
-
-void Tangle::SaveState(string base){
-	int n_fil(0);
-	vector <Filament*>::iterator c, b(mTangle.begin()), e(mTangle.end());
-	for(c=b; c!=e; c++){
-		stringstream ss;
-		ss << n_fil;
-		string n_fil_str = ss.str();
-		string ith_jth_filename = base + n_fil_str + ".dat";
-		ofstream outfile(ith_jth_filename.c_str());
-		outfile.precision(8);
-		int j(0);
-		Point* pCurrent = (*c)->mPoints[0];
-		while(j!=(*c)->mN){
-			for(int m(0); m<3; m++){
-				outfile << pCurrent->mNext->mPos[m] << "\t";
-			}
-			pCurrent = pCurrent->mNext;
-			j++;
-			outfile << "\n";
-		}
-		outfile.close();
-		ith_jth_filename =  base + n_fil_str + "vel.dat";
-		ofstream outfile2(ith_jth_filename.c_str());
-		j = 0;
-		pCurrent = (*c)->mPoints[0];
-		while(j!=(*c)->mN){
-			for(int m(0); m<3; m++){
-				outfile2 << pCurrent->mNext->mVel[m] << "\t";
-			}
-			pCurrent = pCurrent->mNext;
-			j++;
-			outfile2 << "\n";
-		}
-		outfile2.close();											
-		ith_jth_filename =  base + n_fil_str + "vel1.dat";
-		ofstream outfile3(ith_jth_filename.c_str());
-		j = 0;
-		pCurrent = (*c)->mPoints[0];
-		while(j!=(*c)->mN){
-			for(int m(0); m<3; m++){
-				outfile3 << pCurrent->mNext->mVel1[m] << "\t";
-			}
-			pCurrent = pCurrent->mNext;
-			j++;
-			outfile3 << "\n";
-		}
-		outfile3.close();											
-		ith_jth_filename =  base + n_fil_str + "vel2.dat";
-		ofstream outfile4(ith_jth_filename.c_str());
-		j = 0;
-		pCurrent = (*c)->mPoints[0];
-		while(j!=(*c)->mN){
-			for(int m(0); m<3; m++){
-				outfile4 << pCurrent->mNext->mVel2[m] << "\t";
-			}
-			pCurrent = pCurrent->mNext;
-			j++;
-			outfile4 << "\n";
-		}
-		outfile4.close();		
-		
-		ith_jth_filename =  base + n_fil_str + "vel3.dat";
-		ofstream outfile5(ith_jth_filename.c_str());
-		j = 0;
-		pCurrent = (*c)->mPoints[0];
-		while(j!=(*c)->mN){
-			for(int m(0); m<3; m++){
-				outfile5 << pCurrent->mNext->mVel3[m] << "\t";
-			}
-			pCurrent = pCurrent->mNext;
-			j++;
-			outfile5 << "\n";
-		}
-		outfile5.close();		
-		n_fil++;
-	}
-	cout << "!!!!! WROTE CURRENT STATE TO FILE !!!!!" << endl;
 }

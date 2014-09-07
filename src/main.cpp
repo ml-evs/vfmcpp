@@ -60,31 +60,14 @@ int main(int argc, char* argv[]){
 
 		/* save positions to file every mN_f steps */
 		if(i%Tangle.mN_f==0){
-			int n_fil(0);
-			stringstream ss0; ss0 << file_no; string i_str = ss0.str();
-		//	string ith_filename = filename + "/data_" + i_str + "_"; // can use to feed in initial state
-			string ith_filename = filename + i_str + "_";
-			for(current=begin; current!=end; current++){
-				stringstream ss; ss << n_fil;	string n_fil_str = ss.str(); 
-				string ith_jth_filename = ith_filename + n_fil_str + ".dat";
-				ofstream outfile(ith_jth_filename.c_str());	outfile.precision(8);
-				outfile << i*Tangle.mDt << "\n";
-				int j(0);
-				Point* pCurrent = (*current)->mPoints[0];
-				while(j!=(*current)->mN+1-(*current)->mFlagType){
-					for(int m(0); m<3; m++){
-						outfile << pCurrent->mPos[m] << "\t";
-					}
-					pCurrent = pCurrent->mNext; j++; outfile << "\n";
-				}
-				outfile.close(); n_fil++;
-			}
+			Tangle.Output(filename, i, file_no);
 			percent = (100*i/N_t);
 			printf("\r\t %6.2f %% \t",percent); // output percentage completion
 			printf("\t\t wrote step %6u", i);		// note printf does not play well with HPC
 			file_no++;
 		}
-/*		if(added_rings==0){
+		/* SECONDARY, TERTIARY AND QUATERNARY COLLISIONS 
+		if(added_rings==0){
 			if(i*Tangle.mDt > 0.00032){
 				Tangle.mTangle.push_back(new Ring(Tangle.mDr, 0.9e-6, 0, 0.4e-6, 20e-6, 2));
 				added_rings++;

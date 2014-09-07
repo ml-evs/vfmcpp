@@ -269,7 +269,6 @@ void Tangle::SelfReconnectLine(int P, int Q, int k, int l){
     cout << "\t\t !!! LINE RECONNECTION !!! " << endl;
 }
 
-
 void Tangle::SelfReconnect(int P, int Q, int k, int l){
 	mN_f = 1; mN_slow = 0;
 	/* reassign pointers to separate new ring  */

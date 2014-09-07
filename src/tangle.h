@@ -19,8 +19,6 @@ public:
 	double mDr;		// spatial resolution
 	double mDt; 		// temporal resolution
 	double mTotalTime;	// total time
-
-
 	double mEFieldAmp;
 	double mEFieldDuration;
 	int 	 mEFieldDirection;
@@ -56,7 +54,7 @@ public:
 	void CalcVelocity();
 	void CalcField();
 	void FromFile(string base); 	// mostly for debug purposes
-	void SaveState(string base);
+	void Output(string filename, int i, int file_no);
 };
 
 #endif
