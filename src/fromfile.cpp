@@ -26,12 +26,13 @@ void Tangle::Output(string filename, int i, int file_no){
 			pCurrent = pCurrent->mNext; j++; outfile << "\n";
 		}
 		/* save full state of system ~10 times per run */
-		if(i%100*mN_f==0){
-			string state_filename = "snapshot/"     + ith_jth_filename;
-			string vel_filename = "snapshot/vel_"   + ith_jth_filename;
-			string vel1_filename = "snapshot/vel1_" + ith_jth_filename;
-			string vel2_filename = "snapshot/vel2_" + ith_jth_filename;
-			string vel3_filename = "snapshot/vel3_" + ith_jth_filename;
+		if(i%(100*mN_f)==0){
+			cout << "\t\tsaving current state...\n";
+			string state_filename = "snapshot/"      + ith_jth_filename;
+			string vel_filename   = "snapshot/vel_"  + ith_jth_filename;
+			string vel1_filename  = "snapshot/vel1_" + ith_jth_filename;
+			string vel2_filename  = "snapshot/vel2_" + ith_jth_filename;
+			string vel3_filename  = "snapshot/vel3_" + ith_jth_filename;
 			ofstream statefile(state_filename.c_str());	ofstream velfile(vel_filename.c_str());
 			ofstream vel1file(vel1_filename.c_str());	ofstream vel2file(vel2_filename.c_str());
 			ofstream vel3file(vel3_filename.c_str());
