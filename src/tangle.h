@@ -4,7 +4,7 @@
 #include "filament.h"
 #include <vector>
 #include <cmath>
-#include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -12,17 +12,17 @@ class Tangle{
 public:
 	/* member data */
 	vector <Filament*> 	mTangle;
-	int mN_f;				// number of timesteps between saves
-	int mN_slow;
-	int mN_recon;		// number of reconnections
+	int mN_f;	// number of timesteps between saves
+	int mN_slow; // number of "slow-mo" timesteps for file save
+	int mN_recon; // number of reconnections
 	int mN_loopkills;	// number of tiny loops deleted
-	double mDr;		// spatial resolution
-	double mDt; 		// temporal resolution
-	double mTotalTime;	// total time
-	double mEFieldAmp;
-	double mEFieldDuration;
-	int 	 mEFieldDirection;
-
+	double mDr;	// spatial resolution
+	double mDt; // temporal resolution
+	double mTotalTime; // total time
+	double mEFieldAmp; // magnitude of E-field
+	double mEFieldDuration; // duration of E-field
+	int 	mEFieldDirection; // direction of E-field (0,1,2)->(x,y,z)
+	ofstream mLog; // log file records all events
 	/* member functions */
 	Tangle(){
 		mN_recon = 0; mN_loopkills = 0;

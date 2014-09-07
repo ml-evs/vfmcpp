@@ -137,6 +137,9 @@ string Tangle::Initialise(string runfile){
 			cout << param[0] << " with size " << param[2] << " C, at mesh point " << param[1] << ". " << endl;
 		}
 	}
+	/* initialise log file */
+	string logfile = filename + "/events.log";
+	mLog.open(logfile.c_str());
 	infile.close();
 	return filename;
 }
