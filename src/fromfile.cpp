@@ -27,9 +27,6 @@ void Tangle::Output(string filename, int i, int file_no){
 		}
 		/* save full state of system ~10 times per run */
 		if(i%100*mN_f==0){
-			for(current=begin; current!=end; current++){
-				stringstream ss; 
-			}
 			string state_filename = "snapshot/"     + ith_jth_filename;
 			string vel_filename = "snapshot/vel_"   + ith_jth_filename;
 			string vel1_filename = "snapshot/vel1_" + ith_jth_filename;
@@ -41,7 +38,7 @@ void Tangle::Output(string filename, int i, int file_no){
 			statefile << i*mDt << "\n"; velfile << i*mDt << "\n"; vel1file << i*mDt << "\n";
 			vel2file << i*mDt << "\n"; vel3file << i*mDt << "\n";
 			int j(0);
-			Point* pCurrent = (*current)->mPoints[0];
+			pCurrent = (*current)->mPoints[0];
 			while(j!=(*current)->mN+1-(*current)->mFlagType){
 				for(int m(0); m<3; m++){
 					statefile << pCurrent->mPos[m] << "\t";

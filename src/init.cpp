@@ -11,7 +11,7 @@ using namespace std;
 string Tangle::Initialise(string runfile){
 	
   if(runfile == "NULL"){
-  	runfile = "../run.in";
+  	runfile = "run.in";
   	}
   ifstream infile(runfile);
 	string line;
@@ -34,8 +34,7 @@ string Tangle::Initialise(string runfile){
 			input.clear();
 			input << line.substr(5);
 			input >> filename;
-			filename = filename + "/data_";
-			filename = "../" + filename;
+			filename = "../" + filename + "/data_";
 			cout << "\t    data path: " << filename << endl;
 		}
 		/* set simulation length */
