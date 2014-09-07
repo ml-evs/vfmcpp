@@ -36,7 +36,7 @@ def getfiles():
 			file = open(filename_k+'_0.dat', 'r')
 			line = file.readline()
 			if f==0:
-				for i in range(1):
+				for i in range(35):
 					times.append(float(line))
 					files.append(filename_k)
 				f=1
@@ -101,11 +101,11 @@ def animate(i):
 
 
 	time_text.set_text('time = %.1f' % (times[i]*1e9)+ ' ns / %.1f' % (times[-1]*1e9) +' ns')
-	# if(i<35):
+	if(i<35):
 	# 	ax.set_xlim3d((-0.5e-6+0.0114e-6*i,0.5e-6-0.0114e-6*i))
 	# 	ax.set_ylim3d((-0.5e-6+0.0114e-6*i,0.5e-6-0.0114e-6*i))
 	# 	ax.set_zlim3d((0+0.0114e-6*i,1e-6-0.0114e-6*i))
-	# 	ax.view_init(10,90+5*i)
+		ax.view_init(30,-130+5*i)
 	# if(i>300 and i<400):
 	# 	ax.view_init(0,0)
 	# 	ax.set_xlim3d((-0.05e-6, 0.05e-6))
@@ -123,10 +123,10 @@ else:
 	Analysis = raw_input('[p]lot to screen, [g]if or [m]ovie?')
 
 
-fig = plt.figure(facecolor='w', edgecolor='w',figsize=(4,4))
+fig = plt.figure(facecolor='k', edgecolor='k',figsize=(4,4))
 ax = fig.add_subplot(111, 
  	aspect='equal',
- 	axisbg='w',
+ 	axisbg='k',
  	xticks=[], yticks=[], zticks=[],
  	xticklabels=[], yticklabels=[], zticklabels=[],
  	projection='3d')
@@ -135,26 +135,27 @@ fig.subplots_adjust(hspace=0)
 
 rings = []
 print jmax
-colors = plt.cm.Blues(np.linspace(1,0.7, jmax+1))
+colors = plt.cm.cool(np.linspace(0,1, jmax))
 style = '-'
 if Analysis == 'p':
 	style = '*-'
 
 for k in range (jmax+2):
-	rings += [l for c in colors for l in ax.plot([], [], [], style, c=c, alpha = 0.9, linewidth=2, markersize=5, markerfacecolor=c, markeredgecolor=c)]
-time_text = ax.text(0, 0, 0,'', transform=ax.transAxes, color='k')
-ax.set_xlim3d((-1.5e-6,1.5e-6))
-ax.set_ylim3d((-1.5e-6,1.5e-6))
-ax.set_zlim3d((-1.5e-6,1.5e-6))
+	rings += [l for c in colors for l in ax.plot([], [], [], style, c=np.random.rand(3,1), alpha = 0.9, linewidth=2, markersize=5, markerfacecolor=c, markeredgecolor=c)]
+time_text = ax.text(0, 0, 0,'', transform=ax.transAxes, color='w')
+ax.set_xlim3d((-3e-6,3e-6))
+ax.set_ylim3d((-3e-6,3e-6))
+ax.set_zlim3d((-3e-6,3e-6))
 #ax.set_zlim3d((24e-6,27e-6))
-ax.view_init(20,-130)
+ax.view_init(30,-130)
+ax.axis('off')
 
-x = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.2e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")
-y = Arrow3D([-1.2e-6,-0.8e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.6e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="g")
-z = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-0.8e-6],[-1.6e-6,-1.6e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="#2E5C99")
-ax.add_artist(x)
-ax.add_artist(y)
-ax.add_artist(z)
+#x = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.2e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")
+#y = Arrow3D([-1.2e-6,-0.8e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.6e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="g")
+#z = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-0.8e-6],[-1.6e-6,-1.6e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="#2E5C99")
+#ax.add_artist(x)
+#ax.add_artist(y)
+#ax.add_artist(z)
 
 ani = animation.FuncAnimation(fig, animate, repeat=True, init_func = init, frames = len(files), interval = 100, blit=False)
 
@@ -165,7 +166,7 @@ elif Analysis == ('g' or 'm'):
 		filename = '../../img/ ' + sys.argv[3]
 	else:
 		filename = raw_input('Enter the desired filename for the gif (will be saved in data folder):')
-		filename = '../../' + filename
+		filename = '../../post/' + filename
 	if Analysis == 'g':
 		ani.save(filename+'.gif', writer='imagemagick', fps=20)
 	elif Analysis == 'm':
