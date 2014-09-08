@@ -131,7 +131,7 @@ int Tangle::ReconnectionTest(){
 						|| pL==pK->mPrev
 						|| pL==pK->mNext->mNext
 						|| pL==pK->mPrev->mPrev){ 
-						
+						continue;
 					}
 					else{ 
 						/* check if non-neighbouring points are too close */
@@ -152,8 +152,8 @@ int Tangle::ReconnectionTest(){
 										l_rec = l;
 									}
 								}
-								for(int k_t(0);k<mTangle[P]->mN; k++){
-									if(mTangle[P]->mPoints[k] == pK){
+								for(int k_t(0);k_t<mTangle[P]->mN; k_t++){
+									if(mTangle[P]->mPoints[k_t] == pK){
 										k = k_t;
 									}
 								}
@@ -172,6 +172,7 @@ int Tangle::ReconnectionTest(){
 						|| pK->mNext->mMarkedForRecon == true
 						|| pK->mPrev->mPrev->mMarkedForRecon == true
 						|| pK->mNext->mNext->mMarkedForRecon == true){
+						continue;
 					}
 					else{
 						pK->mMarkedForRecon = true;
