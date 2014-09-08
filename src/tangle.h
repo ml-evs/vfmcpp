@@ -5,6 +5,7 @@
 #include <vector>
 #include <cmath>
 #include <fstream>
+#include <ctime>
 
 using namespace std;
 
@@ -56,6 +57,14 @@ public:
 	void CalcField();
 	void FromFile(string base); 	// mostly for debug purposes
 	void Output(string filename, int i, int file_no);
+	const string StringTime() {
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%m-%d.%X", &tstruct);
+    return buf;
+	}
 };
 
 #endif

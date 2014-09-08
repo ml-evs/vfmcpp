@@ -21,7 +21,7 @@ bool Tangle::MeshAdjust(){
             /* point deletion for smoothing and proximity*/
             if((1/R)>1.9/dr || (*c)->mPoints[k]->mSegLength < 0.5*dr){
                 //cout << "\nRemoving point at " << (*c)->mPoints[k]->mPos[0] << ", " << (*c)->mPoints[k]->mPos[1] << ", " << (*c)->mPoints[k]->mPos[2] << endl;
-                mLog << ctime(&(time(0))).substr(10,8) << "\t" << mStep << ":\t\tremoving point at " << (*c)->mPoints[k]->mPos[0] << ", " << (*c)->mPoints[k]->mPos[1] << ", " << (*c)->mPoints[k]->mPos[2] << " ";
+                mLog << StringTime() << "\t" << mStep << ":\t\tremoving point at " << (*c)->mPoints[k]->mPos[0] << ", " << (*c)->mPoints[k]->mPos[1] << ", " << (*c)->mPoints[k]->mPos[2] << " ";
                 if((1/R)>1.9/dr){mLog << "for curvature ";}
                 mLog << (*c)->mPoints[k]->mSegLength << " vs " << 0.5*dr << endl; 
                 if((*c)->mPoints[k]->mCharge != 0){ // don't remove the electron!
@@ -57,7 +57,7 @@ bool Tangle::MeshAdjust(){
                     (*c)->mPoints.back()->mPos[j] += 0.5*((*c)->mPoints.back()->mNext->mPos[j] + (*c)->mPoints.back()->mPrev->mPos[j]);
                 }
                 (*c)->CalcMeshLengths(); (*c)->CalcSPrime(); (*c)->CalcS2Prime();
-                mLog << ctime(&(time(0))).substr(10,8) << "\t" << mStep << ":\t\tadded point at " << (*c)->mPoints.back()->mPos[0] << ", " << (*c)->mPoints.back()->mPos[1] << ", " << (*c)->mPoints.back()->mPos[2] << endl;
+                mLog << StringTime() << "\t" << mStep << ":\t\tadded point at " << (*c)->mPoints.back()->mPos[0] << ", " << (*c)->mPoints.back()->mPos[1] << ", " << (*c)->mPoints.back()->mPos[2] << endl;
                 return false;
             }
         }

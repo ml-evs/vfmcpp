@@ -20,7 +20,7 @@ int main(int argc, char* argv[]){
 
 	/* initialise tangle  */
 	Tangle Tangle;
-
+	
 	string runfile;
 	if(argc!=1){runfile = argv[1];}
 	else runfile = "NULL";
@@ -42,7 +42,7 @@ int main(int argc, char* argv[]){
 	int i(0);
 	int added_rings(0);
 	cout << "\t - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
-	Tangle.mLog << ctime(&(time(0))).substr(10,8) << "\tsimulation begins" << endl;
+	Tangle.mLog << Tangle.StringTime() << "\tsimulation begins" << endl;
 	while(i < N_t){
 		Tangle.mStep = i;
 		begin = Tangle.mTangle.begin();
@@ -61,7 +61,7 @@ int main(int argc, char* argv[]){
 			percent = (100*i/N_t);
 			printf("\r\t %6.2f %% \t",percent); // output percentage completion
 			printf("\t\t wrote step %6u", i);		// note printf does not play well with HPC
-			Tangle.mLog << ctime(&(time(0))).substr(10,8) << "\t" << Tangle.mStep << ":\t\twrote step" << endl;
+			Tangle.mLog << Tangle.StringTime() << "\t" << Tangle.mStep << ":\t\twrote step" << endl;
 			file_no++;
 		}
 		/* SECONDARY, TERTIARY AND QUATERNARY COLLISIONS 
@@ -69,21 +69,21 @@ int main(int argc, char* argv[]){
 			if(i*Tangle.mDt > 0.00032){
 				Tangle.mTangle.push_back(new Ring(Tangle.mDr, 0.9e-6, 0, 0.4e-6, 20e-6, 2));
 				added_rings++;;
-				Tangle.mLog << ctime(&(time(0))).substr(10,8) << "\tadded a new ring" << endl
+				Tangle.mLog << Tangle.StringTime() << "\tadded a new ring" << endl
 			}
 		}
 		if(added_rings==1){
 			if(i*Tangle.mDt > 0.0004){
 				Tangle.mTangle.push_back(new Ring(Tangle.mDr, 0.9e-6, 0, 0.6e-6, 20e-6, 2));
 				added_rings++;
-				Tangle.mLog << ctime(&(time(0))).substr(10,8) << "\tadded a new ring" << endl
+				Tangle.mLog << Tangle.StringTime() << "\tadded a new ring" << endl
 			}
 		}
 		if(added_rings==2){
 			if(i*Tangle.mDt > 0.0005){
 				Tangle.mTangle.push_back(new Ring(Tangle.mDr, 0.9e-6, 0, 0.8e-6, 20e-6, 2));
 				added_rings++;
-				Tangle.mLog << ctime(&(time(0))).substr(10,8) << "\tadded a new ring" << endl
+				Tangle.mLog << Tangle.StringTime() << "\tadded a new ring" << endl
 			}
 		}*/
 		/* calculate velocities and propagate positions */
@@ -102,15 +102,15 @@ int main(int argc, char* argv[]){
 		/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 	}
 	cout << "\n\t - - - - - - -    SIMULATION FINISHED    - - - - - - - -"; 
-	Tangle.mLog << ctime(&(time(0))).substr(10,8) << "\t\t\tsimulation finished" << endl;
+	Tangle.mLog << Tangle.StringTime() << "\t\t\tsimulation finished" << endl;
 	ofstream timefile(filename+"time.dat");
 	t = clock()-t;
 	timefile << "time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
 	timefile << "number of recons = " << Tangle.mN_recon << endl;
 	timefile << "number of loop kills = " << Tangle.mN_loopkills << endl;
-	Tangle.mLog	<< ctime(&(time(0))).substr(10,8) << "\t\t\ttime elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
-	Tangle.mLog << ctime(&(time(0))).substr(10,8) << "\t\t\tnumber of recons = " << Tangle.mN_recon << endl;
-	Tangle.mLog << ctime(&(time(0))).substr(10,8) << "\t\t\tnumber of loop kills = " << Tangle.mN_loopkills << endl;
+	Tangle.mLog	<< Tangle.StringTime() << "\t\t\ttime elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
+	Tangle.mLog << Tangle.StringTime() << "\t\t\tnumber of recons = " << Tangle.mN_recon << endl;
+	Tangle.mLog << Tangle.StringTime() << "\t\t\tnumber of loop kills = " << Tangle.mN_loopkills << endl;
 	timefile.close(); Tangle.mLog.close();
 	return 0;
 }
