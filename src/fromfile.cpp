@@ -55,7 +55,7 @@ void Tangle::Output(string filename, int i, int file_no){
 		outfile.close(); n_fil++;
 	}
     if(i%(100*mN_f)==0){
-        mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\t\t\twrote full state of system to snapshot/" << endl;
+        mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\twrote full state of system to snapshot/" << endl;
     }
 }
 

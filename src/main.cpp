@@ -41,8 +41,8 @@ int main(int argc, char* argv[]){
 	/* begin time-stepping */
 	int i(0);
 	int added_rings(0);
-	cout << "\t - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
-	Tangle.mLog << Tangle.StringTime() << "\t\t\t\tsimulation begins" << endl;
+	cout << "\n\t - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
+	Tangle.mLog << Tangle.StringTime() << "\t\tsimulation begins" << endl;
 	while(i < N_t){
 		Tangle.mStep = i;
 		begin = Tangle.mTangle.begin();
@@ -61,7 +61,7 @@ int main(int argc, char* argv[]){
 			percent = (100*i/N_t);
 			printf("\r\t %6.2f %% \t",percent); // output percentage completion
 			printf("\t\t wrote step %6u", i);		// note printf does not play well with HPC
-			Tangle.mLog << Tangle.StringTime() << "\t" << Tangle.setw(10) << mStep << ":\t\t\t\twrote step" << endl;
+			Tangle.mLog << Tangle.StringTime() << "\t" << setw(10) << Tangle.mStep << ":\t\twrote step" << endl;
 			file_no++;
 		}
 		/* SECONDARY, TERTIARY AND QUATERNARY COLLISIONS 
