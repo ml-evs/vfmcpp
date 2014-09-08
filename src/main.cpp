@@ -42,7 +42,7 @@ int main(int argc, char* argv[]){
 	int i(0);
 	int added_rings(0);
 	cout << "\t - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
-	Tangle.mLog << Tangle.StringTime() << "\t\t\tsimulation begins" << endl;
+	Tangle.mLog << Tangle.StringTime() << "\t\t\t\tsimulation begins" << endl;
 	while(i < N_t){
 		Tangle.mStep = i;
 		begin = Tangle.mTangle.begin();
@@ -102,15 +102,15 @@ int main(int argc, char* argv[]){
 		/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 	}
 	cout << "\n\t - - - - - - -    SIMULATION FINISHED    - - - - - - - -"; 
-	Tangle.mLog << Tangle.StringTime() << "\t\t\tsimulation finished" << endl;
+	Tangle.mLog << Tangle.StringTime() << "\t\t\t\tsimulation finished" << endl;
 	ofstream timefile(filename+"time.dat");
 	t = clock()-t;
 	timefile << "time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
 	timefile << "number of recons = " << Tangle.mN_recon << endl;
 	timefile << "number of loop kills = " << Tangle.mN_loopkills << endl;
-	Tangle.mLog	<< Tangle.StringTime() << "\t\t\ttime elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
-	Tangle.mLog << Tangle.StringTime() << "\t\t\tnumber of recons = " << Tangle.mN_recon << endl;
-	Tangle.mLog << Tangle.StringTime() << "\t\t\tnumber of loop kills = " << Tangle.mN_loopkills << endl;
+	Tangle.mLog	<< Tangle.StringTime() << "\t\t\t\ttime elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
+	Tangle.mLog << Tangle.StringTime() << "\t\t\t\tnumber of recons = " << Tangle.mN_recon << endl;
+	Tangle.mLog << Tangle.StringTime() << "\t\t\t\tnumber of loop kills = " << Tangle.mN_loopkills << endl;
 	timefile.close(); Tangle.mLog.close();
 	return 0;
 }
