@@ -13,7 +13,7 @@ bool Tangle::LoopKill(){
 			delete mTangle[i];
 			mTangle.erase(mTangle.begin()+i);
 			Killed = true;
-			mLog << StringTime() << "\t" << mStep << ":\t\tkilled small loop" << endl;
+			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tkilled small loop" << endl;
 		}
 	}
 	if(Killed==true) return true;

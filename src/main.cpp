@@ -61,7 +61,7 @@ int main(int argc, char* argv[]){
 			percent = (100*i/N_t);
 			printf("\r\t %6.2f %% \t",percent); // output percentage completion
 			printf("\t\t wrote step %6u", i);		// note printf does not play well with HPC
-			Tangle.mLog << Tangle.StringTime() << "\t" << Tangle.mStep << ":\t\t\t\twrote step" << endl;
+			Tangle.mLog << Tangle.StringTime() << "\t" << Tangle.setw(10) << mStep << ":\t\t\t\twrote step" << endl;
 			file_no++;
 		}
 		/* SECONDARY, TERTIARY AND QUATERNARY COLLISIONS 
