@@ -23,7 +23,7 @@ ZERO_DATA = list()
 ZERO_DATA_PAUL = list()
 FAILED_DATA = list()
 
-base_filename = '../../data_2608/'
+base_filename = '../../07_sweep/'
 
 for root, dirs, files in os.walk(base_filename):
   for name in dirs:
@@ -113,25 +113,25 @@ for i in range(len(sigma)):
 					end2 = True
 	#print i
 
-PAUL_DATA = []
-data = []
-file = open(base_filename+'Run3.dat')
-line = file.readline()
-while line:
-	data.append(line)
-	line = file.readline()
-file.close()
-for j in range(len(data)):
-	if float((data[j].split())[1]) < 0.0000001:
-		ZERO_DATA_PAUL.append(np.zeros(3))
-		ZERO_DATA_PAUL[-1] = data[j].split()
-		for i in range(3):
-			ZERO_DATA_PAUL[-1][i] = float(ZERO_DATA_PAUL[-1][i])*1e-6 
-	else:
-		PAUL_DATA.append(np.zeros((3)))
-		PAUL_DATA[-1] = data[j].split()
-		for i in range(3):
-			PAUL_DATA[-1][i] = float(PAUL_DATA[-1][i])*1e-6 
+# PAUL_DATA = []
+# data = []
+# file = open(base_filename+'Run3.dat')
+# line = file.readline()
+# while line:
+# 	data.append(line)
+# 	line = file.readline()
+# file.close()
+# for j in range(len(data)):
+# 	if float((data[j].split())[1]) < 0.0000001:
+# 		ZERO_DATA_PAUL.append(np.zeros(3))
+# 		ZERO_DATA_PAUL[-1] = data[j].split()
+# 		for i in range(3):
+# 			ZERO_DATA_PAUL[-1][i] = float(ZERO_DATA_PAUL[-1][i])*1e-6 
+# 	else:
+# 		PAUL_DATA.append(np.zeros((3)))
+# 		PAUL_DATA[-1] = data[j].split()
+# 		for i in range(3):
+# 			PAUL_DATA[-1][i] = float(PAUL_DATA[-1][i])*1e-6 
 
 fig = plt.figure(figsize=(5,4), facecolor='w', edgecolor='w')
 ax = fig.add_subplot(111, axisbg ='w')
@@ -147,11 +147,11 @@ wspace = 0.2   # the amount of width reserved for blank space between subplots
 hspace = 0.2   # the amount of height reserved for white space between subplots
 
 
-np.savetxt(base_filename+'../post_2608/PAUL_DATA.dat', PAUL_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
-np.savetxt(base_filename+'../post_2608/PLOT_DATA.dat', PLOT_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
-np.savetxt(base_filename+'../post_2608/ZERO_DATA.dat', ZERO_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
-np.savetxt(base_filename+'../post_2608/ZERO_DATA_PAUL.dat', ZERO_DATA_PAUL, fmt='%6.6e', delimiter=' ', newline='\n')
-np.savetxt(base_filename+'../post_2608/FAILED_DATA.dat', FAILED_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
+# np.savetxt(base_filename+'../post_2608/PAUL_DATA.dat', PAUL_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
+# np.savetxt(base_filename+'../post_2608/PLOT_DATA.dat', PLOT_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
+# np.savetxt(base_filename+'../post_2608/ZERO_DATA.dat', ZERO_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
+# np.savetxt(base_filename+'../post_2608/ZERO_DATA_PAUL.dat', ZERO_DATA_PAUL, fmt='%6.6e', delimiter=' ', newline='\n')
+# np.savetxt(base_filename+'../post_2608/FAILED_DATA.dat', FAILED_DATA, fmt='%6.6e', delimiter=' ', newline='\n')
 
 BIG_DATA = []
 LITTLE_DATA = []
@@ -188,19 +188,19 @@ for i in range(len(no_recon)):
 ax.vlines(PLOT_DATA[0], 0, 3e-6, linewidth=7.5, alpha=0.15, color=c)
 ax.vlines(ZERO_DATA[0], 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
 
-ax.vlines(2.1e-7, 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
-ax.vlines(2.2e-7, 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
-ax.vlines(2.15e-7, 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
-ax.vlines(1.95e-7, 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
-ax.vlines(1.55e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
-ax.vlines(1.40e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
-ax.vlines(1.250e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
-ax.vlines(1.5e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
-ax.vlines(1.6e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
-ax.vlines(1.7e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
-ax.vlines(1.75e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
-ax.vlines(1.0e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
-ax.vlines(1.20-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
+# ax.vlines(2.1e-7, 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
+# ax.vlines(2.2e-7, 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
+# ax.vlines(2.15e-7, 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
+# ax.vlines(1.95e-7, 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
+# ax.vlines(1.55e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
+# ax.vlines(1.40e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
+# ax.vlines(1.250e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
+# ax.vlines(1.5e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
+# ax.vlines(1.6e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
+# ax.vlines(1.7e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
+# ax.vlines(1.75e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
+# ax.vlines(1.0e-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
+# ax.vlines(1.20-7, 0, 3e-6, linewidth=7.5, color='b', alpha=0.15)
 
 
 
@@ -239,26 +239,7 @@ ax.set_ylabel('Effective radius (um)')
 ax.set_xlim(0,5.5e-7)
 ax.set_ylim(0.000,1.75e-6)
 
-# rdif1 = ax2.plot(ALL_DATA[0],ALL_DATA[1]-0.9e-6, linewidth=0, c='b', marker='^', markersize=3, alpha=0.6)
-# rdif2 = ax2.plot(ALL_DATA[0],ALL_DATA[2]-1e-6, linewidth=0, c='b', marker='^', markersize=3, alpha=0.6)
-# pdif1 = ax2.plot(PAUL_DATA[0],PAUL_DATA[1]-0.9e-6, linewidth=0, c='g', marker='o', markersize=3, alpha=0.6)
-# pdif2 = ax2.plot(PAUL_DATA[0],PAUL_DATA[2]-1e-6, linewidth=0, c='g', marker='o', markersize=3, alpha=0.6)
-# pdif_av = ax2.plot(PAUL_DATA[0],((PAUL_DATA[1]-0.9e-6+PAUL_DATA[2]-1e-6)/2), '-', linewidth=1, c='g', alpha=1)
-# rdif_av = ax2.plot(ALL_DATA[0],((ALL_DATA[1]-0.9e-6+ALL_DATA[2]-1e-6)/2), '-', linewidth=1, c='b', alpha=1)
-
-# ax2.vlines(ALL_DATA[0], ALL_DATA[1]-0.9e-6, ALL_DATA[2]-1e-6, linewidth=1, alpha=0.3, color='b')
-# ax2.vlines(PAUL_DATA[0], PAUL_DATA[1]-0.9e-6, PAUL_DATA[2]-1e-6, linewidth=1, alpha=0.3, color='g')
-
-# ax2.axhline(0, linestyle='-', linewidth=1, zorder=0, color='k') # horizontal lines
-
-# ax2.set_xlim(0,5e-7)
-# ax2.set_xticks([0,0.025e-6, 0.09e-6,0.25e-6,0.5e-6])
-# ax2.set_xticklabels([0,0.025,0.09,0.25,0.50])
-# ax2.set_yticks([0,-0.5e-6,0.5e-6])
-# ax2.set_yticklabels([0,-0.5, 0.5])
 ax.set_xlabel('Impact parameter (um)')
-# ax2.set_ylim(-1e-6,1e-6)
 
-
-fig.savefig(base_filename+'../post_2608/impact_vs_r_eff.png', dpi=200, facecolor='w', edgecolor='w',
+fig.savefig(base_filename+'../post/impact_vs_r_eff_07.png', dpi=200, facecolor='w', edgecolor='w',
         orientation='portrait', pad_inchemarkersize=0.1)
