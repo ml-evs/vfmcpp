@@ -39,7 +39,6 @@ string Tangle::Initialise(string runfile){
 			/* initialise log file */
 			string logfile = filename + "/events.log";
 			mLog.open(logfile.c_str());
-			mLog << "\ttime\t\tstep\t\t\tevent\n";
 			mLog << StringTime() << "\t\t\t\t\tinit path: " << runfile << endl;
 			mLog << StringTime() << "\t\t\t\t\tdata path: " << filename << endl;
 		}

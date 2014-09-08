@@ -42,7 +42,7 @@ int main(int argc, char* argv[]){
 	int i(0);
 	int added_rings(0);
 	cout << "\n\t - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
-	Tangle.mLog << Tangle.StringTime() << "\t\tsimulation begins" << endl;
+	Tangle.mLog << Tangle.StringTime() << "\t\t\t\t\tsimulation begins" << endl;
 	while(i < N_t){
 		Tangle.mStep = i;
 		begin = Tangle.mTangle.begin();
