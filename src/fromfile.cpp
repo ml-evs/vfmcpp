@@ -50,7 +50,7 @@ void Tangle::Output(string filename, int i, int file_no){
 				pCurrent = pCurrent->mNext; j++; 
 				statefile << "\n"; velfile << "\n"; vel1file << "\n"; vel2file << "\n"; vel3file << "\n";
 				statefile.close(); velfile.close(); vel1file.close(); vel2file.close(); vel3file.close();				
-				mLog << ctime(&(time(0)).substr(10,8) << "\t " << mStep << ":\t\twrote full state of filament " << n_fil << endl;
+				mLog << ctime(&(time(0))).substr(10,8) << "\t " << mStep << ":\t\twrote full state of filament " << n_fil << endl;
 			}
 		}
 		outfile.close(); n_fil++;
