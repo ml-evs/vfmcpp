@@ -25,7 +25,7 @@ string Tangle::Initialise(string runfile){
 			cout << "\t    data path: " << filename << endl;
 			/* initialise log file */
 			string logfile = filename + "/events.log";
-			mLog << ctime(&(time(0)).substr(10,8) << "\tdata path: " << filename << endl;
+			mLog << ctime(&(time(0)).substr(10,8) << "\t\t\tdata path: " << filename << endl;
 		}
 		/* set simulation length */
 		else if(line.substr(0,4) == "time"){
@@ -34,7 +34,7 @@ string Tangle::Initialise(string runfile){
 			input >> t_total;
 			mTotalTime = t_total;
 			cout << "\t    simulation time = " << t_total << " s" << endl;
-			mLog << ctime(&(time(0)).substr(10,8) << "\tsimulation time = " << t_total << " s" << endl;
+			mLog << ctime(&(time(0)).substr(10,8) << "\t\t\tsimulation time = " << t_total << " s" << endl;
 		}
 		/* set an external field */
 		else if(line.substr(0,4) == "Eext"){
@@ -42,7 +42,7 @@ string Tangle::Initialise(string runfile){
 			input.clear();
 			convert.clear();
 			cout << "\t    electric field: ";
-			mLog << ctime(&(time(0)).substr(10,8) << "\telectric field:";
+			mLog << ctime(&(time(0)).substr(10,8) << "\t\t\telectric field:";
 			input << line.substr(5);
 			for(int i(0);i<5;i++){
 				convert.clear();
@@ -69,8 +69,8 @@ string Tangle::Initialise(string runfile){
 			mDt /= 25; 	// Baggaley, Barenghi PRB 2010
 			cout << "\t    spatial resolution = "<< mDr << " m" << endl;
 			cout << "\t    time-step = " << mDt << " s\n\n";
-			mLog << ctime(&(time(0)).substr(10,8) << "\tspatial resolution = "<< mDr << " m" << endl;
-			mLog << ctime(&(time(0)).substr(10,8) << "\ttime-step = " << mDt << " s\n";
+			mLog << ctime(&(time(0)).substr(10,8) << "\t\t\tspatial resolution = "<< mDr << " m" << endl;
+			mLog << ctime(&(time(0)).substr(10,8) << "\t\t\ttime-step = " << mDt << " s\n";
 			mDr *= 4.0/3.0; // augments resolution for mesh adjust stability
 		}
 		/* define a ring */
@@ -80,7 +80,7 @@ string Tangle::Initialise(string runfile){
 			input.clear();
 			convert.clear();
 			cout << "\t    ring";
-			mLog << ctime(&(time(0)).substr(10,8) << "\tring";
+			mLog << ctime(&(time(0)).substr(10,8) << "\t\t\tring";
 			input << line.substr(5);
 			for(int i(0);i<5;i++){
 				convert.clear();
@@ -127,7 +127,7 @@ string Tangle::Initialise(string runfile){
 			input.clear();
 			convert.clear();
 			cout << "\t    charged segment on filament ";
-			mLog << ctime(&(time(0)).substr(10,8) << "\tcharged segment on filament ";
+			mLog << ctime(&(time(0)).substr(10,8) << "\t\t\tcharged segment on filament ";
 			input << line.substr(5);
 			for(int i(0);i<4;i++){
 				convert.clear();

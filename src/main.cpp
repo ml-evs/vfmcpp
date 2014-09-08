@@ -61,7 +61,7 @@ int main(int argc, char* argv[]){
 			percent = (100*i/N_t);
 			printf("\r\t %6.2f %% \t",percent); // output percentage completion
 			printf("\t\t wrote step %6u", i);		// note printf does not play well with HPC
-			Tangle.mLog << ctime(&(time(0)).substr(10,8) << "\t" << Tangle.mStep << ": wrote step" << endl;
+			Tangle.mLog << ctime(&(time(0)).substr(10,8) << "\t" << Tangle.mStep << ":\t\twrote step" << endl;
 			file_no++;
 		}
 		/* SECONDARY, TERTIARY AND QUATERNARY COLLISIONS 
@@ -102,15 +102,15 @@ int main(int argc, char* argv[]){
 		/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 	}
 	cout << "\n\t - - - - - - -    SIMULATION FINISHED    - - - - - - - -"; 
-	Tangle.mLog << ctime(&(time(0)).substr(10,8) << "\tsimulation finished" << endl;
+	Tangle.mLog << ctime(&(time(0)).substr(10,8) << "\t\t\tsimulation finished" << endl;
 	ofstream timefile(filename+"time.dat");
 	t = clock()-t;
 	timefile << "time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
 	timefile << "number of recons = " << Tangle.mN_recon << endl;
 	timefile << "number of loop kills = " << Tangle.mN_loopkills << endl;
-	Tangle.mLog	<< ctime(&(time(0)).substr(10,8) << "\ttime elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
-	Tangle.mLog << ctime(&(time(0)).substr(10,8) << "\tnumber of recons = " << Tangle.mN_recon << endl;
-	Tangle.mLog << ctime(&(time(0)).substr(10,8) << "\tnumber of loop kills = " << Tangle.mN_loopkills << endl;
+	Tangle.mLog	<< ctime(&(time(0)).substr(10,8) << "\t\t\ttime elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
+	Tangle.mLog << ctime(&(time(0)).substr(10,8) << "\t\t\tnumber of recons = " << Tangle.mN_recon << endl;
+	Tangle.mLog << ctime(&(time(0)).substr(10,8) << "\t\t\tnumber of loop kills = " << Tangle.mN_loopkills << endl;
 	timefile.close(); Tangle.mLog.close();
 	return 0;
 }

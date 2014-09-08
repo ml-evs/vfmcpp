@@ -21,7 +21,7 @@ void Tangle::Reconnection(){
 			if(Finished==true){break;}
 			Reconnected = false;
 			//cout << "\nNumber of possible reconnections = " << recon_count << endl;
-			mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ": number of possible reconnections = " << recon_count << endl;
+			mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ":\t\tnumber of possible reconnections = " << recon_count << endl;
 			for (unsigned int P(0);P!=mTangle.size();P++){
 				if(Reconnected== true){break;}
 				for (unsigned int Q(P);Q!=mTangle.size(); Q++){
@@ -60,7 +60,7 @@ void Tangle::Reconnection(){
 										dot_tangents += mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1];
 										dot_tangents += mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
 										/* find closest point to k inside range and mark it for reconnection, ignoring parallel lines */
-										if(dot_tangents > 0){mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ": ignoring parallel filaments" << endl; continue;}
+										if(dot_tangents > 0){mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ":\t\tignoring parallel filaments" << endl; continue;}
 										else if(dist2 < mindist2){mindist2 = dist2; NeedRecon = true; l_rec = l;}
 									}
 								}
@@ -175,7 +175,7 @@ int Tangle::ReconnectionTest(){
 					}
 					else{
 						pK->mMarkedForRecon = true;
-						mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ": attempting to reconnect at " << k << ", " << l_rec << endl;
+						mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ":\t\tattempting to reconnect at " << k << ", " << l_rec << endl;
 					 	recon_count++;
 					}
 				}
@@ -188,7 +188,7 @@ int Tangle::ReconnectionTest(){
 
 
 void Tangle::SelfReconnectLine(int P, int Q, int k, int l){
- 		mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ": attempting line reconnection" << endl;
+ 		mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ":\t\tattempting line reconnection" << endl;
     mN_f = 1; mN_slow = 0;
     /* create new ring in tangle */
     mTangle.push_back(new Ring());
@@ -263,11 +263,11 @@ void Tangle::SelfReconnectLine(int P, int Q, int k, int l){
     }
     mTangle.erase(mTangle.begin()+P);
     cout << "\t\t !!! LINE RECONNECTION !!! " << endl;
-    mLog << ctime(&(time(0)).substr(10,8) << "\t " << mStep << " : successful line reconnection" << endl;
+    mLog << ctime(&(time(0)).substr(10,8) << "\t " << mStep << " :\t\tsuccessful line reconnection" << endl;
 }
 
 void Tangle::SelfReconnect(int P, int Q, int k, int l){
-	mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ": attempting self-reconnection" << endl;
+	mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ":\t\tattempting self-reconnection" << endl;
 	mN_f = 1; mN_slow = 0;
 	/* reassign pointers to separate new ring  */
 	mTangle[P]->mPoints[k]->mNext->mPrev = mTangle[Q]->mPoints[l]->mPrev;  
@@ -317,11 +317,11 @@ void Tangle::SelfReconnect(int P, int Q, int k, int l){
 	}
 	mTangle.erase(mTangle.begin()+P);
 	cout << "\n\t\t !!! RECONNECTION !!! " << endl;
-	mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ": successful self-reconnection" << endl;
+	mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ":\t\tsuccessful self-reconnection" << endl;
 }
 
 void Tangle::Reconnect(int P, int Q, int k, int l){
-	mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ": attempting reconnection" << endl;
+	mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ":\t\tattempting reconnection" << endl;
 	mN_f = 1; mN_slow = 0;
 	mTangle[P]->mPoints[k]->mPrev->mNext = mTangle[Q]->mPoints[l]->mNext;
 	mTangle[Q]->mPoints[l]->mNext->mPrev = mTangle[P]->mPoints[k]->mPrev;
@@ -352,5 +352,5 @@ void Tangle::Reconnect(int P, int Q, int k, int l){
 	}
 	delete mTangle[Q];
 	mTangle.erase(mTangle.begin()+Q);
-	mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ": successful reconnection" << endl;
+	mLog << ctime(&(time(0)).substr(10,8) << "\t" << mStep << ":\t\tsuccessful reconnection" << endl;
 }
