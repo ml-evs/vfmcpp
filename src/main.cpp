@@ -103,7 +103,7 @@ int main(int argc, char* argv[]){
 	}
 	cout << "\n\t - - - - - - -    SIMULATION FINISHED    - - - - - - - -"; 
 	Tangle.mLog << Tangle.StringTime() << "\t\t\t\tsimulation finished" << endl;
-	ofstream timefile(filename+"time.dat");
+	ofstream timefile(filename+"/time.dat");
 	t = clock()-t;
 	timefile << "time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
 	timefile << "number of recons = " << Tangle.mN_recon << endl;
