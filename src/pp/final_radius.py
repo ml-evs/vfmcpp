@@ -165,9 +165,9 @@ ALL_DATA = np.asarray([PLOT_DATA[0],LITTLE_DATA, BIG_DATA])
 ALL_DATA = np.transpose(ALL_DATA)
 ALL_DATA = np.sort(ALL_DATA, axis=0)
 
-PAUL_DATA = np.transpose(PAUL_DATA)
-ZERO_DATA = np.transpose(ZERO_DATA)
-ZERO_DATA_PAUL = np.transpose(ZERO_DATA_PAUL)
+#PAUL_DATA = np.transpose(PAUL_DATA)
+#ZERO_DATA = np.transpose(ZERO_DATA)
+#ZERO_DATA_PAUL = np.transpose(ZERO_DATA_PAUL)
 FAILED_DATA = np.transpose(FAILED_DATA)
 BIG_DATA = np.transpose(BIG_DATA)
 LITTLE_DATA = np.transpose(LITTLE_DATA)
@@ -186,7 +186,7 @@ for i in range(len(no_recon)):
 
 
 ax.vlines(PLOT_DATA[0], 0, 3e-6, linewidth=7.5, alpha=0.15, color=c)
-ax.vlines(ZERO_DATA[0], 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
+#ax.vlines(ZERO_DATA[0], 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
 
 # ax.vlines(2.1e-7, 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
 # ax.vlines(2.2e-7, 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
@@ -207,20 +207,20 @@ ax.vlines(ZERO_DATA[0], 0, 3e-6, linewidth=7.5, color='r', alpha=0.15)
 
 
 ax.vlines(PLOT_DATA[0], PLOT_DATA[1], PLOT_DATA[2], linewidth=0.8, alpha=0.8, color=c)
-ax.vlines(ZERO_DATA[0], 0, ZERO_DATA[1], linewidth=0.8, alpha=0.8, color='r')
-ax.vlines(ZERO_DATA[0], 0, ZERO_DATA[1], linewidth=0.8, alpha=0.8, color='r')
-ax.vlines(ZERO_DATA[0], 0, ZERO_DATA[1], linewidth=0.8, alpha=0.8, color='r')
+#ax.vlines(ZERO_DATA[0], 0, ZERO_DATA[1], linewidth=0.8, alpha=0.8, color='r')
+#ax.vlines(ZERO_DATA[0], 0, ZERO_DATA[1], linewidth=0.8, alpha=0.8, color='r')
+#ax.vlines(ZERO_DATA[0], 0, ZERO_DATA[1], linewidth=0.8, alpha=0.8, color='r')
 
 
 
 r1 = ax.plot(PLOT_DATA[0], BIG_DATA, linewidth=0, c='b', marker='^', markerfacecolor='k', markeredgecolor='k', markersize=2, alpha=1)
 r2 = ax.plot(PLOT_DATA[0], LITTLE_DATA, linewidth=0, c='b', marker='v', markerfacecolor='k', markeredgecolor='k', markersize=2, alpha=1)
-p1 = ax.plot(PAUL_DATA[0], PAUL_DATA[1], linewidth=0,  c='g', marker='o', markerfacecolor='w', markeredgecolor='k', markersize=2, alpha=1)
-p2 = ax.plot(PAUL_DATA[0], PAUL_DATA[2], linewidth=0,  c='g', marker='o', markerfacecolor='w', markersize=2, markeredgecolor='k', alpha=1)
+#p1 = ax.plot(PAUL_DATA[0], PAUL_DATA[1], linewidth=0,  c='g', marker='o', markerfacecolor='w', markeredgecolor='k', markersize=2, alpha=1)
+#p2 = ax.plot(PAUL_DATA[0], PAUL_DATA[2], linewidth=0,  c='g', marker='o', markerfacecolor='w', markersize=2, markeredgecolor='k', alpha=1)
 
 
-r0 = ax.plot(ZERO_DATA[0], ZERO_DATA[1], linewidth=0, c='none', markersize=5, markerfacecolor='k', marker='*', alpha=1)
-p0 = ax.plot(ZERO_DATA_PAUL[0], ZERO_DATA_PAUL[2], linewidth=0, markersize=5, markerfacecolor='w', markeredgecolor='k', c='w', marker='*', alpha=1)
+#r0 = ax.plot(ZERO_DATA[0], ZERO_DATA[1], linewidth=0, c='none', markersize=5, markerfacecolor='k', marker='*', alpha=1)
+#p0 = ax.plot(ZERO_DATA_PAUL[0], ZERO_DATA_PAUL[2], linewidth=0, markersize=5, markerfacecolor='w', markeredgecolor='k', c='w', marker='*', alpha=1)
 
 failed = ax.plot(FAILED_DATA[0], FAILED_DATA[1], linewidth=0, c='c', markersize=3, marker='o', alpha=0.6)
 
@@ -241,5 +241,5 @@ ax.set_ylim(0.000,1.75e-6)
 
 ax.set_xlabel('Impact parameter (um)')
 
-fig.savefig(base_filename+'../post/impact_vs_r_eff_07.png', dpi=200, facecolor='w', edgecolor='w',
+fig.savefig(base_filename+'../../post/impact_vs_r_eff_07.png', dpi=200, facecolor='w', edgecolor='w',
         orientation='portrait', pad_inchemarkersize=0.1)
