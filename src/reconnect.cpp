@@ -128,7 +128,9 @@ int Tangle::ReconnectionTest(){
 						|| pL==pK->mNext
 						|| pL==pK->mPrev
 						|| pL==pK->mNext->mNext
-						|| pL==pK->mPrev->mPrev){}
+						|| pL==pK->mPrev->mPrev
+						|| pL==pK->mPrev->mPrev->mPrev
+						|| pL==pK->mNext->mNext->mNext){}
 					else{ 
 						/* check if non-neighbouring points are too close */
 						double dist2 = pow(pK->mPos[0] - pL->mPos[0],2);
