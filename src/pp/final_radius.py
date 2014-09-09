@@ -23,7 +23,7 @@ ZERO_DATA = list()
 ZERO_DATA_PAUL = list()
 FAILED_DATA = list()
 
-base_filename = '../../07_sweep/'
+base_filename = '../../data/07_sweep/'
 
 for root, dirs, files in os.walk(base_filename):
   for name in dirs:
