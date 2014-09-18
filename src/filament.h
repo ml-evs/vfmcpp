@@ -75,9 +75,10 @@ public:
 	String(){
 	    mN = 0; mFlagType = 1; mCarriesCharge = false;
 	}
-	String(double res, double L, double x, double y, double z){
+	String(double res, double L, double x, double y, double z, int dir){
 		mL = L; mN = mL/res; mCarriesCharge = false;
 		mFlagType = 1;
+		if(dir==2){dir = -1;}
 		for (int i=0; i!=4; i++){
 			mDummies.push_back(new Point());
 		}
@@ -85,7 +86,7 @@ public:
             mPoints.push_back(new Point());
 			mPoints[i]->mPos[0] = x;
 			mPoints[i]->mPos[1] = y;
-			mPoints[i]->mPos[2] = z + i*mL / mN;
+			mPoints[i]->mPos[2] = z + float(dir)*i*mL / mN;
 		}
 		/* add dummy points to the ends */
 		for (int i = 1; i != mN; i++){ (mPoints[i])->mPrev = mPoints[i - 1]; }

@@ -30,6 +30,19 @@ int main(int argc, char* argv[]){
 	int N_t(t_total/Tangle.mDt); // number of time steps
 	Tangle.mN_f = 10000; // number of time steps per save
 	Tangle.mN_slow = 0; // counts how many steps have occurred at slow-mo
+	vector <Filament*>::iterator begin, current, end;
+	begin = Tangle.mTangle.begin();
+	end = Tangle.mTangle.end();
+	double perturb = 1e-6; 
+	for(current=begin; current!=end; current++){
+		if((*current)->mFlagType==1){
+			(*current)->mPoints[N/2]->mPos[0] = 1.6*perturb;
+			(*current)->mPoints[N/2-1]->mPos[0] = 1.5*perturb;
+			(*current)->mPoints[N/2+1]->mPos[0] = 1.5*perturb;
+      (*current)->mPoints[N/2-2]->mPos[2] += 1.5*r0/N;
+			(*current)->mPoints[N/2+2]->mPos[2] -= 1.5*r0/N;
+		}
+	}
 
 	/* prepare to time calculations */
 	double percent;
@@ -37,7 +50,7 @@ int main(int argc, char* argv[]){
 	t=clock();
 	int file_no(0);
 
-	vector <Filament*>::iterator begin, current, end;
+	//vector <Filament*>::iterator begin, current, end;
 	/* begin time-stepping */
 	int i(0);
 	int added_rings(0);
@@ -61,25 +74,25 @@ int main(int argc, char* argv[]){
 			percent = (100*i/N_t);
 			printf("\r\t %6.2f %% \t",percent); // output percentage completion
 			printf("\t\t wrote step %6u", i);		// note printf does not play well with HPC
-			Tangle.mLog << Tangle.StringTime() << "\t" << setw(10) << Tangle.mStep << ":\t\twrote step to file " << file_no << "for time " << i*Tangle.mDt << " s" << endl;
+			Tangle.mLog << Tangle.StringTime() << "\t" << setw(10) << Tangle.mStep << ":\t\twrote step to file " << file_no << " for time " << i*Tangle.mDt << " s" << endl;
 			file_no++; 
 		}
-		/* SECONDARY, TERTIARY AND QUATERNARY COLLISIONS 
-		if(added_rings==0){
+		/* SECONDARY, TERTIARY AND QUATERNARY COLLISIONS */
+/*		if(added_rings==0){
 			if(i*Tangle.mDt > 0.00032){
 				Tangle.mTangle.push_back(new Ring(Tangle.mDr, 0.9e-6, 0, 0.4e-6, 20e-6, 2));
-				added_rings++;;
-				Tangle.mLog << Tangle.StringTime() << "\tadded a new ring" << endl
+				added_rings++;
+				Tangle.mLog << Tangle.StringTime() << "\tadded a new ring" << endl;
 			}
 		}
 		if(added_rings==1){
 			if(i*Tangle.mDt > 0.0004){
 				Tangle.mTangle.push_back(new Ring(Tangle.mDr, 0.9e-6, 0, 0.6e-6, 20e-6, 2));
 				added_rings++;
-				Tangle.mLog << Tangle.StringTime() << "\tadded a new ring" << endl
+				Tangle.mLog << Tangle.StringTime() << "\tadded a new ring" << endl;
 			}
 		}
-		if(added_rings==2){
+*//*		if(added_rings==2){
 			if(i*Tangle.mDt > 0.0005){
 				Tangle.mTangle.push_back(new Ring(Tangle.mDr, 0.9e-6, 0, 0.8e-6, 20e-6, 2));
 				added_rings++;

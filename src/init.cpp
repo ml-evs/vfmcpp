@@ -122,14 +122,14 @@ string Tangle::Initialise(string runfile){
 			cout << "\t    string";
 			mLog << StringTime() << "\t\t\t\t\tstring";
 			input << line.substr(5);
-			for(int i(0);i<4;i++){
+			for(int i(0);i<5;i++){
 				convert.clear();
 				getline(input, put, ' ');
 				convert << put;
 				convert >> param[i];
 				if(input.eof()) break;
 			}
-			mTangle.push_back(new String(mDr, param[0], param[1], param[2], param[3]));
+			mTangle.push_back(new String(mDr, param[0], param[1], param[2], param[3], param[4]));
 			cout << " L = " << param[0] << " m, p = (" << param[1];
 			mLog << " L = " << param[0] << " m, p = (" << param[1];
 			cout << ", " << param[2] << ", " << param[3] << ") m. " << endl;
