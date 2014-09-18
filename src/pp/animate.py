@@ -101,16 +101,6 @@ def animate(i):
 
 
 	time_text.set_text('time = %.1f' % (times[i]*1e9)+ ' ns / %.1f' % (times[-1]*1e9) +' ns')
-	# if(i<35):
-	# 	ax.set_xlim3d((-0.5e-6+0.0114e-6*i,0.5e-6-0.0114e-6*i))
-	# 	ax.set_ylim3d((-0.5e-6+0.0114e-6*i,0.5e-6-0.0114e-6*i))
-	# 	ax.set_zlim3d((0+0.0114e-6*i,1e-6-0.0114e-6*i))
-	# 	ax.view_init(10,90+5*i)
-	# if(i>300 and i<400):
-	# 	ax.view_init(0,0)
-	# 	ax.set_xlim3d((-0.05e-6, 0.05e-6))
-	# 	ax.set_ylim3d((-0.05e-6, 0.05e-6))
-	# 	ax.set_zlim3d((0,1e-6))
 	fig.canvas.draw()
 	plt.draw()
 	return rings, time_text
