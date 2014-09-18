@@ -43,10 +43,7 @@ void Tangle::Reconnection(){
 									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext
 									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev
 									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext
-									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev
-									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext->mNext
-									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev->mPrev){
-									
+									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev){
 								}
 								else{
 									double dist2 = pow(mTangle[P]->mPoints[k]->mPos[0] - mTangle[Q]->mPoints[l]->mPos[0],2);
@@ -128,9 +125,7 @@ int Tangle::ReconnectionTest(){
 						|| pL==pK->mNext
 						|| pL==pK->mPrev
 						|| pL==pK->mNext->mNext
-						|| pL==pK->mPrev->mPrev
-						|| pL==pK->mPrev->mPrev->mPrev
-						|| pL==pK->mNext->mNext->mNext){}
+						|| pL==pK->mPrev->mPrev){}
 					else{ 
 						/* check if non-neighbouring points are too close */
 						double dist2 = pow(pK->mPos[0] - pL->mPos[0],2);
