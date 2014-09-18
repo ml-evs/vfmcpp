@@ -36,11 +36,7 @@ def getfiles():
 			file = open(filename_k+'_0.dat', 'r')
 			line = file.readline()
 			if f==0:
-<<<<<<< HEAD
-				for i in range(30):
-=======
 				for i in range(35):
->>>>>>> release
 					times.append(float(line))
 					files.append(filename_k)
 				f=1
@@ -105,19 +101,6 @@ def animate(i):
 
 
 	time_text.set_text('time = %.1f' % (times[i]*1e9)+ ' ns / %.1f' % (times[-1]*1e9) +' ns')
-<<<<<<< HEAD
-=======
-	if(i<35):
-	# 	ax.set_xlim3d((-0.5e-6+0.0114e-6*i,0.5e-6-0.0114e-6*i))
-	# 	ax.set_ylim3d((-0.5e-6+0.0114e-6*i,0.5e-6-0.0114e-6*i))
-	# 	ax.set_zlim3d((0+0.0114e-6*i,1e-6-0.0114e-6*i))
-		ax.view_init(30,-130+5*i)
-	# if(i>300 and i<400):
-	# 	ax.view_init(0,0)
-	# 	ax.set_xlim3d((-0.05e-6, 0.05e-6))
-	# 	ax.set_ylim3d((-0.05e-6, 0.05e-6))
-	# 	ax.set_zlim3d((0,1e-6))
->>>>>>> release
 	fig.canvas.draw()
 	plt.draw()
 	return rings, time_text
@@ -142,48 +125,18 @@ fig.subplots_adjust(hspace=0)
 
 rings = []
 print jmax
-<<<<<<< HEAD
 colors = plt.cm.PuOr(np.linspace(0,1,2))
-=======
-colors = plt.cm.cool(np.linspace(0,1, jmax))
->>>>>>> release
 style = '-'
 if Analysis == 'p':
 	style = '-'
 
 for k in range (jmax+2):
-<<<<<<< HEAD
-	rings += [l for c in colors for l in ax.plot([], [], [], style, c=np.random.rand(3,1), alpha = 0.9, linewidth=3, markersize=5, markerfacecolor=c, markeredgecolor=c)]
-time_text = ax.text(0, 0, 0,'', transform=ax.transAxes, color='k')
-=======
 	rings += [l for c in colors for l in ax.plot([], [], [], style, c=np.random.rand(3,1), alpha = 0.9, linewidth=2, markersize=5, markerfacecolor=c, markeredgecolor=c)]
 time_text = ax.text(0, 0, 0,'', transform=ax.transAxes, color='w')
->>>>>>> release
 ax.set_xlim3d((-3e-6,3e-6))
 ax.set_ylim3d((-3e-6,3e-6))
 ax.set_zlim3d((-3e-6,3e-6))
 #ax.set_zlim3d((24e-6,27e-6))
-<<<<<<< HEAD
-ax.view_init(20,-80)
-
-x = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.2e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")
-y = Arrow3D([-1.2e-6,-0.8e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.6e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="g")
-z = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-0.8e-6],[-1.6e-6,-1.6e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="#2E5C99")
-# ax.add_artist(x)
-# ax.add_artist(y)
-# ax.add_artist(z)
-=======
-ax.view_init(30,-130)
-ax.axis('off')
-
-#x = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.2e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="r")
-#y = Arrow3D([-1.2e-6,-0.8e-6],[-1.2e-6,-1.2e-6],[-1.6e-6,-1.6e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="g")
-#z = Arrow3D([-1.2e-6,-1.2e-6],[-1.2e-6,-0.8e-6],[-1.6e-6,-1.6e-6], mutation_scale=20, lw=2, arrowstyle="-|>", color="#2E5C99")
-#ax.add_artist(x)
-#ax.add_artist(y)
-#ax.add_artist(z)
->>>>>>> release
-
 ani = animation.FuncAnimation(fig, animate, repeat=True, init_func = init, frames = len(files), interval = 1, blit=False)
 
 if Analysis == 'p':
@@ -193,10 +146,7 @@ elif Analysis == ('g' or 'm'):
 		filename = '../../img/ ' + sys.argv[3]
 	else:
 		filename = raw_input('Enter the desired filename for the gif (will be saved in data folder):')
-<<<<<<< HEAD
-=======
 		filename = '../../post/' + filename
->>>>>>> release
 	if Analysis == 'g':
 		print filename
 		ani.save(filename+'.gif', writer='imagemagick', fps=20, dpi=100)

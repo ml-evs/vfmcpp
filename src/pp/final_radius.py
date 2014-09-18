@@ -25,7 +25,7 @@ THREE_DATA = list()
 ZERO_DATA_PAUL = list()
 FAILED_DATA = list()
 
-base_filename = '../../data/08_sweep/'
+base_filename = '../../data/01_sweep/'
 
 for root, dirs, files in os.walk(base_filename):
   for name in dirs:
@@ -107,6 +107,7 @@ for i in range(len(sigma)):
 						line = file.readline()
 						line = file.readline()
 						no_recon.append(line[-2])
+						print no_recon[-1]
 						file.close()
 						#print sigma[i], radius[0], radius[1]
 						PLOT_DATA.append([float(sigma[i][0:6])*1e-6, radius[0], radius[1]])
@@ -118,7 +119,7 @@ for i in range(len(sigma)):
 					end2 = True
 	#print i
 
-fig = plt.figure(figsize=(5,4), facecolor='w', edgecolor='w')
+fig = plt.figure(figsize=(5,5), facecolor='w', edgecolor='w')
 ax = fig.add_subplot(111, axisbg ='w')
 #ax2 = fig.add_subplot(212, axisbg='w',sharex=ax)
 
@@ -152,7 +153,7 @@ for i in range(len(no_recon)):
 		c.append('g')
 	if no_recon[i] == '1':
 		c.append('b')
-	if no_recon[i] > '2':
+	if no_recon[i] >= '2':
 		c.append('b')
 
 
@@ -189,4 +190,4 @@ ax.set_ylim(0.000,1.5e-6)
 ax.set_xlabel('Impact parameter (um)')
 
 #plt.show()
-fig.savefig(base_filename+'../../img/impact_vs_r_eff_08.png')
+fig.savefig(base_filename+'../../img/impact_vs_r_eff_01.png')
