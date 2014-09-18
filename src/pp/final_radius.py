@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 font = {'family' : 'Serif',
 				'serif' : 'Times New Roman',
-        'size'   : 11}
+        'size'   : 16}
 
 
 matplotlib.rc('font', **font)
@@ -25,7 +25,7 @@ THREE_DATA = list()
 ZERO_DATA_PAUL = list()
 FAILED_DATA = list()
 
-base_filename = '../../data/01_sweep/'
+base_filename = '../../data/08_sweep/'
 
 for root, dirs, files in os.walk(base_filename):
   for name in dirs:
@@ -49,7 +49,7 @@ for i in range(len(sigma)):
 			end = True
 		elif os.path.isfile(filename_k+"_0.dat") == True:
 			last = filename_k
-			k+=1
+			k+=2
 			continue
 		else:
 			j = 0
@@ -178,8 +178,8 @@ if(len(ZERO_DATA)!=0):
 
 ax.set_xticks([0,0.09e-6,0.2e-6,0.25e-6,0.5e-6])
 ax.set_xticklabels([0,0.09,0.20,0.25,0.5])
-ax.set_yticks([0,0.9e-6,0.7e-6,0.8e-6,1e-6])
-ax.set_yticklabels([0,0.9,0.7,0.8,1])
+ax.set_yticks([0,0.9e-6,0.7e-6,0.8e-6,1e-6,1.1e-6,1.2e-6])
+ax.set_yticklabels([0,0.9,0.7,0.8,1,1.1,1.2])
 ax.set_ylabel('Effective radius (um)')
 
 
@@ -189,4 +189,4 @@ ax.set_ylim(0.000,1.5e-6)
 ax.set_xlabel('Impact parameter (um)')
 
 #plt.show()
-fig.savefig(base_filename+'../../img/impact_vs_r_eff_01.png')
+fig.savefig(base_filename+'../../img/impact_vs_r_eff_08.png')
