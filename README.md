@@ -11,7 +11,7 @@ The code makes use of custom linked lists (with nasty bare pointers) to allow fo
 
 Aftermath of off-centre ring collision.
 
-![alt text](http://charmedxi.co.uk/vfmcpp/img/offset_collion.gif "Post double reconnection")
+![alt text](http://www.charmedxi.co.uk/vfmcpp/img/offset_collision.gif "Post double reconnection")
 
 ![alt text](http://giant.gfycat.com/AmbitiousPlushBetafish.gif "4 ring reconnection")
 
