@@ -90,7 +90,6 @@ string Tangle::Initialise(string runfile){
 		}
 		/* define a ring */
 		else if(line.substr(0,4) == "ring"){
-			param[4] = 2;	//default ring alignment is z
 			put.clear();
 			input.clear();
 			convert.clear();
@@ -113,6 +112,7 @@ string Tangle::Initialise(string runfile){
 			if(param[4]==1){cout << "y direction." << endl; mLog << "y direction." << endl;}
 			if(param[4]==2){cout << "z direction." << endl; mLog << "z direction." << endl;}
 			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;
+			line.clear();
 		}
 		/* define a string */
 		else if(line.substr(0,4) == "line"){
@@ -135,6 +135,7 @@ string Tangle::Initialise(string runfile){
 			cout << ", " << param[2] << ", " << param[3] << ") m. " << endl;
 			mLog << ", " << param[2] << ", " << param[3] << ") m. " << endl;
 			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;
+			line.clear();
 		}
 		/* add a charge */
 		else if(line.substr(0,4) == "q_pt"){
