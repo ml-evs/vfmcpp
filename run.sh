@@ -163,11 +163,9 @@ fi
 
 
 if [ $COMPILE -eq 1 ]; then
-	cd "src"
 	echo " ${blu} -c flag specified, recompiling source...${red}"
 	make
 	echo " ${blu} success!\n\n"
-	cd ".."
 fi
 
 
