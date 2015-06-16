@@ -23,7 +23,7 @@ def getfiles():
 	if len(sys.argv)!=1:
 		base_filename = '../../data/' + str(sys.argv[1]) + '/data_'
 	else:
-		data_folder = raw_input('Enter data folder path:')
+		data_folder = input('Enter data folder path:')
 		base_filename = data_folder + '/data_'
 
 	end = False
@@ -53,7 +53,7 @@ def getfiles():
 					end2 = True
 		else:
 			end = True
-			print 'File read successful. '
+			print ('File read successful. ')
 	return base_filename, files, times, jmax
 
 
@@ -90,14 +90,14 @@ def animate(i):
 			end = True
 
 	q_biggest = 0
-	# for q in range(len(r)):
-	# 	test = max(r[q][:,0])-min(r[q][:,0])
-	# 	if test > max(r[q_biggest][:,0])-min(r[q_biggest][:,0]):
-	# 		q_biggest = q
-	# z_av = np.mean(r[q_biggest][:,2])
+	for q in range(len(r)):
+		test = max(r[q][:,0])-min(r[q][:,0])
+		if test > max(r[q_biggest][:,0])-min(r[q_biggest][:,0]):
+	 		q_biggest = q
+	z_av = np.mean(r[q_biggest][:,2])
 	for q in range (len(r)):
 		rings[q].set_data(r[q][:,0], r[q][:,1])
-		rings[q].set_3d_properties(r[q][:,2])#-z_av)
+		rings[q].set_3d_properties(r[q][:,2]-z_av)
 
 
 	time_text.set_text('time = %.1f' % (times[i]*1e9)+ ' ns / %.1f' % (times[-1]*1e9) +' ns')
@@ -110,13 +110,13 @@ base_filename, files, times, jmax = getfiles()
 if len(sys.argv) > 2:
 	Analysis = str(sys.argv[2])
 else:
-	Analysis = raw_input('[p]lot to screen, [g]if or [m]ovie?')
+	Analysis = input('[p]lot to screen, [g]if or [m]ovie?')
 
 
-fig = plt.figure(facecolor='k', edgecolor='k',figsize=(4,4))
+fig = plt.figure(facecolor='None', edgecolor='None',figsize=(4,4))
 ax = fig.add_subplot(111, 
  	aspect='equal',
- 	axisbg='k',
+ 	axisbg='None',
  	xticks=[], yticks=[], zticks=[],
  	xticklabels=[], yticklabels=[], zticklabels=[],
  	projection='3d')
@@ -124,7 +124,7 @@ ax = fig.add_subplot(111,
 fig.subplots_adjust(hspace=0)
 
 rings = []
-print jmax
+print (jmax)
 colors = plt.cm.PuOr(np.linspace(0,1,2))
 style = '-'
 if Analysis == 'p':
@@ -145,10 +145,10 @@ elif Analysis == ('g' or 'm'):
 	if len(sys.argv) > 3:
 		filename = '../../img/ ' + sys.argv[3]
 	else:
-		filename = raw_input('Enter the desired filename for the gif (will be saved in data folder):')
+		filename = input('Enter the desired filename for the gif (will be saved in data folder):')
 		filename = '../../post/' + filename
 	if Analysis == 'g':
-		print filename
+		print (filename)
 		ani.save(filename+'.gif', writer='imagemagick', fps=20, dpi=100)
 
 	elif Analysis == 'm':
