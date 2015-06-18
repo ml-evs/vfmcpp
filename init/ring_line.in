@@ -43,6 +43,6 @@
 
 path data/ring_line_test
 time 0.5e-3
-resl 6e-8
+resl 3e-8
 ring 0.7e-6 0 -2e-6 0 1
 line 4e-6 0 0 -2e-6 2

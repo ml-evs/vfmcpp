@@ -43,7 +43,7 @@
 
 path data/ring_ring_perp
 time 1e-3
-resl 6.28e-8
+resl 10e-8
 ring 0.95e-6 0 0 0 1
 ring 1e-6 0 0 0 2 
 
