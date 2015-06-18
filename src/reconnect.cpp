@@ -314,9 +314,10 @@ void Tangle::SelfReconnect(int P, int Q, int k, int l){
 	mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tsuccessful self-reconnection" << endl;
 }
 
-void Tangle::Reconnect(int P, int Q, int k, int l){
+void Tangle::Reconnect(int Q, int P, int l, int k){
 	mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tattempting reconnection" << endl;
 	mN_f = 1; mN_slow = 0;
+	if(mTangle[Q]->mFlagType == 1){int swap(Q); Q = P; P = swap; swap = l; l = k; k = swap;}
 	mTangle[P]->mPoints[k]->mPrev->mNext = mTangle[Q]->mPoints[l]->mNext;
 	mTangle[Q]->mPoints[l]->mNext->mPrev = mTangle[P]->mPoints[k]->mPrev;
 	/* copy points from the other filament to the current filament and delete */
@@ -347,5 +348,6 @@ void Tangle::Reconnect(int P, int Q, int k, int l){
 	delete mTangle[Q];
 	mTangle.erase(mTangle.begin()+Q);
 	mN_recon++;
+	cout << "\n\t\t !!! RECONNECTION !!! " << endl;
 	mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tsuccessful reconnection" << endl;
 }
