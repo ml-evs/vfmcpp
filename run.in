@@ -44,6 +44,6 @@
 path data/init_example
 time 1e-3
 resl 6.28e-8
-ring 1e-6 0 3-6 0 1
+ring 1e-6 0 3e-6 0 1
 line 5e-6 0 0 -2.5e-6 2 
 
