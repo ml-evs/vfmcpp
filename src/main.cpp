@@ -47,7 +47,7 @@ int main(int argc, char* argv[]){
 	/* begin time-stepping */
 	int i(0);
 	int added_rings(0);
-	cout << "\n\t - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
+	cout << "\n\t - - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
 	Tangle.mLog << Tangle.StringTime() << "\t\t\t\t\tsimulation begins" << endl;
 	while(i < N_t){
 		Tangle.mStep = i;
@@ -60,12 +60,13 @@ int main(int argc, char* argv[]){
 			||Tangle.mN_f == 10
 			||Tangle.mN_f == 100){Tangle.mN_slow++;}  // increment slow-mo counter
 		else{Tangle.mN_slow = 0;} 	// reset slow-mo counter
-
+		if(i%100==0){
+			percent = (100*i/N_t);
+			printf("\t\t\r %6.2f %% \t",percent); // output percentage completion
+		}
 		/* save positions to file every mN_f steps */
 		if(i%Tangle.mN_f==0){
 			Tangle.Output(filename, i, file_no);
-			percent = (100*i/N_t);
-			printf("\r\t %6.2f %% \t",percent); // output percentage completion
 			printf("\t\t wrote step %6u", i);		// note printf does not play well with HPC
 			Tangle.mLog << Tangle.StringTime() << "\t" << setw(10) << Tangle.mStep << ":\t\twrote step to file " << file_no << " for time " << i*Tangle.mDt << " s" << endl;
 			file_no++; 
