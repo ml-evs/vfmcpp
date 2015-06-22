@@ -84,7 +84,6 @@ int main(int argc, char* argv[]){
 		Tangle.PropagatePos(Tangle.mDt);	// propagate positions
 		i++;	// step forward
 
-		/*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
 	}
 	cout << "\n\t - - - - - - -    SIMULATION FINISHED    - - - - - - - -"; 
 	Tangle.mLog << Tangle.StringTime() << "\t\t\t\tsimulation finished" << endl;
