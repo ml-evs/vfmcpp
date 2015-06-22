@@ -57,7 +57,7 @@ void Tangle::Reconnection(){
 										dot_tangents += mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1];
 										dot_tangents += mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
 										/* find closest point to k inside range and mark it for reconnection, ignoring parallel lines */
-										if(dot_tangents > 0){mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tignoring parallel filaments" << endl;}
+										if(dot_tangents > 0.9){mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tignoring parallel filaments" << endl;}
 										else if(dist2 < mindist2){mindist2 = dist2; NeedRecon = true; l_rec = l;}
 									}
 								}
@@ -134,11 +134,11 @@ int Tangle::ReconnectionTest(){
 						if(dist2 < 0.25*res*res){
 							NeedRecon = true;
 							double dot_tangents = pK->mSPrime[0] * pL->mSPrime[0];
-							dot_tangents += pK->mSPrime[1] * pL->mSPrime[1];
+                            dot_tangents += pK->mSPrime[1] * pL->mSPrime[1];
 							dot_tangents += pK->mSPrime[2] * pL->mSPrime[2];
-							if(dot_tangents > 0){continue;}
+							if(dot_tangents > 0.9){}
 							/* find closest point to k inside range and mark it for reconnection */
-							else if(dist2 < mindist2){
+                            else if(dist2 < mindist2){
 								mindist2 = dist2; 
 								for(int l(0);l<mTangle[Q]->mN; l++){
 									if(mTangle[Q]->mPoints[l] == pL){
