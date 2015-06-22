@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -13,8 +14,9 @@ string Tangle::Initialise(string runfile){
   if(runfile == "NULL"){
   	runfile = "run.in";
   }
-  ifstream infile(runfile);
-	string line;
+    char* char_runfile = (char*)runfile.c_str();
+    ifstream infile(char_runfile);
+    string line;
 	stringstream input, convert;
 	string put;
 	string filename;
