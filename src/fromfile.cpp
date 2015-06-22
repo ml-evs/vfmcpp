@@ -60,7 +60,7 @@ void Tangle::Output(string filename, int i, int file_no){
 }
 
 
-void Tangle::FromFile(string base){
+/*void Tangle::FromFile(string base){
 	string filename;
 	int n_fil(2);
 	vector <double> CurrentVec(3);
@@ -89,7 +89,7 @@ void Tangle::FromFile(string base){
 			if(vel.eof()) break;
 			mTangle.back()->mPoints[k]->mVel = CurrentVec;
 			k++;
-		}
+        }
 		vel.close();
 		filename = base + (to_string(j)+"vel1.dat");
 		fstream vel1(filename);
@@ -139,4 +139,4 @@ void Tangle::FromFile(string base){
 		mTangle[b]->CalcMeshLengths();
 	}
 
-}
+}*/
