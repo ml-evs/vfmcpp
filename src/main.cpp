@@ -70,16 +70,19 @@ int main(int argc, char* argv[]){
 			Tangle.mLog << Tangle.StringTime() << "\t" << setw(10) << Tangle.mStep << ":\t\twrote step to file " << file_no << " for time " << i*Tangle.mDt << " s" << endl;
 			file_no++; 
 		}
-		/* calculate velocities and propagate positions */
-		bool LoopKilled = Tangle.LoopKill();
+		/* adjust mesh until finished */
+		bool MeshFinished(false);	
+		while(MeshFinished==false) MeshFinished = Tangle.MeshAdjust(); 
+		/* remove rings smaller than 6 points and count them */
+		bool LoopKilled = Tangle.LoopKill(); 
 		if(LoopKilled == true) Tangle.mN_loopkills++;
-		bool MeshFinished(false);	// remove rings smaller than 6 points
-		while(MeshFinished==false) MeshFinished = Tangle.MeshAdjust();  // mesh_adjust until finished
-		Tangle.Reconnection();		// check for and perform reconnections 
+		/* check for and perform reconnections if required */
+		Tangle.Reconnection();		
+		/* calculate velocities and propagate positions */
 		Tangle.CalcVelocity(); 		// calculates and combines all contributions to velocity
-		if(Tangle.mEFieldAmp !=0 && i*Tangle.mDt < Tangle.mEFieldDuration){
+/*		if(Tangle.mEFieldAmp !=0 && i*Tangle.mDt < Tangle.mEFieldDuration){
 			Tangle.CalcField();			// add field contribution to charged point
-		}
+		}*/
 		Tangle.PropagatePos(Tangle.mDt);	// propagate positions
 		i++;	// step forward
 
