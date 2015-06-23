@@ -88,7 +88,6 @@ string Tangle::Initialise(string runfile){
 			cout << "\t    time-step = " << mDt << " s\n\n";
 			mLog << StringTime() << "\t\t\t\t\tspatial resolution = "<< mDr << " m" << endl;
 			mLog << StringTime() << "\t\t\t\t\ttime-step = " << mDt << " s\n";
-			mDr *= 4.0/3.0; // augments resolution for mesh adjust stability
 		}
 		/* define a ring */
 		else if(line.substr(0,4) == "ring"){
@@ -159,6 +158,7 @@ string Tangle::Initialise(string runfile){
 			mLog << param[0] << " with size " << param[2] << " C, at mesh point " << param[1] << ". " << endl;
 		}
 	}
+	mDr *= 4.0/3.0; // augments resolution for mesh adjust stability
 	infile.close();
 	return filename;
 }
