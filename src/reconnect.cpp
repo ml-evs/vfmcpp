@@ -16,83 +16,76 @@ void Tangle::Reconnection(){
 	bool NeedRecon(false);
 	bool Finished(false);
 	/* keep trying to reconnect until all have been performed */
-	if(recon_count!=0){
-		while(recon_count > 0){
-			if(Finished==true){break;}
-			Reconnected = false;
-			//cout << "\nNumber of possible reconnections = " << recon_count << endl;
-			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tnumber of possible reconnections = " << recon_count << endl;
-			for (unsigned int P(0);P!=mTangle.size();P++){
-				if(Reconnected== true){break;}
-				for (unsigned int Q(P);Q!=mTangle.size(); Q++){
-					if(Reconnected== true){break;}
-					/* iterate along filament for new test point */
-					for(int k(0); k<mTangle[P]->mN; k++){
-						int l_rec;
-						NeedRecon = false;
-						if(Reconnected== true){break;}
-						/* find points marked for reconnection */
-						if(mTangle[P]->mPoints[k]->mMarkedForRecon == true){
-							double mindist2(0.25*res*res);
-							/* iterate along filament for point to check against */
-							for(int l(0); l<mTangle[Q]->mN; l++){
-								if(Reconnected== true){break;}
-								/* prevent reconnection from making loops too small */
-								if(l==mTangle[Q]->mN-1){Finished=true; break;}
-								if(mTangle[P]->mPoints[k]==mTangle[Q]->mPoints[l]
-									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext
-									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev
-									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext
-									|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev){
-								}
-								else{
-									double dist2 = pow(mTangle[P]->mPoints[k]->mPos[0] - mTangle[Q]->mPoints[l]->mPos[0],2);
-									dist2 +=  pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2);
-									dist2 += pow(mTangle[P]->mPoints[k]->mPos[2] - mTangle[Q]->mPoints[l]->mPos[2], 2);
-									/* check if non-neighbouring points are too close */
-									if(dist2 < 0.25*res*res){
-
-										/* make sure lines aren't parallel */
-										double dot_tangents = mTangle[P]->mPoints[k]->mSPrime[0] * mTangle[Q]->mPoints[l]->mSPrime[0];
-										dot_tangents += mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1];
-										dot_tangents += mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
-										/* find closest point to k inside range and mark it for reconnection, ignoring parallel lines */
-										if(dot_tangents > 0.9){mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tignoring parallel filaments" << endl;}
-										else if(dist2 < mindist2){mindist2 = dist2; NeedRecon = true; l_rec = l;}
-									}
+	begin:
+	while(recon_count > 0){
+		mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tnumber of possible reconnections = " << recon_count << endl;
+		for (unsigned int P(0);P!=mTangle.size();P++){
+			for (unsigned int Q(P);Q!=mTangle.size(); Q++){
+				/* iterate along filament for new test point */
+				for(int k(0); k<mTangle[P]->mN; k++){
+					int l_rec;
+					NeedRecon = false;
+					/* find points marked for reconnection */
+					if(mTangle[P]->mPoints[k]->mMarkedForRecon == true){
+						double mindist2(0.25*res*res);
+						double maxdist2(0);
+						/* iterate along filament for point to check against */
+						for(int l(0); l<mTangle[Q]->mN; l++){
+							/* skip closest points - might lead to cusps */
+							if(mTangle[P]->mPoints[k]==mTangle[Q]->mPoints[l]
+								|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext
+								|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev
+								|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext
+								|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev){}
+							else{
+								double dist2 = pow(mTangle[P]->mPoints[k]->mPos[0] - mTangle[Q]->mPoints[l]->mPos[0],2);
+								dist2 +=  pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2);
+								dist2 += pow(mTangle[P]->mPoints[k]->mPos[2] - mTangle[Q]->mPoints[l]->mPos[2], 2);
+								int count(0);
+								/* check if non-neighbouring points are too close */
+								if(dist2 < mindist2){
+									count++;
+									cout << count << endl;
+									/* make sure lines aren't parallel */
+									double dot_tangents = mTangle[P]->mPoints[k]->mSPrime[0] * mTangle[Q]->mPoints[l]->mSPrime[0];
+									dot_tangents += mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1];
+									dot_tangents += mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
+									/* find closest point to k inside range and mark it for reconnection, ignoring parallel lines */
+									if(dot_tangents > 0.9){cout << "Lines were parallel, no reconnection" << endl;}
+									else if(dist2 > maxdist2){maxdist2 = dist2; NeedRecon = true; l_rec = l;}
 								}
 							}
-							/* perform reconnections */
-							if(NeedRecon==true){
-								if(P==Q){
-									mTangle[P]->mPoints[k]->mMarkedForRecon = false;
-									mTangle[Q]->mPoints[l_rec]->mMarkedForRecon = false;
-									if(mTangle[P]->mFlagType==0){
-										SelfReconnect(P,Q,k,l_rec);
-									}
-									else SelfReconnectLine(P,Q,k,l_rec);
-									Reconnected = true;
-									recon_count--;
-									break;
+						}
+						/* perform reconnections */
+						if(NeedRecon==true){
+							/* reset recon flags */
+							mTangle[P]->mPoints[k]->mMarkedForRecon = false;
+							mTangle[Q]->mPoints[l_rec]->mMarkedForRecon = false;
+							if(P==Q){
+								if(mTangle[P]->mFlagType==0){
+									cout << "Calling selfreconnect()" << endl;
+									SelfReconnect(P,Q,k,l_rec);
 								}
-								else{
-									mTangle[P]->mPoints[k]->mMarkedForRecon = false;
-									mTangle[Q]->mPoints[l_rec]->mMarkedForRecon = false;
-									Reconnect(P,Q,k,l_rec);
-									Reconnected = true;
-									recon_count--;
-									break;
-								}
+								else{cout << "Calling selfreconnectline()" << endl; SelfReconnectLine(P,Q,k,l_rec);}
+								Reconnected = true;
+								recon_count--;
+								goto begin;
+							}
+							else{
+								cout << "Calling reconnection" << endl;
+								Reconnect(P,Q,k,l_rec);
+								Reconnected = true;
+								recon_count--;
+								goto begin;
 							}
 						}
 					}
 				}
 			}
-		} 
+		}
 	}
-
 	/* cleanup points and recalculate mesh lengths and curvatures */
-	if(Reconnected == true){
+	if(recon_count == 0 && Reconnected == true){
 		for(unsigned int n(0); n<mTangle.size(); n++){
 			mTangle[n]->CalcMeshLengths();	mTangle[n]->CalcSPrime(); 
 			mTangle[n]->CalcS2Prime(); 
@@ -105,6 +98,8 @@ int Tangle::ReconnectionTest(){
 	double res = mDr;
 	int recon_count(0);
 	bool NeedRecon(false);
+	double mindist2(0.25*res*res);
+	double maxdist2(0);
   /* FIND MESH POINTS TO BE RECONNECTED */
 	/* iterate over all filaments */
 	for (unsigned int P(0);P!=mTangle.size();P++){
@@ -116,11 +111,12 @@ int Tangle::ReconnectionTest(){
 				int k;
 				int l_rec;
 				NeedRecon = false;
-				double mindist2(0.25*res*res);
+				
 				/* iterate along filament for point to check against */
 				int j(0); 
 				Point* pL = mTangle[Q]->mPoints[0];
 				while(j<mTangle[Q]->mN){
+					int count(0);
 					if(pK==pL
 						|| pL==pK->mNext
 						|| pL==pK->mPrev
@@ -131,15 +127,18 @@ int Tangle::ReconnectionTest(){
 						double dist2 = pow(pK->mPos[0] - pL->mPos[0],2);
 						dist2 +=  pow(pK->mPos[1] - pL->mPos[1], 2);
 						dist2 += pow(pK->mPos[2] - pL->mPos[2], 2);
-						if(dist2 < 0.25*res*res){
+						if(dist2 < mindist2){
+							count++;
+							cout << "number of recons tested at point k = " << count << endl;
 							NeedRecon = true;
+							cout << "Reached dist check!" << endl;
 							double dot_tangents = pK->mSPrime[0] * pL->mSPrime[0];
-                            dot_tangents += pK->mSPrime[1] * pL->mSPrime[1];
+							dot_tangents += pK->mSPrime[1] * pL->mSPrime[1];
 							dot_tangents += pK->mSPrime[2] * pL->mSPrime[2];
-							if(dot_tangents > 0.9){}
+							if(dot_tangents > 0.9){cout << "dodgy parallel" << endl; mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tignoring parallel filaments" << endl;}
 							/* find closest point to k inside range and mark it for reconnection */
-                            else if(dist2 < mindist2){
-								mindist2 = dist2; 
+							else if(dist2 > maxdist2){
+								maxdist2 = dist2; 
 								for(int l(0);l<mTangle[Q]->mN; l++){
 									if(mTangle[Q]->mPoints[l] == pL){
 										l_rec = l;
@@ -156,11 +155,11 @@ int Tangle::ReconnectionTest(){
 					j++; pL = pL->mNext;
 				}
 				if(NeedRecon==true){
-					if(mTangle[P]->mPoints[l_rec]->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[l_rec]->mPrev->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[l_rec]->mPrev->mPrev->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[l_rec]->mNext->mMarkedForRecon == true
-						|| mTangle[P]->mPoints[l_rec]->mNext->mNext->mMarkedForRecon == true
+					if(mTangle[Q]->mPoints[l_rec]->mMarkedForRecon == true
+						|| mTangle[Q]->mPoints[l_rec]->mPrev->mMarkedForRecon == true
+						|| mTangle[Q]->mPoints[l_rec]->mPrev->mPrev->mMarkedForRecon == true
+						|| mTangle[Q]->mPoints[l_rec]->mNext->mMarkedForRecon == true
+						|| mTangle[Q]->mPoints[l_rec]->mNext->mNext->mMarkedForRecon == true
 						|| pK->mPrev->mMarkedForRecon == true
 						|| pK->mNext->mMarkedForRecon == true
 						|| pK->mPrev->mPrev->mMarkedForRecon == true
