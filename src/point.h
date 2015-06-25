@@ -24,9 +24,10 @@ public:
 	double			mSegLength; 		// distance to last point
 	double 			mCharge; 			// charge at point
 	int 			mFlagFilled;		// flag showing how many velocity steps back are present
+	bool			mMarkedForRecon;	// flag used in reconnection
 	bool			mFlagDummy;			// flag indicating dummy points used for strings
 	bool			mMarkedForDeletion; // flag telling reconnect whether this point needs to be removed
-	bool			mMarkedForRecon; 
+	
 	/* member functions */
 	Point(){
 		/* default constructor just reserves memory */
