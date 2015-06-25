@@ -11,11 +11,7 @@ using namespace std;
 
 	/* circulation quantum, core radii, mutual friction */
 	double		kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0, alpha=0, q_e=1.6e-19;
-	int				N  = 100; // number of points on ring
-	double		r0 = 1e-6; // default initial ring radius
-	double 		t_total = 1e-3; // default total time
-
-
+	
 int main(int argc, char* argv[]){
 
 	/* initialise tangle  */
@@ -31,7 +27,7 @@ int main(int argc, char* argv[]){
 	filename = "../data/015_09_old/data_";*/
 
 	/* set number of timesteps and number of steps per save */
-	int N_t(t_total/Tangle.mDt); // number of time steps
+	int N_t(Tangle.mTotalTime/Tangle.mDt); // number of time steps
 	Tangle.mN_f = 10000; // number of time steps per save
 	Tangle.mN_slow = 0; // counts how many steps have occurred at slow-mo
 
