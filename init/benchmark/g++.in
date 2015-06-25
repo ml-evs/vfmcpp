@@ -1,6 +1,0 @@
-path data/offset_line_ring/dat_-.6
-
-time 0.5e-3
-resl 6.28e-8
-ring 1e-6 -.6e-6 -6e-6 0 1
-line 20e-6 0 0 -10e-6 2
