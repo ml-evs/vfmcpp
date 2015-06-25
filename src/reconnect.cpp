@@ -251,7 +251,7 @@ void Tangle::SelfReconnectLine(int Q, int P, int k, int l){
     mTangle.erase(mTangle.begin()+P);
     mN_recon++;
     cout << "\t\t !!! LINE RECONNECTION !!! " << endl;    
-    mLog << StringTime() << "\t " << setw(10) << mStep << " :\t\tsuccessful line reconnection" << endl;
+    mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tsuccessful line reconnection" << endl;
 }
 
 void Tangle::SelfReconnect(int P, int Q, int k, int l){
