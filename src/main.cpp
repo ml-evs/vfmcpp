@@ -36,6 +36,7 @@ int main(int argc, char* argv[]){
 
 	/* prepare to time calculations */
 	double percent;
+	double ns_Dt(Tangle.mDt * 1e9)
 	clock_t t;
 	t=clock();
 	int file_no(0);
@@ -53,8 +54,8 @@ int main(int argc, char* argv[]){
 		if(Tangle.mN_slow == 5000){Tangle.mN_f = 10000;}
 		if(Tangle.mN_f == 1
 			||Tangle.mN_f == 10
-			||Tangle.mN_f == 100){Tangle.mN_slow++;}  // increment slow-mo counter
-		else{Tangle.mN_slow = 0;} 	// reset slow-mo counter
+			||Tangle.mN_f == 100){Tangle.mN_slow++;}	// increment slow-mo counter
+		else{Tangle.mN_slow = 0;}						// reset slow-mo counter
 		if(i%100==0){
 			percent = (100*i/N_t);
 			printf("\t\t\r %6.2f %% \t",percent); // output percentage completion
@@ -62,8 +63,9 @@ int main(int argc, char* argv[]){
 		/* save positions to file every mN_f steps */
 		if(i%Tangle.mN_f==0){
 			Tangle.Output(filename, i, file_no);
-			printf("\t\t wrote step %6u", i);		// note printf does not play well with HPC
-			Tangle.mLog << Tangle.StringTime() << "\t" << setw(10) << Tangle.mStep << ":\t\twrote step to file " << file_no << " for time " << i*Tangle.mDt << " s" << endl;
+			printf("\t\t wrote step %6u", i, " for time " << i*ns_Dt << "ns");		// note printf does not play well with HPC
+			Tangle.mLog << Tangle.StringTime() << "\t" << setw(10) << Tangle.mStep;
+			Tangle.mLog << ":\t\twrote step to file " << file_no << " for time " << i*Tangle.mDt << " s" << endl;
 			file_no++; 
 		}
 		/* adjust mesh until finished */
@@ -85,15 +87,15 @@ int main(int argc, char* argv[]){
 	}
 	cout << "\n\t - - - - - - -    SIMULATION FINISHED    - - - - - - - -"; 
 	Tangle.mLog << Tangle.StringTime() << "\t\t\t\tsimulation finished" << endl;
-//	ofstream timefile(filename+"/time.dat");
+	ofstream timefile(filename+"/time.dat");
 	t = clock()-t;
-//	timefile << "time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
-//	timefile << "number of recons = " << Tangle.mN_recon << endl;
-//	timefile << "number of loop kills = " << Tangle.mN_loopkills << endl;
+	timefile << "time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
+	timefile << "number of recons = " << Tangle.mN_recon << endl;
+	timefile << "number of loop kills = " << Tangle.mN_loopkills << endl;
 	Tangle.mLog	<< Tangle.StringTime() << "\t\t\t\ttime elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
 	Tangle.mLog << Tangle.StringTime() << "\t\t\t\tnumber of recons = " << Tangle.mN_recon << endl;
 	Tangle.mLog << Tangle.StringTime() << "\t\t\t\tnumber of loop kills = " << Tangle.mN_loopkills << endl;
-//	timefile.close(); 
+	timefile.close(); 
 	Tangle.mLog.close();
 	return 0;
 }
