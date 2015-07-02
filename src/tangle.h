@@ -20,7 +20,6 @@ public:
 	int mN_recon; // number of reconnections
 	int mN_loopkills;	// number of tiny loops deleted
 	int mStep; // current step
-	int mN_mesh; // total number of mesh points
 	double mDr;	// spatial resolution
 	double mDt; // temporal resolution
 	double mTotalTime; // total time
@@ -58,12 +57,6 @@ public:
 	int ReconnectionTest();
 	void CalcVelocity();
 	void CalcField();
-	void MeshCount() {
-		mN_mesh = 0;
-		for(int unsigned i(0); i!=mTangle.size(); i++){
-			mN_mesh += mTangle[i]->mN;
-		}
-	}
 //	void FromFile(string base); 	// mostly for debug purposes
 	void Output(string filename, int i, int file_no);
 	const string StringTime() {
