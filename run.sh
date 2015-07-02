@@ -185,7 +185,7 @@ fi
 
 if [ $BENCH -eq 1 ]; then
 	echo " ${blu} -b flag specified, running benchmark...${red}"
-	echo " ${blu} running executable in bin/chmarking/gpp"
+	echo " ${blu} running executable in bin/chmarking/icpc"
 	cd "bin/chmarking/gpp"
 fi
 

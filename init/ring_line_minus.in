@@ -41,7 +41,7 @@
 # Eext 10000 1e-3 0 
 # q_pt 0 50 1.6e-19 
 
-path data/ring_line_minus
+path data/ring_line_minus_nopar
 time 0.2e-3
 resl 6.28e-8
 ring 0.7e-6 -0.3e-6 -2e-6 0 1

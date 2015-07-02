@@ -98,7 +98,7 @@ for i in range(len(sigma)):
 
 				else:
 					##print i
-					print len(radius), sigma[i]
+					# print len(radius), sigma[i]
 					if len(radius)==1:
 						ZERO_DATA.append([float(sigma[i][0:6])*1e-6, radius[0]])
 						#print sigma[i], radius[0]
@@ -107,14 +107,12 @@ for i in range(len(sigma)):
 						line = file.readline()
 						line = file.readline()
 						no_recon.append(line[-2])
-						print no_recon[-1]
+						#print no_recon[-1]
 						file.close()
 						#print sigma[i], radius[0], radius[1]
 						PLOT_DATA.append([float(sigma[i][0:6])*1e-6, radius[0], radius[1]])
 					elif len(radius) == 3:
 						THREE_DATA.append([float(sigma[i][0:6])*1e-6, radius[0], radius[1], radius[2]])
-					elif len(radius) > 3:
-						print '4 rings'
 					end = True
 					end2 = True
 	#print i
