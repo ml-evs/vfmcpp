@@ -11,7 +11,6 @@ void Tangle::CalcVelocity(){
 	/* circulation quantum, core radius */
 	double	kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0;
 	
-	CalcVelocityNL();			// calculate non-local contributions
 	vector <Filament*>::iterator b, c, e;
 	b = mTangle.begin(); e = mTangle.end();
 	for(c=b; c!=e; c++){
