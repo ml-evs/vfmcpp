@@ -38,7 +38,6 @@ void Tangle::Reconnection(){
 								double dist2 = pow(mTangle[P]->mPoints[k]->mPos[0] - mTangle[Q]->mPoints[l]->mPos[0],2);
 								dist2 +=  pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2);
 								dist2 += pow(mTangle[P]->mPoints[k]->mPos[2] - mTangle[Q]->mPoints[l]->mPos[2], 2);
-								int count(0);
 								/* check if non-neighbouring points are too close */
 								if(dist2 < distlimit2){
 									/* make sure lines aren't parallel */
@@ -250,7 +249,6 @@ void Tangle::SelfReconnectLine(int Q, int P, int k, int l){
     }
     mTangle.erase(mTangle.begin()+P);
     mN_recon++;
-    cout << "\t\t !!! LINE RECONNECTION !!! " << endl;    
     mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tsuccessful line reconnection" << endl;
 }
 
@@ -305,7 +303,6 @@ void Tangle::SelfReconnect(int P, int Q, int k, int l){
 	}
 	mTangle.erase(mTangle.begin()+P);
 	mN_recon++;
-	cout << "\n\t\t !!! RECONNECTION !!! " << endl;
 	mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tsuccessful self-reconnection" << endl;
 }
 
@@ -343,6 +340,5 @@ void Tangle::Reconnect(int Q, int P, int l, int k){
 	delete mTangle[Q];
 	mTangle.erase(mTangle.begin()+Q);
 	mN_recon++;
-	cout << "\n\t\t !!! RECONNECTION !!! " << endl;
 	mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tsuccessful reconnection" << endl;
 }
