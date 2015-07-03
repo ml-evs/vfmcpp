@@ -20,28 +20,28 @@ void Tangle::CalcVelocityNL(){
 			vector <double> calc_list(3*mTangle[Q]->mN); 			// vector containing pp, qq, pq
 			for(int i(0); i!=mTangle[P]->mN; i++){
 				for(int n(0);n!=N_loop; n++){
-					p[3*n]   = mTangle[Q]->mPoints[n]->mPos[0] - mTangle[P]->mPoints[i]->mPos[0];
-					p[3*n+1] = mTangle[Q]->mPoints[n]->mPos[1] - mTangle[P]->mPoints[i]->mPos[1];
-					p[3*n+2] = mTangle[Q]->mPoints[n]->mPos[2] - mTangle[P]->mPoints[i]->mPos[2];
-					q[3*n]   = mTangle[Q]->mPoints[n]->mNext->mPos[0] - mTangle[P]->mPoints[i]->mPos[0];
-					q[3*n+1] = mTangle[Q]->mPoints[n]->mNext->mPos[1] - mTangle[P]->mPoints[i]->mPos[1];
-					q[3*n+2] = mTangle[Q]->mPoints[n]->mNext->mPos[2] - mTangle[P]->mPoints[i]->mPos[2];
+					p[n]          = mTangle[Q]->mPoints[n]->mPos[0] - mTangle[P]->mPoints[i]->mPos[0];
+					p[n+N_loop]   = mTangle[Q]->mPoints[n]->mPos[1] - mTangle[P]->mPoints[i]->mPos[1];
+					p[n+2*N_loop] = mTangle[Q]->mPoints[n]->mPos[2] - mTangle[P]->mPoints[i]->mPos[2];
+					q[n]          = mTangle[Q]->mPoints[n]->mNext->mPos[0] - mTangle[P]->mPoints[i]->mPos[0];
+					q[n+N_loop]   = mTangle[Q]->mPoints[n]->mNext->mPos[1] - mTangle[P]->mPoints[i]->mPos[1];
+					q[n+2*N_loop] = mTangle[Q]->mPoints[n]->mNext->mPos[2] - mTangle[P]->mPoints[i]->mPos[2];
 					/* calculate cross and dot products */
-					pxq[3*n]   = p[3*n+1] * q[3*n+2] - p[3*n+2] * q[3*n+1]; // pxq[x]
-					pxq[3*n+1] = p[3*n+2] * q[3*n]   - p[3*n]   * q[3*n+2]; // pxq[y]
-					pxq[3*n+2] = p[3*n]   * q[3*n+1] - p[3*n+1] * q[3*n];	// pxq[z]
+					pxq[n] 		 	= p[n+N_loop]*q[n+2*N_loop] - p[n+2*N_loop]*q[n+N_loop]; // pxq[x]
+					pxq[n+N_loop] 	= p[n+2*N_loop]*q[n] 		- p[n]*q[n+2*N_loop]; 		// pxq[y]
+					pxq[n+2*N_loop] = p[n]*q[n+N_loop] 			- p[n+N_loop]*q[n];			// pxq[z]
 					/* p.p */
-					calc_list[3*n] += p[3*n]*p[3*n];
-					calc_list[3*n] += p[3*n+1]*p[3*n+1];
-					calc_list[3*n] += p[3*n+2]*p[3*n+2];
+					calc_list[n] += p[n]*p[n];
+					calc_list[n] += p[n+N_loop]*p[n+N_loop];
+					calc_list[n] += p[n+2*N_loop]*p[n+2*N_loop];
 					/* q.q */
-					calc_list[3*n+1] += q[3*n]*q[3*n];
-					calc_list[3*n+1] += q[3*n+1]*q[3*n+1]; 
-					calc_list[3*n+1] += q[3*n+2]*q[3*n+2]; 
+					calc_list[n+N_loop] += q[n]*q[n];
+					calc_list[n+N_loop] += q[n+N_loop]*q[n+N_loop]; 
+					calc_list[n+N_loop] += q[n+2*N_loop]*q[n+2*N_loop]; 
 					/* p.q */
-					calc_list[3*n+2] += p[3*n]*q[3*n]; 
-					calc_list[3*n+2] += p[3*n+1]*q[3*n+1]; 
-					calc_list[3*n+2] += p[3*n+2]*q[3*n+2]; 
+					calc_list[n+2*N_loop] += p[n]*q[n]; 
+					calc_list[n+2*N_loop] += p[n+N_loop]*q[n+N_loop]; 
+					calc_list[n+2*N_loop] += p[n+2*N_loop]*q[n+2*N_loop]; 
 				}
 				skip_index_1 = 12345;
 				skip_index_2 = -12345;
@@ -51,15 +51,15 @@ void Tangle::CalcVelocityNL(){
 						else{skip_index_2 = test;}
 					}
 				}
-				for(int b(0);b!=N_loop;b++){
-					double A = sqrt(calc_list[3*b]); 			// |p|
-					double B = calc_list[3*b+2]; 		// p.q
-					double C = sqrt(calc_list[3*b+1]); 	// |q|
-					if(b!=skip_index_1 && b!=skip_index_2){
-						double D = (A+C)/(A*C*(A*C+B));
-						for(int x(0);x<3;x++){
-							mTangle[P]->mPoints[i]->mVelNL[x] += (kappa/(4*M_PI)) * D * pxq[3*b+x];
-						}
+				for(int n(0);n!=N_loop;n++){
+					double A = sqrt(calc_list[n]); 			// |p|
+					double n = calc_list[n+2*N_loop]; 		// p.q
+					double C = sqrt(calc_list[n+N_loop]); 	// |q|
+					if(n!=skip_index_1 && n!=skip_index_2){
+						double D = (A+C)/(A*C*(A*C+n));
+						mTangle[P]->mPoints[i]->mVelNL[0] += (kappa/(4*M_PI)) * D * pxq[n];
+						mTangle[P]->mPoints[i]->mVelNL[1] += (kappa/(4*M_PI)) * D * pxq[n+N_loop];
+						mTangle[P]->mPoints[i]->mVelNL[2] += (kappa/(4*M_PI)) * D * pxq[n+2*N_loop];
 					}
 				}
 			}
