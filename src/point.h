@@ -54,5 +54,13 @@ public:
 		mFlagDummy = false;
 	}
 	~Point(){};
+	double Disp2(Point* p2){
+		double disp2(0);
+		for(int i(0); i!=3; i++){
+			disp2 += pow(mPos[i] - p2->mPos[i],2);
+		}
+		return disp2;
+	}
+
 };
 #endif
