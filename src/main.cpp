@@ -40,7 +40,6 @@ int main(int argc, char* argv[]){
 	clock_t t;
 	t=clock();
 	int file_no(0);
-
 	/* begin time-stepping */
 	int i(0);
 	cout << "\n\t - - - - - - - -    BEGINNING SIMULATION    - - - - - - - -\n\n";
@@ -56,7 +55,7 @@ int main(int argc, char* argv[]){
 			||Tangle.mN_f == 10
 			||Tangle.mN_f == 100){Tangle.mN_slow++;}	// increment slow-mo counter
 		else{Tangle.mN_slow = 0;}						// reset slow-mo counter
-		if(i%100==0){
+		if(i%100==0 || i%Tangle.mN_f==0){
 			percent = (100*i/N_t);
 			printf("\t\t\r %6.2f %% \t",percent); // output percentage completion
 		}

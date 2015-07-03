@@ -186,7 +186,7 @@ fi
 if [ $BENCH -eq 1 ]; then
 	echo " ${blu} -b flag specified, running benchmark...${red}"
 	echo " ${blu} running executable in bin/chmarking/icpc"
-	cd "bin/chmarking/gpp"
+	cd "bin/chmarking/icpc-autovec"
 fi
 
 if [ $BENCH -eq 0 ]; then

@@ -81,7 +81,7 @@ string Tangle::Initialise(string runfile){
 			input.clear();
 			input << line.substr(5);
 			input >> res;
-			mDr = float(res); // set simulation resolution in tangle
+			mDr = double(res); // set simulation resolution in tangle
 			mDt = pow((mDr/2),2)/(9.98e-8*log(mDr/(2*PI*1.3e-10)));
 			mDt /= 25; 	// Baggaley, Barenghi PRB 2010
 			cout << "\t    spatial resolution = "<< mDr << " m" << endl;
