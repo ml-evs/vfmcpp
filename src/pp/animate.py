@@ -138,7 +138,7 @@ ax.set_xlim3d((-3e-6,3e-6))
 ax.set_ylim3d((-3e-6,3e-6))
 ax.set_zlim3d((-3e-6,3e-6))
 #ax.set_zlim3d((24e-6,27e-6))
-ani = animation.FuncAnimation(fig, animate, repeat=True, init_func = init, frames = len(files), interval = 1, blit=False)
+ani = animation.FuncAnimation(fig, animate, repeat=False, init_func = init, frames = len(files), interval = 1, blit=False)
 
 if Analysis == 'p':
 	plt.show()

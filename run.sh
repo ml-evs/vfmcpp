@@ -177,7 +177,7 @@ if [ ! -d "$dir" ]; then
 	mkdir "$dir/snapshot"
 fi
 
-if [ $COMPILE -eq 1 ]; then
+if [ $CPILE -eq 1 ]; then
 	echo " ${blu} -c flag specified, recompiling source...${red}"
 	make
 	echo " ${blu} success!\n\n"
