@@ -74,7 +74,7 @@ int main(int argc, char* argv[]){
 		bool LoopKilled = Tangle.LoopKill(); 
 		if(LoopKilled == true) Tangle.mN_loopkills++;
 		/* check for and perform reconnections if required */
-		Tangle.Reconnection();		
+		Tangle.Reconnection();
 		/* calculate velocities and propagate positions */
 		Tangle.CalcVelocityNL();	// calculates non-local contributions to velocity
 		Tangle.CalcVelocity(); 		// calculates local contributions to velocity
