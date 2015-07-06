@@ -364,11 +364,12 @@ void Tangle::Reconnect(int Q, int P, int l, int k){
 	if(dist_ii_2<mindist2){mindist2=dist_ii_2; dist_flag = 4;}
 	switch(dist_flag){
 		case 1: case 2: {
-			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tcase 1/2 line reconnection - reconsider" << endl;
+			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tcase 1/2 reconnection - reconsider" << endl;
 			if(dist_ii_1<dist_ii_2){dist_flag = 3;}
 			else{dist_flag = 4;}
+		}
 		case 3: {
-			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tcase 3 line reconnection" << endl;
+			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tcase 3 reconnection" << endl;
 			int l_prev_cache(123456);
 			for(int j(0); j<mTangle[Q]->mN; j++){
 				if(mTangle[Q]->mPoints[j] == mTangle[Q]->mPoints[l]->mPrev){
@@ -401,7 +402,7 @@ void Tangle::Reconnect(int Q, int P, int l, int k){
 			break;
 		}
 		case 4: {
-			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tcase 4 line reconnection" << endl;
+			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tcase 4 reconnection" << endl;
 			mTangle[P]->mPoints[k]->mPrev->mNext = mTangle[Q]->mPoints[l]->mNext;  
 			mTangle[Q]->mPoints[l]->mNext->mPrev = mTangle[P]->mPoints[k]->mPrev;
 			/* copy points from the other filament to the current filament and delete */
