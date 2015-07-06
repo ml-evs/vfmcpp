@@ -348,6 +348,14 @@ void Tangle::Reconnect(int Q, int P, int l, int k){
 	
 	double mindist2(123456);
 	int dist_flag(0);
+
+	double dist_i_1(mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]->mPrev));
+	dist_i_1 += mTangle[P]->mPoints[k]->mPrev->Disp2(mTangle[Q]->mPoints[l]);
+	if(dist_i_1<mindist2){mindist2=dist_i_1; dist_flag = 1;}
+	
+	double dist_i_2(mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]->mNext));
+	dist_i_2 += mTangle[P]->mPoints[k]->mNext->Disp2(mTangle[Q]->mPoints[l]);
+	if(dist_i_2<mindist2){mindist2=dist_i_2; dist_flag = 2;}
 	
 	double dist_ii_1(mTangle[P]->mPoints[k]->mNext->Disp2(mTangle[Q]->mPoints[l]->mPrev));
 	if(dist_ii_1<mindist2){mindist2=dist_ii_1; dist_flag = 3;}
@@ -355,6 +363,10 @@ void Tangle::Reconnect(int Q, int P, int l, int k){
 	double dist_ii_2(mTangle[P]->mPoints[k]->mPrev->Disp2(mTangle[Q]->mPoints[l]->mNext));
 	if(dist_ii_2<mindist2){mindist2=dist_ii_2; dist_flag = 4;}
 	switch(dist_flag){
+		case 1: case 2: {
+			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tcase 1/2 line reconnection - reconsider" << endl;
+			if(dist_ii_1<dist_ii_2){dist_flag = 3;}
+			else{dist_flag = 4;}
 		case 3: {
 			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tcase 3 line reconnection" << endl;
 			int l_prev_cache(123456);
@@ -420,8 +432,6 @@ void Tangle::Reconnect(int Q, int P, int l, int k){
 		}
 		
 	}
-
-
 	/* delete old ring */
 	for(unsigned int q(0); q<mTangle[Q]->mPoints.size(); q++){
 		delete mTangle[Q]->mPoints[q];

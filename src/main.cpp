@@ -33,7 +33,6 @@ int main(int argc, char* argv[]){
 
 	vector <Filament*>::iterator begin, current, end;
 
-
 	/* prepare to time calculations */
 	double percent;
 	double us_Dt(Tangle.mDt * 1e6);
