@@ -36,7 +36,7 @@ int main(int argc, char* argv[]){
 	/* prepare to time calculations */
 	double percent;
 	double us_Dt(Tangle.mDt * 1e6);
-	clock_t t;
+	clock_t t, t_temp;
 	t=clock();
 	int file_no(0);
 	/* begin time-stepping */
@@ -61,9 +61,10 @@ int main(int argc, char* argv[]){
 		/* save positions to file every mN_f steps */
 		if(i%Tangle.mN_f==0){
 			Tangle.Output(filename, i, file_no);
-			printf("\t\t wrote step %6u", i);		// note printf does not play well with HPC
+			t_temp = clock() -t;
+			printf("\t\t wrote step %6u", i);
 			Tangle.mLog << Tangle.StringTime() << "\t" << setw(10) << Tangle.mStep;
-			Tangle.mLog << ":\t\twrote step to file " << file_no << " for time " << i*us_Dt << " us" << endl;
+			Tangle.mLog << "\telapsed: " << ((float)t_temp)/CLOCKS_PER_SEC << " s:\twrote file " << file_no << " for time " << i*us_Dt << " us" << endl;
 			file_no++; 
 		}
 		/* adjust mesh until finished */
