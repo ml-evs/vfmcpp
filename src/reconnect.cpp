@@ -8,7 +8,7 @@
 
 using namespace std;
 
-void Tangle::SelfReconnectLine(int Q, int P, int k, int l){
+void Tangle::SelfReconnectLine(int P, int Q, int k, int l){
 	
 	mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tattempting line reconnection" << endl;
 	mN_f = 1; mN_slow = 0;
@@ -37,7 +37,6 @@ void Tangle::SelfReconnectLine(int Q, int P, int k, int l){
 	Point* pNew;
 	switch(dist_flag){
 		case 1: { // temperamental - hopefully rarely called.
-			int swap(0); swap = l; l = k; k = swap;
 			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tcase 1 line reconnection" << endl;
     		/* iterate over filament to find index of knext as it will be lost in reassignment */
     		int k_prev_cache(123456);
@@ -89,9 +88,15 @@ void Tangle::SelfReconnectLine(int Q, int P, int k, int l){
 		}
 		case 3: {
 			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tcase 3 line reconnection" << endl;
+			int k_next_cache(123456);
+			for(int j(0); j<mTangle[P]->mN; j++){
+				if(mTangle[P]->mPoints[j] == mTangle[P]->mPoints[k]->mNext){
+					k_next_cache = j;
+				}
+			}
 			mTangle[P]->mPoints[k]->mNext->mPrev = mTangle[Q]->mPoints[l]->mPrev;  
 			mTangle[Q]->mPoints[l]->mPrev->mNext = mTangle[P]->mPoints[k]->mNext;
-			pNew = mTangle[P]->mPoints[k]->mNext;
+			pNew = mTangle[P]->mPoints[k_next_cache];
 			pStart = pNew;
 			/* reassign pointers to separate new ring */
 			mTangle[P]->mPoints[k]->mNext = mTangle[Q]->mPoints[l];
@@ -100,6 +105,8 @@ void Tangle::SelfReconnectLine(int Q, int P, int k, int l){
 			do{
 				mTangle.back()->mPoints.push_back(new Point(pNew));
 				mTangle.back()->mN++;
+				cout << i << endl;
+				cout << pNew->mFlagDummy << endl;
 				pNew = pNew->mNext;
 				i++;
 			}while(pNew!=pStart);
