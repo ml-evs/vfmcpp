@@ -22,7 +22,7 @@ int main(int argc, char* argv[]){
 	else runfile = "NULL";
 	string filename = Tangle.Initialise(runfile);
 
-	/*	string filename = "../init/init_state/015_09/015_09_rec";
+/*	string filename = "../init/init_state/015_09/015_09_rec";
 	Tangle.FromFile(filename);
 	filename = "../data/015_09_old/data_";*/
 
@@ -64,7 +64,7 @@ int main(int argc, char* argv[]){
 			t_temp = clock() -t;
 			printf("\t\t wrote step %6u", i);
 			Tangle.mLog << Tangle.StringTime() << "\t" << setw(10) << Tangle.mStep;
-			Tangle.mLog << "\telapsed: " << ((float)t_temp)/CLOCKS_PER_SEC << " s:\twrote file " << file_no << " for time " << i*us_Dt << " us" << endl;
+			Tangle.mLog << "\telapsed: " << ((float)t_temp)/CLOCKS_PER_SEC << " s:\t\twrote to file " << file_no << " for time " << i*us_Dt << " us" << endl;
 			file_no++; 
 		}
 		/* adjust mesh until finished */
@@ -87,15 +87,15 @@ int main(int argc, char* argv[]){
 	}
 	cout << "\n\t - - - - - - -    SIMULATION FINISHED    - - - - - - - -"; 
 	Tangle.mLog << Tangle.StringTime() << "\t\t\t\tsimulation finished" << endl;
-	//ofstream timefile(filename+"/time.dat");
+	ofstream timefile(filename+"/time.dat");
 	t = clock()-t;
-	//timefile << "time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
-	//timefile << "number of recons = " << Tangle.mN_recon << endl;
-	//timefile << "number of loop kills = " << Tangle.mN_loopkills << endl;
+	timefile << "time elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
+	timefile << "number of recons = " << Tangle.mN_recon << endl;
+	timefile << "number of loop kills = " << Tangle.mN_loopkills << endl;
 	Tangle.mLog	<< Tangle.StringTime() << "\t\t\t\ttime elapsed = " << ((float)t)/CLOCKS_PER_SEC << " s " << endl;
 	Tangle.mLog << Tangle.StringTime() << "\t\t\t\tnumber of recons = " << Tangle.mN_recon << endl;
 	Tangle.mLog << Tangle.StringTime() << "\t\t\t\tnumber of loop kills = " << Tangle.mN_loopkills << endl;
-	//timefile.close(); 
+	timefile.close(); 
 	Tangle.mLog.close();
 	return 0;
 }
