@@ -16,41 +16,44 @@ void Tangle::Reconnection(){
 	bool NeedRecon(false);
 	/* keep trying to reconnect until all have been performed */
 	begin:
-	while(recon_count > 0){
+	while(recon_count != 0){
 		for (unsigned int P(0);P!=mTangle.size();P++){
 			for (unsigned int Q(P);Q!=mTangle.size(); Q++){
 				/* iterate along filament for new test point */
-				for(int k(0); k<mTangle[P]->mN; k++){
-					int l_rec;
+				vector <Point*>::iterator c, oc, b, ob, e, oe;
+				b = mTangle[P]->mPoints.begin();
+				e = mTangle[P]->mPoints.end();
+				for(c=b; c!=e; c++){
+					int k, l_rec;
 					NeedRecon = false;
 					/* find points marked for reconnection */
-					if(mTangle[P]->mPoints[k]->mMarkedForRecon == true){
+					if((*c)->mMarkedForRecon == true){
 						double distlimit2(0.25*mDr*mDr);
 						double mindist2(distlimit2);
 						/* iterate along filament for point to check against */
-						for(int l(0); l<mTangle[Q]->mN; l++){
+						ob = mTangle[Q]->mPoints.begin();
+						oe = mTangle[Q]->mPoints.end();
+						for(oc=ob; oc!=oe; oc++){
 							/* skip closest points - might lead to cusps */
-							if(mTangle[P]->mPoints[k]==mTangle[Q]->mPoints[l]
-								|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext
-								|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev
-								|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mNext->mNext
-								|| mTangle[Q]->mPoints[l]==mTangle[P]->mPoints[k]->mPrev->mPrev){}
+							if((*c)==(*oc) 
+								|| (*oc)==(*c)->mNext
+								|| (*oc)==(*c)->mPrev
+								|| (*oc)==(*c)->mNext->mNext
+								|| (*oc)==(*c)->mPrev->mPrev){}
 							else{
-								double dist2 = pow(mTangle[P]->mPoints[k]->mPos[0] - mTangle[Q]->mPoints[l]->mPos[0],2);
-								dist2 +=  pow(mTangle[P]->mPoints[k]->mPos[1] - mTangle[Q]->mPoints[l]->mPos[1], 2);
-								dist2 += pow(mTangle[P]->mPoints[k]->mPos[2] - mTangle[Q]->mPoints[l]->mPos[2], 2);
 								/* check if non-neighbouring points are too close */
+								double dist2 = (*c)->Disp2((*oc));
 								if(dist2 < distlimit2){
 									/* make sure lines aren't parallel */
-									double dot_tangents = mTangle[P]->mPoints[k]->mSPrime[0] * mTangle[Q]->mPoints[l]->mSPrime[0];
-									dot_tangents += mTangle[P]->mPoints[k]->mSPrime[1] * mTangle[Q]->mPoints[l]->mSPrime[1];
-									dot_tangents += mTangle[P]->mPoints[k]->mSPrime[2] * mTangle[Q]->mPoints[l]->mSPrime[2];
+									double dot_tangents = (*c)->mSPrime[0] * (*oc)->mSPrime[0];
+									dot_tangents += (*c)->mSPrime[1] * (*oc)->mSPrime[1];
+									dot_tangents += (*c)->mSPrime[2] * (*oc)->mSPrime[2];
 									/* find closest point to k inside range and mark it for reconnection, ignoring parallel lines */
 									if(dot_tangents > 0.9){
 										mLog << StringTime() << "\t" << setw(10) << mStep; 
-										mLog << ":\t\t lines were parallel, no reconnection" << endl;
+										mLog << ":\t\tlines were parallel, no reconnection" << endl;
 									}
-									else if(dist2 < mindist2){mindist2 = dist2; NeedRecon = true; l_rec = l;}
+									else if(dist2 < mindist2){mindist2 = dist2; NeedRecon = true; l_rec = oc-ob; k = c-b;}
 								}
 							}
 						}
@@ -62,26 +65,23 @@ void Tangle::Reconnection(){
 							if(P==Q){
 								if(mTangle[P]->mFlagType==0){
 									mLog << StringTime() << "\t" << setw(10) << mStep; 
-									mLog << ":\t\t calling SelfReconnect(" << P << ", " << Q << ", " << k << ", " << l_rec << ")" << endl; 
+									mLog << ":\t\tcalling SelfReconnect(" << P << ", " << Q << ", " << k << ", " << l_rec << ")" << endl; 
 									SelfReconnect(P,Q,k,l_rec);
 								}
 								else{
 									mLog << StringTime() << "\t" << setw(10) << mStep; 
-									mLog << ":\t\t calling SelfReconnectLine(" << P << ", " << Q << ", " << k << ", " << l_rec << ")" << endl; 
+									mLog << ":\t\tcalling SelfReconnectLine(" << P << ", " << Q << ", " << k << ", " << l_rec << ")" << endl; 
 									SelfReconnectLine(P,Q,k,l_rec);
 								}
-								Reconnected = true;
-								recon_count--;
-								goto begin;
 							}
 							else{
 								mLog << StringTime() << "\t" << setw(10) << mStep; 
-								mLog << ":\t\t calling Reconnect(" << P << ", " << Q << ", " << k << ", " << l_rec << ")" << endl; 
+								mLog << ":\t\tcalling Reconnect(" << P << ", " << Q << ", " << k << ", " << l_rec << ")" << endl; 
 								Reconnect(P,Q,k,l_rec);
-								Reconnected = true;
-								recon_count--;
-								goto begin;
 							}
+							Reconnected = true;
+							recon_count--;
+							goto begin;
 						}
 					}
 				}
