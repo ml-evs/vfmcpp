@@ -19,11 +19,11 @@ void Tangle::SelfReconnectLine(int P, int Q, int k, int l){
 	int dist_flag(0);
 	double dist_i_1(mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]->mPrev));
 	dist_i_1 += mTangle[P]->mPoints[k]->mPrev->Disp2(mTangle[Q]->mPoints[l]);
-	if(dist_i_1<mindist2){mindist2=dist_i_1; dist_flag = 1;}
+	if(dist_i_1<mindist2){mindist2=dist_i_1; dist_flag = 3;}
 	
 	double dist_i_2(mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]->mNext));
 	dist_i_2 += mTangle[P]->mPoints[k]->mNext->Disp2(mTangle[Q]->mPoints[l]);
-	if(dist_i_2<mindist2){mindist2=dist_i_2; dist_flag = 2;}
+	if(dist_i_2<mindist2){mindist2=dist_i_2; dist_flag = 4;}
 	
 	double dist_ii_1(mTangle[P]->mPoints[k]->mNext->Disp2(mTangle[Q]->mPoints[l]->mPrev));
 	dist_ii_1 += mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]);
@@ -200,11 +200,11 @@ void Tangle::SelfReconnect(int P, int Q, int k, int l){
 	int dist_flag(0);
 	double dist_i_1(mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]->mPrev));
 	dist_i_1 += mTangle[P]->mPoints[k]->mPrev->Disp2(mTangle[Q]->mPoints[l]);
-	if(dist_i_1<mindist2){mindist2=dist_i_1; dist_flag = 1;}
+	if(dist_i_1<mindist2){mindist2=dist_i_1; dist_flag = 3;}
 	
 	double dist_i_2(mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]->mNext));
 	dist_i_2 += mTangle[P]->mPoints[k]->mNext->Disp2(mTangle[Q]->mPoints[l]);
-	if(dist_i_2<mindist2){mindist2=dist_i_2; dist_flag = 2;}
+	if(dist_i_2<mindist2){mindist2=dist_i_2; dist_flag = 4;}
 	
 	double dist_ii_1(mTangle[P]->mPoints[k]->mNext->Disp2(mTangle[Q]->mPoints[l]->mPrev));
 	dist_ii_1 += mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]);
@@ -348,33 +348,19 @@ void Tangle::SelfReconnect(int P, int Q, int k, int l){
 	mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tsuccessful self-reconnection" << endl;
 }
 
-void Tangle::Reconnect(int Q, int P, int l, int k){
+void Tangle::Reconnect(int P, int Q, int k, int l){
 	mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tattempting reconnection" << endl;
 	mN_f = 1; mN_slow = 0;
 	if(mTangle[Q]->mFlagType == 1){int swap(Q); Q = P; P = swap; swap = l; l = k; k = swap;}
-	
 	double mindist2(123456);
 	int dist_flag(0);
 
-	double dist_i_1(mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]->mPrev));
-	dist_i_1 += mTangle[P]->mPoints[k]->mPrev->Disp2(mTangle[Q]->mPoints[l]);
-	if(dist_i_1<mindist2){mindist2=dist_i_1; dist_flag = 1;}
-	
-	double dist_i_2(mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]->mNext));
-	dist_i_2 += mTangle[P]->mPoints[k]->mNext->Disp2(mTangle[Q]->mPoints[l]);
-	if(dist_i_2<mindist2){mindist2=dist_i_2; dist_flag = 2;}
-	
 	double dist_ii_1(mTangle[P]->mPoints[k]->mNext->Disp2(mTangle[Q]->mPoints[l]->mPrev));
 	if(dist_ii_1<mindist2){mindist2=dist_ii_1; dist_flag = 3;}
 	
 	double dist_ii_2(mTangle[P]->mPoints[k]->mPrev->Disp2(mTangle[Q]->mPoints[l]->mNext));
 	if(dist_ii_2<mindist2){mindist2=dist_ii_2; dist_flag = 4;}
 	switch(dist_flag){
-		case 1: case 2: {
-			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tcase 1/2 reconnection - reconsider" << endl;
-			if(dist_ii_1<dist_ii_2){dist_flag = 3;}
-			else{dist_flag = 4;}
-		}
 		case 3: {
 			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tcase 3 reconnection" << endl;
 			int l_prev_cache(123456);
@@ -418,7 +404,7 @@ void Tangle::Reconnect(int Q, int P, int l, int k){
 			int i(0);
 			while(i<mTangle[Q]->mN){
 				mTangle[P]->mPoints.push_back(new Point(occ));
-				occ = occ->mPrev;
+				occ = occ->mPrev; //perhaps change in future for contiguous storage
 				i++;
 			}
 			/* reassign pointers */

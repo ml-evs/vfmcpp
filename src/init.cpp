@@ -158,7 +158,7 @@ string Tangle::Initialise(string runfile){
 			mLog << param[0] << " with size " << param[2] << " C, at mesh point " << param[1] << ". " << endl;
 		}
 	}
-	mDr *= 4.0/3.0; // augments resolution for mesh adjust stability
+	//mDr *= 4.0/3.0; // augments resolution for mesh adjust stability
 	infile.close();
 	return filename;
 }

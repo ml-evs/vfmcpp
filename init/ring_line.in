@@ -1,5 +1,5 @@
-path data/debug/ring_line
-time 0.5e-3
+path data/debug/ring_line_FAST
+time 0.2e-3
 resl 6.28e-8
 ring 0.7e-6 0 -2e-6 0 1
 line 4e-6 0 0 -2e-6 2

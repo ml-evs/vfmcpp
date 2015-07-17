@@ -12,7 +12,6 @@ void Tangle::Reconnection(){
 	/* count number of possible reconnections this step */
 	int recon_count = ReconnectionTest();
 	if(recon_count!=0){mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tnumber of possible reconnections = " << recon_count << endl;}
-	bool Reconnected(false);
 	bool NeedRecon(false);
 	/* keep trying to reconnect until all have been performed */
 	begin:
@@ -79,20 +78,21 @@ void Tangle::Reconnection(){
 								mLog << ":\t\tcalling Reconnect(" << P << ", " << Q << ", " << k << ", " << l_rec << ")" << endl; 
 								Reconnect(P,Q,k,l_rec);
 							}
-							Reconnected = true;
+							string filename = "../data/debug/offset/";
+							int q(999);
+							int file_no(999);
+							Output(filename, q, file_no);
 							recon_count--;
+							/* cleanup points and recalculate mesh lengths and curvatures */
+							for(unsigned int n(0); n<mTangle.size(); n++){
+								mTangle[n]->CalcMeshLengths();	mTangle[n]->CalcSPrime(); 
+								mTangle[n]->CalcS2Prime(); 
+							}
 							goto begin;
 						}
 					}
 				}
 			}
-		}
-	}
-	/* cleanup points and recalculate mesh lengths and curvatures */
-	if(recon_count == 0 && Reconnected == true){
-		for(unsigned int n(0); n<mTangle.size(); n++){
-			mTangle[n]->CalcMeshLengths();	mTangle[n]->CalcSPrime(); 
-			mTangle[n]->CalcS2Prime(); 
 		}
 	}
 }
@@ -164,7 +164,7 @@ int Tangle::ReconnectionTest(){
 						|| mTangle[P]->mPoints[k]->mPrev->mPrev->mMarkedForRecon == true
 						|| mTangle[P]->mPoints[k]->mNext->mNext->mMarkedForRecon == true)){
 						pK->mMarkedForRecon = true;
-						mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tattempting to reconnect at " << k << ", " << l_rec << endl;
+						mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tneed to reconnect at " << k << ", " << l_rec << endl;
 						recon_count++;
 					}
 				}
