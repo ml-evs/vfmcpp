@@ -8,8 +8,20 @@
 
 using namespace std;
 
-void Tangle::SelfReconnectLine(int Q, int P, int k, int l){
-	
+void Tangle::SelfReconnectLine(int P, int Q, int k, int l){
+	/* ensure l follows k */
+	Point* pTest = mTangle[P]->mPoints[k]->mNext;
+	bool l_after_k(false);
+
+	while(pTest->mNext->mFlagDummy==0){
+		if(pTest == mTangle[Q]->mPoints[l]){
+			l_after_k = true;
+		}
+		pTest = pTest->mNext;
+	}
+	if(l_after_k == false){
+		int swap(l); l = k; k = swap;
+	}
 	mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tattempting line reconnection" << endl;
 	mN_f = 1; mN_slow = 0;
 	/* create new ring in tangle */
@@ -126,7 +138,6 @@ void Tangle::SelfReconnectLine(int Q, int P, int k, int l){
 		default: {
 			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tOdd kind of reconnection encountered - need to reconsider input" << endl;
 		}
-		
 	}
 	/* count points on new ring and assign pointers */
 	int N_new = mTangle.back()->mN;

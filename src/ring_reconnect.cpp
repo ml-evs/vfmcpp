@@ -15,10 +15,20 @@ void Tangle::Reconnect(int P, int Q, int k, int l){
 	double mindist2(123456);
 	int dist_flag(0);
 
+	double dist_i_1(mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]->mPrev));
+	dist_i_1 += mTangle[P]->mPoints[k]->mPrev->Disp2(mTangle[Q]->mPoints[l]);
+	if(dist_i_1<mindist2){mindist2=dist_i_1; dist_flag = 1;}
+	
+	double dist_i_2(mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]->mNext));
+	dist_i_2 += mTangle[P]->mPoints[k]->mNext->Disp2(mTangle[Q]->mPoints[l]);
+	if(dist_i_2<mindist2){mindist2=dist_i_2; dist_flag = 2;}
+
 	double dist_ii_1(mTangle[P]->mPoints[k]->mNext->Disp2(mTangle[Q]->mPoints[l]->mPrev));
+	dist_ii_1 += mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]);
 	if(dist_ii_1<mindist2){mindist2=dist_ii_1; dist_flag = 3;}
 	
 	double dist_ii_2(mTangle[P]->mPoints[k]->mPrev->Disp2(mTangle[Q]->mPoints[l]->mNext));
+	dist_ii_2 += mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]);
 	if(dist_ii_2<mindist2){mindist2=dist_ii_2; dist_flag = 4;}
 	switch(dist_flag){
 		case 3: {
@@ -83,6 +93,7 @@ void Tangle::Reconnect(int P, int Q, int k, int l){
 		}
 		default: {
 			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tOdd kind of reconnection encountered - need to reconsider input" << endl;
+			mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tCase " << dist_flag << " reconnection attempted." << endl;
 		}
 		
 	}
