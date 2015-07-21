@@ -10,19 +10,18 @@ using namespace std;
 
 void Tangle::Reconnect(int P, int Q, int k, int l){
 	mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tattempting reconnection" << endl;
-	mN_f = 1; mN_slow = 0;
 	if(mTangle[Q]->mFlagType == 1){int swap(Q); Q = P; P = swap; swap = l; l = k; k = swap;}
 	double mindist2(123456);
 	int dist_flag(0);
 
-	double dist_i_1(mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]->mPrev));
+/*	double dist_i_1(mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]->mPrev));
 	dist_i_1 += mTangle[P]->mPoints[k]->mPrev->Disp2(mTangle[Q]->mPoints[l]);
 	if(dist_i_1<mindist2){mindist2=dist_i_1; dist_flag = 1;}
 	
 	double dist_i_2(mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]->mNext));
 	dist_i_2 += mTangle[P]->mPoints[k]->mNext->Disp2(mTangle[Q]->mPoints[l]);
 	if(dist_i_2<mindist2){mindist2=dist_i_2; dist_flag = 2;}
-
+*/
 	double dist_ii_1(mTangle[P]->mPoints[k]->mNext->Disp2(mTangle[Q]->mPoints[l]->mPrev));
 	dist_ii_1 += mTangle[P]->mPoints[k]->Disp2(mTangle[Q]->mPoints[l]);
 	if(dist_ii_1<mindist2){mindist2=dist_ii_1; dist_flag = 3;}

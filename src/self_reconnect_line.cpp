@@ -23,7 +23,6 @@ void Tangle::SelfReconnectLine(int P, int Q, int k, int l){
 		int swap(l); l = k; k = swap;
 	}
 	mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tattempting line reconnection" << endl;
-	mN_f = 1; mN_slow = 0;
 	/* create new ring in tangle */
 	mTangle.push_back(new Ring());
 	/* separate new wring */
@@ -66,13 +65,11 @@ void Tangle::SelfReconnectLine(int P, int Q, int k, int l){
 			pStart = pNew;
 	    	i = 0;
     		do{
-    			cout << "i = " << i << endl;
 		        mTangle.back()->mPoints.push_back(new Point(pNew));
         		mTangle.back()->mN++;
         		pNew = pNew->mNext;
         		i++;
     		}while(pNew!=pStart);
-    		cout << "Done!" << endl;
     		break;
     	}
 		case 2: {
