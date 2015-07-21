@@ -26,7 +26,7 @@ void Tangle::Output(string filename, int i, int file_no){
 			pCurrent = pCurrent->mNext; j++; outfile << "\n";
 		}
 		/* save full state of system ~10 times per run */
-		if(i%(70*mN_f)==0){
+		if(i%(100*mN_f)==0){
 			string state_filename = filename + "/snapshot/data_" + i_str + "_" + n_fil_str + ".dat";
 			string vel_filename   = filename + "/snapshot/vel_"  + i_str + "_" + n_fil_str + ".dat";
 			string vel1_filename  = filename + "/snapshot/vel1_" + i_str + "_" + n_fil_str + ".dat";
