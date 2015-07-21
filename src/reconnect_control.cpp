@@ -58,6 +58,7 @@ void Tangle::Reconnection(){
 						}
 						/* perform reconnections */
 						if(NeedRecon==true){
+							mN_f = 100; mN_slow = 0;
 							/* reset recon flags */
 							mTangle[P]->mPoints[k]->mMarkedForRecon = false;
 							mTangle[Q]->mPoints[l_rec]->mMarkedForRecon = false;
