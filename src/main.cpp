@@ -47,9 +47,8 @@ int main(int argc, char* argv[]){
 		Tangle.mStep = i;
 		begin = Tangle.mTangle.begin();
 		end = Tangle.mTangle.end();
-		if(Tangle.mN_slow == 15){Tangle.mN_f = 10;} 	// reset saving after reconnection 
-		if(Tangle.mN_slow == 200){Tangle.mN_f = 100;}
-		if(Tangle.mN_slow == 5000){Tangle.mN_f = 10000;}
+		if(Tangle.mN_slow == 2000){Tangle.mN_f = 100;}
+		if(Tangle.mN_slow == 5000){Tangle.mN_f = 100;}
 		if(Tangle.mN_f == 1
 			||Tangle.mN_f == 10
 			||Tangle.mN_f == 100){Tangle.mN_slow++;}	// increment slow-mo counter
@@ -67,14 +66,15 @@ int main(int argc, char* argv[]){
 			Tangle.mLog << "\telapsed: " << ((float)t_temp)/CLOCKS_PER_SEC << " s:\t\twrote to file " << file_no << " for time " << i*us_Dt << " us" << endl;
 			file_no++; 
 		}
+
+		/* check for and perform reconnections if required */
+		Tangle.Reconnection();
 		/* adjust mesh until finished */
 		bool MeshFinished(false);	
 		while(MeshFinished==false) MeshFinished = Tangle.MeshAdjust(); 
 		/* remove rings smaller than 6 points and count them */
 		bool LoopKilled = Tangle.LoopKill(); 
 		if(LoopKilled == true) Tangle.mN_loopkills++;
-		/* check for and perform reconnections if required */
-		Tangle.Reconnection();
 		/* calculate velocities and propagate positions */
 		Tangle.CalcVelocityNL();	// calculates non-local contributions to velocity
 		Tangle.CalcVelocity(); 		// calculates local contributions to velocity
