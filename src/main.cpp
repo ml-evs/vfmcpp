@@ -47,8 +47,8 @@ int main(int argc, char* argv[]){
 		Tangle.mStep = i;
 		begin = Tangle.mTangle.begin();
 		end = Tangle.mTangle.end();
-		if(Tangle.mN_slow == 2000){Tangle.mN_f = 100;}
-		if(Tangle.mN_slow == 5000){Tangle.mN_f = 100;}
+/*		if(Tangle.mN_slow == 2000){Tangle.mN_f = 100;}
+		if(Tangle.mN_slow == 5000){Tangle.mN_f = 100;}*/
 		if(Tangle.mN_f == 1
 			||Tangle.mN_f == 10
 			||Tangle.mN_f == 100){Tangle.mN_slow++;}	// increment slow-mo counter
