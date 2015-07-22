@@ -57,7 +57,6 @@ public:
 	int ReconnectionTest();
 	void CalcVelocity();
 	void CalcField();
-	void FromFile(string base); 	// mostly for debug purposes
 	void Output(string filename, int i, int file_no);
 	const string StringTime() {
 	    time_t     now = time(0);
