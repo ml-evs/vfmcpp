@@ -35,14 +35,14 @@ def getfiles():
 		if os.path.isfile(filename_k+"_0.dat") == True:
 			file = open(filename_k+'_0.dat', 'r')
 			line = file.readline()
-			if f==0:
-				for i in range(35):
-					times.append(float(line))
-					files.append(filename_k)
-				f=1
-			else:
-				times.append(float(line))
-				files.append(filename_k)
+			# if f==0:
+			# 	for i in range(35):
+			# 		times.append(float(line))
+			# 		files.append(filename_k)
+			# 	f=1
+			#else:
+			times.append(float(line))
+			files.append(filename_k)
 			k+=1
 			while(end2 == False):
 				if os.path.isfile(filename_k+"_"+str(j)+".dat") == True:
@@ -138,7 +138,7 @@ ax.set_xlim3d((-3e-6,3e-6))
 ax.set_ylim3d((-3e-6,3e-6))
 ax.set_zlim3d((-3e-6,3e-6))
 #ax.set_zlim3d((24e-6,27e-6))
-ani = animation.FuncAnimation(fig, animate, repeat=False, init_func = init, frames = len(files), interval = 1, blit=False)
+ani = animation.FuncAnimation(fig, animate, repeat=True, init_func = init, frames = len(files), interval = 1, blit=False)
 
 if Analysis == 'p':
 	plt.show()
