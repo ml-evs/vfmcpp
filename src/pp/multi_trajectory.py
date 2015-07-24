@@ -5,7 +5,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import sys
 
-base_filename = '../../data/offset_10R/'
+base_filename = '../../data/offset_15R/'
 
 def getfiles(base_filename):
 	files = list()
@@ -89,7 +89,7 @@ def data_read(files, times, jmax):
 def add_to_plot(fig, ax, trajx, trajy, line_rx, line_ry,color):
 	#colors = plt.cm.gnuplot(np.linspace(0,0.8,len(trajx)))
 	for a in range(len(trajx)):
-		ax.plot(trajx[a][:], trajy[a][:], linewidth=0, markersize=3, marker='o', c=color)
+		ax.plot(trajx[a][:], trajy[a][:], linewidth=0, markersize=4, marker='o', alpha=0.5, c=color)
 	#colors2 = plt.cm.gnuplot_r(np.linspace(0.2,1,len(line_rx)))
 	#line_rx = np.flipud(line_rx)
 	#line_ry = np.flipud(line_ry)
@@ -139,6 +139,7 @@ ax.set_yticklabels([])
 ax.axis('off')
 print('Saving image...')
 plt.savefig('multi_trajectory.png')
+#plt.show()
 print('image saved.')
 
 

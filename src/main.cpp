@@ -57,15 +57,6 @@ int main(int argc, char* argv[]){
 			percent = (100*i/N_t);
 			printf("\t\t\r %6.2f %% \t",percent); // output percentage completion
 		}
-		/* save positions to file every mN_f steps */
-		if(i%Tangle.mN_f==0){
-			Tangle.Output(filename, i, file_no);
-			t_temp = clock() -t;
-			printf("\t\t wrote step %6u", i);
-			Tangle.mLog << Tangle.StringTime() << "\t" << setw(10) << Tangle.mStep;
-			Tangle.mLog << "\telapsed: " << ((float)t_temp)/CLOCKS_PER_SEC << " s:\t\twrote to file " << file_no << " for time " << i*us_Dt << " us" << endl;
-			file_no++; 
-		}
 
 		/* check for and perform reconnections if required */
 		Tangle.Reconnection();
@@ -82,6 +73,16 @@ int main(int argc, char* argv[]){
 			Tangle.CalcField();			// add field contribution to charged point
 		}*/
 		Tangle.PropagatePos(Tangle.mDt);	// propagate positions
+
+		/* save positions to file every mN_f steps */
+		if(i%Tangle.mN_f==0){
+			Tangle.Output(filename, i, file_no);
+			t_temp = clock() -t;
+			printf("\t\t wrote step %6u", i);
+			Tangle.mLog << Tangle.StringTime() << "\t" << setw(10) << Tangle.mStep;
+			Tangle.mLog << "\telapsed: " << ((float)t_temp)/CLOCKS_PER_SEC << " s:\t\twrote to file " << file_no << " for time " << i*us_Dt << " us" << endl;
+			file_no++; 
+		}
 		i++;	// step forward
 
 	}
