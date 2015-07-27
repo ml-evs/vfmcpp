@@ -7,9 +7,12 @@ import sys
 
 #basest_filename = '../../data/offset_15R_hires/dat_-.8'
 #basest_filename = '../../data/offset_15R/dat_-.8'
-#basest_filename = '../../data/kin_test'
 #basest_filename = '../../data/kin_test_0'
-basest_filename = '../../data/ring_ring_perp_2'
+#basest_filename = '../../data/kin_test_8'
+basest_filename = '../../data/kin_test_p4'
+#basest_filename = '../../data/ring_ring_perp_norm'
+
+kappa = 9.98e-8
 
 def getfiles(basest_filename):
     files = list()
@@ -47,7 +50,7 @@ def getfiles(basest_filename):
 base_filename, files, times, jmax = getfiles(basest_filename)
 
 fmax = len(files)
-#fmax = 
+#fmax = 150
 fstep = 1
 f_ind = int(fmax / fstep)
 i = 0
@@ -71,6 +74,7 @@ tot_p_line = np.zeros((fmax))
 tot_px_line = np.zeros((fmax))
 tot_py_line = np.zeros((fmax))
 tot_pz_line = np.zeros((fmax))
+total_p = np.zeros(fmax)
 density = np.zeros((fmax))
 N = np.zeros((fmax))
 Ekin = np.zeros((fmax))
@@ -106,25 +110,25 @@ while(f<fmax):
                 L[m] = np.sqrt(L[m])
 
                 if os.path.isfile(basest_filename+ '/mom_' + str(i) + '_' + str(fil)+'.dat') == True:
+                    #print(basest_filename+ '/mom_' + str(i) + '_' + str(fil)+'.dat') 
                     momdata = []
+                    #print(i)
                     momfile = open(basest_filename+ '/mom_' + str(i) + '_' + str(fil)+'.dat', 'r')
                     momdata = momfile.readlines()
                     momdata = np.delete(momdata,0)
                     momfile.close()
-                    p.append(np.zeros((3, len(data))))
+                    p = np.zeros((len(data),3))
                     for j in range(len(momdata)):
-                        for q in range(3):
-                            p[m][q][j] = momdata[j].split()[q]
-                    tempP = np.zeros((3))
+                        p[j] = momdata[j].split()
                     for j in range(len(momdata)):
-                        tot_px_rings[i] += p[m][0][j]
-                        tot_py_rings[i] += p[m][1][j]
-                        tot_pz_rings[i] += p[m][2][j]
-                    m += 1
+                        tot_px_rings[i] += p[j][0]
+                        tot_py_rings[i] += p[j][1]
+                        tot_pz_rings[i] += p[j][2]
+
+                m += 1
                 fil += 1
                
             else:
-                fil += 1
                 line_data = data
                 line_points = np.zeros((len(line_data),3),dtype=float)
                 for b in range(len(line_points)):
@@ -136,34 +140,38 @@ while(f<fmax):
                     j -= 1
                 N[i] += len(line_data)
 
-                if(f>0 and f%1==0):
-                    for datum in data:
-                        line_rx.append(datum.split()[0])
-                        line_ry.append(datum.split()[1])
+                for datum in data:
+                    line_rx.append(datum.split()[0])
+                    line_ry.append(datum.split()[1])
                 if os.path.isfile(basest_filename+ '/mom_' + str(i) + '_' + str(fil)+'.dat') == True:
                     momdata = []
                     momfile = open(basest_filename+ '/mom_' + str(i) + '_' + str(fil)+'.dat', 'r')
                     momdata = momfile.readlines()
                     momdata = np.delete(momdata,0)
                     momfile.close()
-                    p_line.append(np.zeros((3, len(data))))
+                    p_line = np.zeros((len(momdata),3))
                     for j in range(len(momdata)):
-                        for q in range(3):
-                            p_line[m][q][j] = momdata[j].split()[q]
+                        p_line[j] = momdata[j].split()
                     for j in range(len(momdata)):
-                        tot_px_line[i] += p_line[m][0][j]
-                        tot_py_line[i] += p_line[m][1][j]
-                        tot_pz_line[i] += p_line[m][2][j]
-                        for q in range(3):
-                            tot_p_line[i] += (p_line[m][q][j])**2
+                        tot_px_line[i] += p_line[j][0]
+                        tot_py_line[i] += p_line[j][1]
+                        tot_pz_line[i] += p_line[j][2]
+                    tot_p_line[i] = np.sqrt(tot_px_line[i]**2 + tot_py_line[i]**2 + tot_pz_line[i]**2)
+
+                fil += 1
         
         else:
             ring_L_t.append(L)
-            tot_p_rings[i] = np.sqrt(tot_p_rings[i])
-            tot_p_line[i] = np.sqrt(tot_p_line[i])
+            tot_p_rings[i] = np.sqrt(tot_px_rings[i]**2 + tot_py_rings[i]**2 + tot_pz_rings[i]**2)
             ring_length[i] = np.sqrt(ring_length[i])
             line_length[i] = np.sqrt(line_length[i])
             total_length[i] = ring_length[i] + line_length[i]
+            
+            total_p[i] += (tot_px_rings[i] + tot_px_line[i])**2
+            total_p[i] += (tot_py_rings[i] + tot_py_line[i])**2
+            total_p[i] += (tot_pz_rings[i] + tot_pz_line[i])**2
+            total_p[i] = np.sqrt(total_p[i])
+
             density[i] = total_length[i] / N[i]
             trajx.append(np.zeros((m)))
             trajy.append(np.zeros((m)))
@@ -192,24 +200,26 @@ if os.path.isfile(basest_filename+'/energy.dat') == True:
             totEkin[i] += Ekin[i][j]
             for k in range(i if i < smooth else smooth ):
                 totEkin_smooth[i] += Ekin[i-k][j] / smooth
-            
 
-fig = plt.figure(figsize=(8,6))
+fig = plt.figure(figsize=(8,8))
 ax = fig.add_subplot(221,aspect='equal')
 ax1 = fig.add_subplot(222)
 ax2 = fig.add_subplot(223)
 ax3 = fig.add_subplot(224)
+#ax4 = fig.add_subplot(325)
+#ax5 = fig.add_subplot(326)
+
 colors = plt.cm.gnuplot(np.linspace(0,0.8,f_ind))
 for a in range(len(trajx)):
-    ax.scatter(trajx[a][:], trajy[a][:], lw=0, s=3, alpha=0.5, marker='o', c=colors[a])
+    ax.scatter(trajy[a][:], trajx[a][:], lw=0, s=3, alpha=0.5, marker='o', c=colors[a])
 
 colors2 = plt.cm.gnuplot_r(np.linspace(0.2,1,len(line_rx)))
 line_rx = np.flipud(line_rx)
 line_ry = np.flipud(line_ry)
 ax.scatter(line_rx, line_ry, marker='o', s=2, alpha=0.2, lw=0.01, c=colors2)
 ax.autoscale(enable=False)
-ax.set_xlim(-8e-6,8e-6)
-ax.set_ylim(np.min(trajy[0]),8e-6)
+ax.set_xlim(-6e-6,6e-6)
+ax.set_ylim(-6e-6,6e-6)
 ax.set_xticklabels([])
 ax.set_yticklabels([])
 
@@ -227,26 +237,47 @@ ax2.plot(temp2)
 ax2.plot(temp3)
 ax2.plot(line_length,marker='')
 ax2.plot(ring_length,marker='')
-ax2.plot(total_length,marker='')
+ax2.plot(total_length,marker='',c='black')
 ax2.set_xlim(fstart,f_ind-1)
 ax2.set_ylim(0,1.2*np.max(total_length))
 
 if os.path.isfile(basest_filename+'/energy.dat') == True:
     ax3.plot(Ekin,marker='',alpha=0.5,lw=0.5)
     ax3.set_xlim(smooth,len(Ekin))
-    ax3.plot(totEkin,marker='',lw=0.5)
+    #ax3.plot(totEkin,marker='',lw=0.5,alpha=0.5, c='r')
     ax3.plot(totEkin_smooth,c='black',marker='',lw=1)
 
     ax3.set_yticks([0,totEkin[0]])
     ax3.axhline(0,c='k')
-
 if os.path.isfile(basest_filename+ '/mom_0_0.dat') == True:
-    ax1.plot(tot_px_rings)
-    ax1.plot(tot_py_rings)
-    ax1.plot(tot_pz_rings)
-    ax1.plot(np.sqrt(tot_px_rings**2+tot_py_rings**2+tot_pz_rings**2))
-ax5 = ax1.twinx()
-ax5.plot(N)
+    #ax1.plot(tot_px_rings,c='b')
+    #ax1.plot(tot_py_rings,c='g')
+    #ax1.plot(tot_pz_rings,c='r')
+    #ax1.plot(tot_px_line,alpha=0.5,lw=0.5)
+    #ax1.plot(tot_py_line,alpha=0.5,lw=0.5)
+    #ax1.plot(tot_pz_line,alpha=0.5,lw=0.5)
+    ax1.plot(tot_p_rings,alpha=0.5,lw=0.5)
+    ax1.plot(tot_p_line,alpha=0.5,lw=0.5)
+    ax1.plot(total_p, c='k',lw=1)
+    ax1.set_yticks([0,total_p[0]])
+    print(np.sqrt(total_p[0]/(2*np.pi)))
+    #ax1.set_yticklabels(['0','1'])
+    ax1.set_ylabel('Momentum $p/p_0$')
+# d = np.zeros(fmax)
+# for a in range(len(trajx)):
+#     d[a] = trajx[a]**2 + trajy[a]**2 + trajz[a]**2
+#     d[a] = np.sqrt(d[a])
+# ax5.plot(np.abs(trajz),lw=0.5,alpha=0.5)
+# ax5.plot(np.abs(trajx),lw=0.5,alpha=0.5)
+# ax5.plot(np.abs(trajy),lw=0.5,alpha=0.5)
+# ax5.plot(d,c='k')
+# ax5.set_yticks([d[0]])
+# ax5.set_yticklabels(['$d_0$'])
+# ax5.set_ylabel('Displacement from $O$')
+
+# ax6 = ax5.twinx()
+# ax6.plot(N)
+
 ax2.set_yticks([0,total_length[0]])
 ax2.set_yticklabels(['0','1'])
 ax3.set_yticklabels(['0','1'])
@@ -259,6 +290,3 @@ ax.axis('off')
 print('Saving image...')
 plt.savefig('trajectory.png')
 print('image saved.')
-
-
-
