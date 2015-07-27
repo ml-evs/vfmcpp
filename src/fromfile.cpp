@@ -35,10 +35,9 @@ void Tangle::Output(string filename, int i, int file_no){
 		momfile << i*mDt << "\n";
 		for(int i=0;i<(*current)->mN;i++){
 			vector <double> rxsp(3);
-			double length = sqrt(pow((*current)->mPoints[i]->mSPrime[0],2) + pow((*current)->mPoints[i]->mSPrime[1],2) + pow((*current)->mPoints[i]->mSPrime[2],2));
-			rxsp[0] = ((*current)->mPoints[i]->mPos[1] * (*current)->mPoints[i]->mSPrime[2] - (*current)->mPoints[i]->mPos[2] * (*current)->mPoints[i]->mSPrime[1])/length;
-			rxsp[1] = ((*current)->mPoints[i]->mPos[2] * (*current)->mPoints[i]->mSPrime[0] - (*current)->mPoints[i]->mPos[0] * (*current)->mPoints[i]->mSPrime[2])/length;
-			rxsp[2] = ((*current)->mPoints[i]->mPos[0] * (*current)->mPoints[i]->mSPrime[1] - (*current)->mPoints[i]->mPos[1] * (*current)->mPoints[i]->mSPrime[0])/length;
+			rxsp[0] = (*current)->mPoints[i]->mPos[1] * (*current)->mPoints[i]->mSegLast[2] - (*current)->mPoints[i]->mPos[2] * (*current)->mPoints[i]->mSegLast[1];
+			rxsp[1] = (*current)->mPoints[i]->mPos[2] * (*current)->mPoints[i]->mSegLast[0] - (*current)->mPoints[i]->mPos[0] * (*current)->mPoints[i]->mSegLast[2];
+			rxsp[2] = (*current)->mPoints[i]->mPos[0] * (*current)->mPoints[i]->mSegLast[1] - (*current)->mPoints[i]->mPos[1] * (*current)->mPoints[i]->mSegLast[0];
 			for(int q=0;q<3;q++){
 				EKin.back() += (*current)->mPoints[i]->mVel[q] * rxsp[q];
 				momfile << rxsp[q] << "\t";
