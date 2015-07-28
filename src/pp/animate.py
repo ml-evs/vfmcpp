@@ -101,6 +101,7 @@ def animate(i):
 
 
 	time_text.set_text('time = %.1f' % (times[i]*1e9)+ ' ns / %.1f' % (times[-1]*1e9) +' ns')
+	plt.pause(0.05)
 	fig.canvas.draw()
 	plt.draw()
 	return rings, time_text

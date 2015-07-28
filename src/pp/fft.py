@@ -9,7 +9,7 @@ kappa = 9.98e-8
 import matplotlib.pyplot as plt
 
 sigma_list = list()
-base_filename = '../../data/kin_test_p4'
+base_filename = '../../data/offset_15R/dat_-1.00'
 
 def init():
     for line in lines:
@@ -21,9 +21,9 @@ def animate(i):
     end = False
     J = 0
     while(end == False):
-        if os.path.isfile(base_filename+'/data_' + str(i) + '_' + str(J) + '.dat') == True:
+        if os.path.isfile(base_filename+'/data_' + str(i+150) + '_' + str(J) + '.dat') == True:
             data1 = []
-            datafile1 = open(base_filename+'/data_' + str(i) + '_' + str(J) + '.dat', 'r')
+            datafile1 = open(base_filename+'/data_' + str(i+150) + '_' + str(J) + '.dat', 'r')
             data1 = datafile1.readlines()
             data1 = np.delete(data1,0)
             if(data1[0] == data1[-1]):
@@ -62,7 +62,7 @@ lines += [l for l in ax2.plot([], [])]
 lines += [l for l in ax3.plot([], [])]
 
 
-ani = animation.FuncAnimation(fig, animate, repeat=False, frames = 250, interval = 1, blit=False)
+ani = animation.FuncAnimation(fig, animate, repeat=False, frames = 1, interval = 1, blit=False)
 
 ax.set_ylim(-1e-4,1e-4)
 ax2.set_ylim(-1e-4,1e-4)
