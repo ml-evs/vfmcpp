@@ -39,7 +39,6 @@ void Tangle::CalcVelocity(){
 				(*c)->mPoints[i]->mVel[q] += (*c)->mPoints[i]->mVelNL[q];   
 				(*c)->mPoints[i]->mVelNL[q] = 0;		
 			}
-			//cout << i << ", " << (*c)->mPoints[i]->mVel[0] << ", " << (*c)->mPoints[i]->mVel[1] << ", " << (*c)->mPoints[i]->mVel[2] << endl;   
 		}
 	}
 }
