@@ -138,6 +138,22 @@ string Tangle::Initialise(string runfile){
 			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;
 			line.clear();
 		}
+		/* read string from file */
+		else if(line.substr(0,4) == "lfil"){
+			put.clear();
+			input.clear();
+			convert.clear();
+			string base_filename;
+			cout << "\t    string";
+			mLog << StringTime() << "\t\t\t\t\tstring";
+			input << line.substr(5);
+			input >> base_filename;
+			base_filename = "../" + base_filename;
+			mTangle.push_back(new String(base_filename));
+			cout << " read from files in " << base_filename << endl;
+			mLog << " read from files in " << base_filename << endl;
+			line.clear();
+		}
 		/* add a charge */
 		else if(line.substr(0,4) == "q_pt"){
 			put.clear();

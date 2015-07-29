@@ -5,6 +5,9 @@
 #include <vector>
 #include <cmath>
 #include <iostream>
+#include <sstream>
+#include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -88,8 +91,12 @@ public:
 			mPoints[i]->mPos[2] = z;
 			mPoints[i]->mPos[dir] += i * mL / mN;
 		}
-		for (int i = 1; i != mN; i++){ (mPoints[i])->mPrev = mPoints[i - 1]; }
-		for (int i = 0; i != mN-1; i++){ (mPoints[i])->mNext = mPoints[i + 1]; }
+		for(int i(1);i!=mN;i++){
+			(mPoints[i])->mPrev = mPoints[i-1];
+		}
+		for(int i(0);i!=mN-1;i++){
+			(mPoints[i])->mNext = mPoints[i+1];
+		}
 		/* add dummy points to the ends */
 		mPoints[mN-1]->mNext = mDummies[0];
 		mDummies[0]->mPrev = mPoints[mN-1];
@@ -103,6 +110,95 @@ public:
 		CalcMeshLengths();
 		/* label dummies */
 		for (int i=0; i != 4; i++){
+			mDummies[i]->mFlagDummy = 1;
+		}
+		/* calculate the positions of the dummy points */
+		CalcDummy();
+		CalcMeshLengths();
+		/* endpoints should remain stationary */
+		mPoints[0]->mFlagFilled = 5;
+        mPoints[mN-1]->mFlagFilled = 5;
+    }
+    /* read string from files named pos.dat and vel.dat
+       from folder provided in input file */
+    String(string base_filename){
+		mFlagType = 1;
+		for (int i=0; i!=4; i++){
+			mDummies.push_back(new Point());
+		}
+		string pos_filename(base_filename + "/pos.dat");
+		string vel_filename(base_filename + "/vel.dat");
+		string line, put;
+		stringstream input, convert;
+		char* char_pos_filename = (char*)pos_filename.c_str();
+		char* char_vel_filename = (char*)vel_filename.c_str();
+		ifstream posfile(char_pos_filename);
+		ifstream velfile(char_vel_filename);
+		if(!posfile.good()){cout << "Line file not found, exiting... " << endl; exit(1);}
+		if(!velfile.good()){cout << "Line velocity file not found, exiting... " << endl; exit(1);}
+		getline(posfile, line);
+		getline(velfile, line);
+		int b(0);
+		while(posfile){
+			put.clear();
+			input.clear();
+			convert.clear();
+			line.clear();
+			getline(posfile, line);
+			input << line;
+			if(line != ""){
+				mPoints.push_back(new Point());
+				for(int j(0);j<3;j++){
+					convert.clear();
+					getline(input, put, '\t');
+					convert << put;
+					convert >> mPoints[b]->mPos[j];
+					if(input.eof()) break;
+				}
+				b++;
+			}
+			else{break;}
+		}
+		b = 0;
+		while(velfile){
+			put.clear();
+			input.clear();
+			convert.clear();
+			line.clear();
+			getline(velfile, line);
+			input << line;
+			if(line != ""){
+				for(int j(0);j<3;j++){
+					convert.clear();
+					getline(input, put, '\t');
+					convert << put;
+					convert >> mPoints[b]->mVel[j];
+					if(input.eof()) break;
+				}
+				b++;
+			}
+			else{break;}
+		}
+		mN = mPoints.size();
+		for(int i(1);i!=mN;i++){
+			(mPoints[i])->mPrev = mPoints[i-1];
+		}
+		for(int i(0);i!=mN-1;i++){
+			(mPoints[i])->mNext = mPoints[i+1];
+		}
+		/* add dummy points to the ends */
+		mPoints[mN-1]->mNext = mDummies[0];
+		mDummies[0]->mPrev = mPoints[mN-1];
+		mDummies[0]->mNext = mDummies[1];
+		mDummies[1]->mPrev = mDummies[0];
+		mPoints[0]->mPrev = mDummies[2];
+		mDummies[2]->mNext = mPoints[0];
+		mDummies[2]->mPrev = mDummies[3];
+		mDummies[3]->mNext = mDummies[2];
+
+		CalcMeshLengths();
+		/* label dummies */
+		for(int i(0);i!=4;i++){
 			mDummies[i]->mFlagDummy = 1;
 		}
 		/* calculate the positions of the dummy points */
