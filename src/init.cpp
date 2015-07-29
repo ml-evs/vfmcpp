@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -13,8 +14,9 @@ string Tangle::Initialise(string runfile){
   if(runfile == "NULL"){
   	runfile = "run.in";
   }
-  ifstream infile(runfile);
-	string line;
+    char* char_runfile = (char*)runfile.c_str();
+    ifstream infile(char_runfile);
+    string line;
 	stringstream input, convert;
 	string put;
 	string filename;
@@ -79,14 +81,13 @@ string Tangle::Initialise(string runfile){
 			input.clear();
 			input << line.substr(5);
 			input >> res;
-			mDr = float(res); // set simulation resolution in tangle
+			mDr = double(res); // set simulation resolution in tangle
 			mDt = pow((mDr/2),2)/(9.98e-8*log(mDr/(2*PI*1.3e-10)));
 			mDt /= 25; 	// Baggaley, Barenghi PRB 2010
 			cout << "\t    spatial resolution = "<< mDr << " m" << endl;
 			cout << "\t    time-step = " << mDt << " s\n\n";
 			mLog << StringTime() << "\t\t\t\t\tspatial resolution = "<< mDr << " m" << endl;
 			mLog << StringTime() << "\t\t\t\t\ttime-step = " << mDt << " s\n";
-			mDr *= 4.0/3.0; // augments resolution for mesh adjust stability
 		}
 		/* define a ring */
 		else if(line.substr(0,4) == "ring"){
@@ -157,6 +158,7 @@ string Tangle::Initialise(string runfile){
 			mLog << param[0] << " with size " << param[2] << " C, at mesh point " << param[1] << ". " << endl;
 		}
 	}
+	mDr *= 4.0/3.0; // augments resolution for mesh adjust stability
 	infile.close();
 	return filename;
 }

@@ -17,13 +17,9 @@ def getfiles():
 	k = 0
 	j = 0
 	jmax = 0
-	if len(sys.argv)!=1:
-		base_filename = '../../data/' + str(sys.argv[1]) + '/data_'
-	else:
-		data_folder = raw_input('Enter data folder path:')
-		base_filename = data_folder + '/data_'
+	base_filename = '../../data/ring_ring_perp/data_'
 
-	print base_filename	
+	#print base_filename	
 	end = False
 	end2 = False
 	while(end==False):
@@ -45,7 +41,7 @@ def getfiles():
 						end2 = True
 		else:
 			end = True
-			print str(len(files)) + ' files read successfully. ' 
+			#print str(len(files)) + ' files read successfully. ' 
 	return base_filename, files, times, jmax
 
 def calcimpulse(jmax, impulse_files, i):
@@ -104,7 +100,7 @@ def calcimpulse(jmax, impulse_files, i):
 		for i in range(len(r[m])):
 			rxeps[m][i] = np.cross(r[m][i], l[m][i])	
 			for q in range(3):
-			#	print m, i, q
+			#	#print m, i, q
 				p[m][q] += rxeps[m][i][q]
 				
 	p *= kappa / 2	
@@ -119,7 +115,7 @@ def calcimpulse(jmax, impulse_files, i):
 
 	# T = 0.0
 
-	# A = []
+# A = []
 	# B = []
 	# C = []
 	# D = []
@@ -304,9 +300,9 @@ for i in range(jmax):
 
 # ax.plot(impulse_times, p2, c='b',alpha=0.7, linewidth=0.5)# s=35)
 
-ringtot = ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=2, label='total impulse')
-ringtot = ax.plot(impulse_times, p_total_z, c='#363347',alpha=0.7,linewidth=2, label='total z impulse')
-linetot = ax2.plot(impulse_times, length, c='c',linewidth=0.5, label = 'line length')
+#ringtot = ax.plot(impulse_times, p_total, c='k',alpha=0.9,linewidth=2, label='total impulse')
+#ringtot = ax.plot(impulse_times, p_total_z, c='#363347',alpha=0.7,linewidth=2, label='total z impulse')
+#linetot = ax2.plot(impulse_times, length, c='c',linewidth=0.5, label = 'line length')
 #ax3.plot(impulse_times, points, c='y', linewidth=0.5)
 handles, labels = ax.get_legend_handles_labels()
 #handles2, labels2 = ax2.get_legend_handles_labels()

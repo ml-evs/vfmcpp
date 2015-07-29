@@ -19,7 +19,7 @@ bool Tangle::MeshAdjust(){
             R = sqrt(R);
             R = 1/R;
             /* point deletion for smoothing and proximity*/
-            if((1/R)>1.9/dr || (*c)->mPoints[k]->mSegLength < 0.5*dr){
+            if((1/R)>1.99/dr || (*c)->mPoints[k]->mSegLength < 0.5*dr){
                 //cout << "\nRemoving point at " << (*c)->mPoints[k]->mPos[0] << ", " << (*c)->mPoints[k]->mPos[1] << ", " << (*c)->mPoints[k]->mPos[2] << endl;
                 mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tremoving point at " << (*c)->mPoints[k]->mPos[0] << ", " << (*c)->mPoints[k]->mPos[1] << ", " << (*c)->mPoints[k]->mPos[2] << " ";
                 if((1/R)>1.9/dr){mLog << "for curvature ";}

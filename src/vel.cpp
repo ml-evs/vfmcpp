@@ -6,12 +6,11 @@
 
 using namespace std;
 
+const double	kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0;
+
 /* calculate velocity at each point from s' and s'' eq(2) from Hanninen and Baggaley PNAS 111 p4667 (2014) */
 void Tangle::CalcVelocity(){
 	/* circulation quantum, core radius */
-	double	kappa = 9.98e-8, a0=1.3e-10, a1=exp(0.5)*a0;
-	
-	CalcVelocityNL();			// calculate non-local contributions
 	vector <Filament*>::iterator b, c, e;
 	b = mTangle.begin(); e = mTangle.end();
 	for(c=b; c!=e; c++){
@@ -40,7 +39,6 @@ void Tangle::CalcVelocity(){
 				(*c)->mPoints[i]->mVel[q] += (*c)->mPoints[i]->mVelNL[q];   
 				(*c)->mPoints[i]->mVelNL[q] = 0;		
 			}
-			//cout << i << ", " << (*c)->mPoints[i]->mVel[0] << ", " << (*c)->mPoints[i]->mVel[1] << ", " << (*c)->mPoints[i]->mVel[2] << endl;   
 		}
 	}
 }

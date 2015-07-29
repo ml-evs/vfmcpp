@@ -108,9 +108,10 @@ public:
 		/* calculate the positions of the dummy points */
 		CalcDummy();
 		CalcMeshLengths();
-		/* starting point should remain stationary */
+		/* endpoints should remain stationary */
 		mPoints[0]->mFlagFilled = 5;
-	}
+        mPoints[mN-1]->mFlagFilled = 5;
+    }
 };
 
 #endif

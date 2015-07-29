@@ -43,6 +43,8 @@ OPTIONS:
 		Recompile the code.
 	-d
 		Run the code inside the gdb debugger.
+	-b 
+		Run benchmarking and profiling versions.
 	-h
 		Show usage information.
 
@@ -94,19 +96,32 @@ EXAMPLE FILE:
 EOF
 }
 
-COMPILE=0
+CPILE=0
 DEBUG=0
-
+BENCH=0
 no=$#
 
 cwd=$(pwd)
 
 while true
 do
-	case "$3" in
-		-c|--compile) COMPILE=1; shift;;
+	case "$4" in
 		-h|--help) usage; shift;;
+		-c|--cpile) CPILE=1; shift;;
 		-d|--debug) DEBUG=1; shift;;
+        -b|--bench) BENCH=1; shift;;
+		-*) echo "invalid flag, showing help"; usage; shift;; 
+		*) in=$4; break;;	
+	esac
+done
+
+while true
+do
+	case "$3" in
+		-h|--help) usage; shift;;
+		-c|--cpile) CPILE=1; shift;;
+		-d|--debug) DEBUG=1; shift;;
+        -b|--bench) BENCH=1; shift;;
 		-*) echo "invalid flag, showing help"; usage; shift;; 
 		*) in=$3; break;;	
 	esac
@@ -115,9 +130,10 @@ done
 while true
 do
 	case "$2" in
-		-c|--compile) COMPILE=1; shift;;
 		-h|--help) usage; shift;;
+		-c|--cpile) CPILE=1; shift;;
 		-d|--debug) DEBUG=1; shift;;
+        -b|--bench) BENCH=1; shift;;
 		-*) echo "invalid flag, showing help"; usage; shift;; 
 		*) in=$2; break;;	
 	esac
@@ -126,9 +142,10 @@ done
 while true
 do
 	case "$1" in
-		-c|--compile) COMPILE=1; shift;;
 		-h|--help) usage; shift;;
+		-c|--cpile) CPILE=1; shift;;
 		-d|--debug) DEBUG=1; shift;;
+        -b|--bench) BENCH=1; shift;;
 		-*) echo "invalid flag, showing help"; usage; shift;; 
 		*) in=$1; break;;	
 	esac
@@ -160,17 +177,21 @@ if [ ! -d "$dir" ]; then
 	mkdir "$dir/snapshot"
 fi
 
-
-
-if [ $COMPILE -eq 1 ]; then
+if [ $CPILE -eq 1 ]; then
 	echo " ${blu} -c flag specified, recompiling source...${red}"
 	make
 	echo " ${blu} success!\n\n"
 fi
 
+if [ $BENCH -eq 1 ]; then
+	echo " ${blu} -b flag specified, running benchmark...${red}"
+	echo " ${blu} running executable in bin/chmarking/icpc"
+	cd "bin/chmarking/icpc-autovec"
+fi
 
-
-cd "bin"
+if [ $BENCH -eq 0 ]; then
+	cd "bin"
+fi
 
 echo "  ${gre}#########################################################################"
 echo "  ${gre}#                                                                       #"
@@ -191,9 +212,20 @@ echo "  ${gre}##################################################################
 
 
 if [ $DEBUG -eq 1 ]; then
-	gdb -ex run --args vfmcpp "../$in"
+	if [ $BENCH -eq 1 ]; then
+		gdb -ex run --args vfmcpp "../../../$in"
+	fi
+	if [ $BENCH -eq 0 ]; then
+		gdb -ex run --args vfmcpp "../$in"
+	fi
+
 fi
 
 if [ ! $DEBUG -eq 1 ]; then
-	./vfmcpp "../$in"
+	if [ $BENCH -eq 1 ]; then
+		./vfmcpp "../../../$in"
+	fi
+	if [ $BENCH -eq 0 ]; then
+		./vfmcpp "../$in"
+	fi
 fi

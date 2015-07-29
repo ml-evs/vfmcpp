@@ -1,0 +1,6 @@
+path ~/vfmcpp/data/gpp_benchmark
+
+time 0.2e-3
+resl 6.28e-8
+ring 1e-6 -.6e-6 -1e-6 0 1
+line 10e-6 0 0 -5e-6 2

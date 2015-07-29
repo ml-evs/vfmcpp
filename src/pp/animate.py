@@ -35,14 +35,14 @@ def getfiles():
 		if os.path.isfile(filename_k+"_0.dat") == True:
 			file = open(filename_k+'_0.dat', 'r')
 			line = file.readline()
-			if f==0:
-				for i in range(35):
-					times.append(float(line))
-					files.append(filename_k)
-				f=1
-			else:
-				times.append(float(line))
-				files.append(filename_k)
+			# if f==0:
+			# 	for i in range(35):
+			# 		times.append(float(line))
+			# 		files.append(filename_k)
+			# 	f=1
+			#else:
+			times.append(float(line))
+			files.append(filename_k)
 			k+=1
 			while(end2 == False):
 				if os.path.isfile(filename_k+"_"+str(j)+".dat") == True:
@@ -75,7 +75,7 @@ def animate(i):
 			file = open(files[i]+'_'+str(m)+'.dat', 'r')
 			line = file.readline()
 			line = file.readline() #skip first line
-			while line: 
+			while line:
 				data.append(line)
 				line = file.readline()
 			file.close()
@@ -97,10 +97,11 @@ def animate(i):
 	z_av = np.mean(r[q_biggest][:,2])
 	for q in range (len(r)):
 		rings[q].set_data(r[q][:,0], r[q][:,1])
-		rings[q].set_3d_properties(r[q][:,2]-z_av)
+		rings[q].set_3d_properties(r[q][:,2])#-z_av)
 
 
 	time_text.set_text('time = %.1f' % (times[i]*1e9)+ ' ns / %.1f' % (times[-1]*1e9) +' ns')
+	plt.pause(0.05)
 	fig.canvas.draw()
 	plt.draw()
 	return rings, time_text
@@ -114,7 +115,7 @@ else:
 
 
 fig = plt.figure(facecolor='None', edgecolor='None',figsize=(4,4))
-ax = fig.add_subplot(111, 
+ax = fig.add_subplot(111,
  	aspect='equal',
  	axisbg='None',
  	xticks=[], yticks=[], zticks=[],
@@ -127,12 +128,13 @@ rings = []
 print (jmax)
 colors = plt.cm.PuOr(np.linspace(0,1,2))
 style = '-'
-if Analysis == 'p':
-	style = '-'
+#if Analysis == 'p':
+#	style = '-'
 
 for k in range (jmax+2):
 	rings += [l for c in colors for l in ax.plot([], [], [], style, c=np.random.rand(3,1), alpha = 0.9, linewidth=2, markersize=5, markerfacecolor=c, markeredgecolor=c)]
-time_text = ax.text(0, 0, 0,'', transform=ax.transAxes, color='w')
+	#rings += [l for c in colors for l in ax.plot([], [], [], style, c='k', alpha = 1, linewidth=3, markersize=5, markerfacecolor='k', markeredgecolor='k')]
+time_text = ax.text(0, 0, 0,'', transform=ax.transAxes, color='k')
 ax.set_xlim3d((-3e-6,3e-6))
 ax.set_ylim3d((-3e-6,3e-6))
 ax.set_zlim3d((-3e-6,3e-6))

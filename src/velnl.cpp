@@ -46,7 +46,7 @@ void Tangle::CalcVelocityNL(){
 						pxq[0] = p[1]*q[2] - p[2]*q[1];
 						pxq[1] = p[2]*q[0] - p[0]*q[2];
 						pxq[2] = p[0]*q[1] - p[1]*q[0];
-						double sqrt_ppqq2pq = sqrt(pp+qq+2*pq);
+						//double sqrt_ppqq2pq = sqrt(pp+qq+2*pq);
 						double sqrt_pp = sqrt(pp);
 						double sqrt_qq = sqrt(qq);
 						double A = sqrt_pp;

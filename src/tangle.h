@@ -7,6 +7,7 @@
 #include <fstream>
 #include <ctime>
 #include <iomanip>
+#include <array>
 
 using namespace std;
 
@@ -56,15 +57,14 @@ public:
 	int ReconnectionTest();
 	void CalcVelocity();
 	void CalcField();
-	void FromFile(string base); 	// mostly for debug purposes
 	void Output(string filename, int i, int file_no);
 	const string StringTime() {
-    time_t     now = time(0);
-    struct tm  tstruct;
-    char       buf[80];
-    tstruct = *localtime(&now);
-    strftime(buf, sizeof(buf), "%m-%d.%X", &tstruct);
-    return buf;
+	    time_t     now = time(0);
+	    struct tm  tstruct;
+	    char       buf[80];
+	    tstruct = *localtime(&now);
+	    strftime(buf, sizeof(buf), "%m-%d.%X", &tstruct);
+	    return buf;
 	}
 };
 
