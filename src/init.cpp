@@ -116,14 +116,14 @@ string Tangle::Initialise(string runfile){
 			line.clear();
 		}
 		/* define a ring with delayed entry */
-		else if(line.substr(0,4) == "delay_ring"){
+		else if(line.substr(0,10) == "delay_ring"){
 			put.clear();
 			input.clear();
 			convert.clear();
 			cout << "\t   delayed ring";
 			mLog << StringTime() << "\t\t\t\t\tring";
-			input << line.substr(5);
-			for(int i(0);i<5;i++){
+			input << line.substr(11);
+			for(int i(0);i<6;i++){
 				convert.clear();
 				getline(input, put, ' ');
 				convert << put;
