@@ -35,12 +35,11 @@ def getfiles():
 		if os.path.isfile(filename_k+"_0.dat") == True:
 			file = open(filename_k+'_0.dat', 'r')
 			line = file.readline()
-			# if f==0:
-			# 	for i in range(35):
-			# 		times.append(float(line))
-			# 		files.append(filename_k)
-			# 	f=1
-			#else:
+			if f==0:
+				for i in range(150):
+					times.append(float(line))
+					files.append(filename_k)
+				f=1
 			times.append(float(line))
 			files.append(filename_k)
 			k+=1
@@ -101,7 +100,7 @@ def animate(i):
 
 
 	time_text.set_text('time = %.1f' % (times[i]*1e9)+ ' ns / %.1f' % (times[-1]*1e9) +' ns')
-	plt.pause(0.05)
+	#plt.pause(0.05)
 	fig.canvas.draw()
 	plt.draw()
 	return rings, time_text
@@ -132,7 +131,7 @@ style = '-'
 #	style = '-'
 
 for k in range (jmax+2):
-	rings += [l for c in colors for l in ax.plot([], [], [], style, c=np.random.rand(3,1), alpha = 0.9, linewidth=2, markersize=5, markerfacecolor=c, markeredgecolor=c)]
+	rings += [l for c in colors for l in ax.plot([], [], [], style, c=np.random.rand(3,1), alpha = 0.9, linewidth=3, markersize=5, markerfacecolor=c, markeredgecolor=c)]
 	#rings += [l for c in colors for l in ax.plot([], [], [], style, c='k', alpha = 1, linewidth=3, markersize=5, markerfacecolor='k', markeredgecolor='k')]
 time_text = ax.text(0, 0, 0,'', transform=ax.transAxes, color='k')
 ax.set_xlim3d((-3e-6,3e-6))
@@ -154,4 +153,4 @@ elif Analysis == ('g' or 'm'):
 		ani.save(filename+'.gif', writer='imagemagick', fps=20, dpi=100)
 
 	elif Analysis == 'm':
-		ani.save(filename+'.mp4', fps=20, dpi=500)
+		ani.save(filename+'.mp4', writer='ffmpeg',fps=20, dpi=500)

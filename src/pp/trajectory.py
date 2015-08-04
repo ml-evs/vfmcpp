@@ -6,10 +6,10 @@ import matplotlib.pyplot as plt
 import sys
 
 #basest_filename = '../../data/offset_15R_hires/dat_-.8'
-#basest_filename = '../../data/offset_15R/dat_-.8'
+basest_filename = '../../data/offset_15R/dat_-.72'
 #basest_filename = '../../data/kin_test_0'
 #basest_filename = '../../data/kin_test_8'
-basest_filename = '../../data/kin_test_p4'
+#basest_filename = '../../data/kin_test_p4'
 #basest_filename = '../../data/ring_ring_perp_norm'
 
 kappa = 9.98e-8

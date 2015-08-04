@@ -1,11 +1,10 @@
 import os.path
 import numpy as np
 import matplotlib as matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import sys
 
-base_filename = '../../data/offset_15R/'
+base_filename = '../../data/offset_15R_distorted_high/'
 
 def getfiles(base_filename):
 	files = list()
@@ -45,6 +44,7 @@ def data_read(files, times, jmax):
 	trajx = []
 	trajy = []
 	trajz = []
+	alpha = []
 	line_rx = []
 	line_ry = []
 	while(f<len(files)):
@@ -77,19 +77,30 @@ def data_read(files, times, jmax):
 				trajx.append(np.zeros((m)))
 				trajy.append(np.zeros((m)))
 				trajz.append(np.zeros((m)))
+				alpha.append(np.zeros((m)))
 				for q in range(m):
-					trajx[i][q] = np.mean(r[q][0][:])
-					trajy[i][q] = np.mean(r[q][1][:])
-					trajz[i][q] = np.mean(r[q][2][:])
-				i += 1
-				f += 1
-				end = True
-	return trajx, trajy, line_rx, line_ry
+					length = np.sqrt(np.mean(r[q][0][:])**2 + np.mean(r[q][1][:])**2 + np.mean(r[q][2][:])**2)
+					trajx[i][q] = np.mean(r[q][0][:]) / length
+					if(f!=0):
+						trajy[i][q] = np.mean(r[q][1][:]) / length
+						alpha[i][q] = 1
+					else:
+						trajy[i][q] = -1
+						alpha[i][q] = 0.5
+					trajz[i][q] = np.mean(r[q][2][:]) / length
 
-def add_to_plot(fig, ax, trajx, trajy, line_rx, line_ry,color):
+				i += 1
+				f += len(files)-1
+				end = True
+	return trajx, trajy, alpha
+
+def add_to_plot(fig, ax, trajx, trajy, alpha, color):
 	#colors = plt.cm.gnuplot(np.linspace(0,0.8,len(trajx)))
 	for a in range(len(trajx)):
-		ax.plot(trajx[a][:], trajy[a][:], linewidth=0, markersize=4, marker='o', alpha=0.5, c=color)
+		for b in range(len(trajx[a])):
+			ax.plot([0,trajx[a][b]],[0, trajy[a][b]], c=color,lw=0.4,alpha=alpha[a][b])
+		ax.plot(trajx[a][:], trajy[a][:], lw=0,markersize=4, markeredgewidth=0.4, marker='o', alpha=0.8, c=color, zorder=10)
+
 	#colors2 = plt.cm.gnuplot_r(np.linspace(0.2,1,len(line_rx)))
 	#line_rx = np.flipud(line_rx)
 	#line_ry = np.flipud(line_ry)
@@ -97,7 +108,7 @@ def add_to_plot(fig, ax, trajx, trajy, line_rx, line_ry,color):
 	return fig, ax
 
 
-fig = plt.figure(figsize=(6,13),facecolor='k')
+fig = plt.figure(figsize=(6,8),facecolor='k')
 ax = fig.add_subplot(111,aspect='equal',axisbg='k')
 
 
@@ -123,22 +134,22 @@ for a in range(len(folder_list)):
 
 folder_list = temp_list
 
-colors = plt.cm.gnuplot(np.linspace(0,0.8,len(folder_list)))
+colors = plt.cm.seismic_r(np.linspace(0.1,0.9,len(folder_list)))
 a = 0
 while(a<len(folder_list)):
 	filename = base_filename + folder_list[a] + "/data_"
 	files, times, jmax = getfiles(filename)
-	trajx, trajy, line_rx, line_ry = data_read(files, times, jmax)
-	fig, ax  = add_to_plot(fig, ax, trajx, trajy, line_rx, line_ry, colors[a])
+	trajx, trajy, alpha = data_read(files, times, jmax)
+	fig, ax  = add_to_plot(fig, ax, trajx, trajy, alpha, colors[a])
 	a += 1
 
-ax.set_xlim(-5e-6,5e-6)
-ax.set_ylim(-6e-6,10e-6)
+ax.set_xlim(-0.5,1.1)
+ax.set_ylim(-1.1,1.1)
 ax.set_xticklabels([])
 ax.set_yticklabels([])
 ax.axis('off')
 print('Saving image...')
-plt.savefig('multi_trajectory.png')
+plt.savefig(base_filename+'multi_trajectory.png', facecolor='k', edgecolor='k', dpi=250)
 #plt.show()
 print('image saved.')
 

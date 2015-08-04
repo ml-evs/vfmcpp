@@ -8,7 +8,7 @@ kappa = 9.98e-8
 import matplotlib.pyplot as plt
 
 sigma_list = list()
-base_filename = '../../data/offset_15R/'
+base_filename = '../../data/offset_15R_distorted_low/'
 for root, dirs, files in os.walk(base_filename):
     for name in dirs:
         if name[0] != 's':
@@ -34,11 +34,12 @@ for sigma in sigma_list:
                     int_dat = int(name.split('_')[1])
                 if int_dat > lastdat:
                     lastdat = int_dat
-        lastdat = 150
+        #lastdat = 600
         log = []
         logfile = open(base_filename+sigma+'/events.log', 'r')
         log = logfile.readlines()
         log = log[-1].split('\t')
+        print(sigma)
         if(log[0:14]!='number of loop'):
             killed[index] = int(log[-1].split(' ')[-1])
         end = False
@@ -101,23 +102,23 @@ line_length = line_length[inds]
 sigma_array = sigma_array[inds]
 killed = killed[inds]
 
-fig = plt.figure(figsize=(5,5))
+fig = plt.figure(figsize=(10,8))
 ax = fig.add_subplot(111)
 p = plt.axvspan(-2, -0.7, facecolor='y', alpha=0.15)
 p = plt.axvspan(1.44, 2, facecolor='y', alpha=0.15)
 p = plt.axvspan(1.00, 1.44, facecolor='b', alpha=0.15)
-p = plt.axvspan(0.44, 1.00, facecolor='r', alpha=0.15)
-p = plt.axvspan(-0.7, 0.44, facecolor='g', alpha=0.15)
+p = plt.axvspan(0.56, 1.00, facecolor='r', alpha=0.15)
+p = plt.axvspan(-0.7, 0.56, facecolor='g', alpha=0.15)
 
 sigma_array_slice = np.linspace(-1,1,25)
 sigma_array_slice *= 1e-6
 theory = 2*np.sqrt((1e-6**2 - sigma_array_slice**2)) + 2*1e-6*np.arccos(sigma_array_slice/1e-6)
 
-ax.plot(-sigma_array, 1e6*(line_length+circumference),color='black', alpha=1,label='total length')
-ax.plot(-sigma_array, 1e6*circumference,       color='blue', alpha=1, label='circumference of rings')
-ax.plot(-sigma_array, 1e6*line_length, color='red', alpha=1, label='length of line')
-ax.plot(-sigma_array, 1e6*np.sqrt(2*np.pi*impulse_rings), color='green', alpha=1, label='effective circumference of rings')
-ax.plot(1e6*sigma_array_slice, 1e6*theory, linestyle='--', c='r')
+ax.plot(-sigma_array, 1e6*(line_length+circumference),color='black', alpha=1,label='total length', lw=1.5, marker='o')
+ax.plot(-sigma_array, 1e6*circumference,       color='blue', alpha=1, label='length around rings', lw=1.5, marker='o')
+ax.plot(-sigma_array, 1e6*line_length, color='red', alpha=1, label='length of line', lw=1.5, marker='o')
+ax.plot(-sigma_array, 1e6*np.sqrt(2*np.pi*impulse_rings), color='green', alpha=1, label='effective circumference of rings', lw=1.5, marker='o')
+ax.plot(1e6*sigma_array_slice, 1e6*theory, linestyle='--', c='magenta',label='geometric reconnection', lw=1.5)
 from matplotlib.font_manager import FontProperties
 fontP = FontProperties()
 fontP.set_size('small')
@@ -125,18 +126,18 @@ ax.legend(prop = fontP,loc=2)
 ax.set_xlabel('Impact parameter ($\mu\\mathrm{m}$)')
 ax.set_ylabel('Line length ($\mu\\mathrm{m}$)')
 ax.set_xlim(-2,2)
-ax.set_yticks([1e6*(line_length[0]+circumference[0]),1e6*line_length[0], 1e6*circumference[0], 0.5e6*(line_length[0]+circumference[0])])
-ax.set_yticklabels(['$L_0$', '$l_0$', '$2\pi r_0$', '$L_0/2$'])
+#ax.set_yticks([1e6*(line_length[0]+circumference[0]),1e6*line_length[0], 1e6*circumference[0], 0.5e6*(line_length[0]+circumference[0])])
+#ax.set_yticklabels(['$L_0$', '$l_0$', '$2\pi r_0$', '$L_0/2$'])
 # ax2 = ax.twinx()
 # ax2.set_yticks([1e6*(line_length[0]+circumference[0]),1e6*line_length[0], 1e6*circumference[0], 0.5e6*(line_length[0]+circumference[0])])
 # ax2.set_yticklabels(['$L_0$', '$l_0$', '$2\pi r_0$', '$L_0/2$'])
-ax.set_ylim(0,28)
+ax.set_ylim(0,1.5e6*(line_length[0]+circumference[0]))
 # ax2.set_ylim(0,26)
 
 ax3 = ax.twinx()
-ax3.bar(-sigma_array, killed, 0.04, color='k', alpha=0.2)
+ax3.bar(-sigma_array-0.02, killed, 0.04, color='k', alpha=0.2)
 ax3.axhline(2,alpha=0.2,color='k')
-ax3.set_ylim(-20, np.max(killed)+25)
+ax3.set_ylim(-18, np.max(killed)+30)
 ax3.set_yticks([0, 2,np.max(killed)])
 ax3.set_ylabel('Number of small loops killed')
 ax3.set_xlim(-2,2)
