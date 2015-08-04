@@ -22,7 +22,7 @@ string Tangle::Initialise(string runfile){
 	string filename;
 	double t_total;
 	double res;
-	vector <double> param(5);
+	vector <double> param(6);
 	cout << "\t - - - - - - -    INITIALISING TANGLE    - - - - - - - -\n\n";
 	cout << "\t    init path: " << runfile << endl;
 	while(infile){
@@ -112,6 +112,35 @@ string Tangle::Initialise(string runfile){
 			if(param[4]==0){cout << "x direction." << endl; mLog << "x direction." << endl;}
 			if(param[4]==1){cout << "y direction." << endl; mLog << "y direction." << endl;}
 			if(param[4]==2){cout << "z direction." << endl; mLog << "z direction." << endl;}
+			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;
+			line.clear();
+		}
+		/* define a ring with delayed entry */
+		else if(line.substr(0,4) == "delay_ring"){
+			put.clear();
+			input.clear();
+			convert.clear();
+			cout << "\t   delayed ring";
+			mLog << StringTime() << "\t\t\t\t\tring";
+			input << line.substr(5);
+			for(int i(0);i<5;i++){
+				convert.clear();
+				getline(input, put, ' ');
+				convert << put;
+				convert >> param[i];
+				if(input.eof()) break;
+			}
+			mDelayFlag = true;
+			mDelayedTimes.push_back(param[5]*1e-3);
+			mDelayed.push_back(new Ring(mDr, param[0], param[1], param[2], param[3], param[4]));
+			cout << " r = " << param[0] << " m, p = (" << param[1];
+			mLog << " r = " << param[0] << " m, p = (" << param[1];
+			cout << ", " << param[2] << ", " << param[3] << ") m, aligned in ";
+			mLog << ", " << param[2] << ", " << param[3] << ") m, aligned in ";
+			if(param[4]==0){cout << "x direction." << endl; mLog << "x direction,";}
+			if(param[4]==1){cout << "y direction." << endl; mLog << "y direction,";}
+			if(param[4]==2){cout << "z direction." << endl; mLog << "z direction,";}
+			cout << " delayed by " << param[5] << " ms." << endl;
 			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;
 			line.clear();
 		}

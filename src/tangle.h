@@ -14,7 +14,10 @@ using namespace std;
 class Tangle{
 public:
 	/* member data */
-	vector <Filament*> 	mTangle;
+	vector <Filament*> 	mTangle; // store all active filaments
+	vector <Filament*> 	mDelayed; // store filaments to be added later
+	vector <double> 	mDelayedTimes; // store times to add filaments
+	bool mDelayFlag;
 	int mN_f;	// number of timesteps between saves
 	int mN_slow; // number of "slow-mo" timesteps for file save
 	int mN_recon; // number of reconnections
@@ -29,7 +32,7 @@ public:
 	ofstream mLog; // log file records all events
 	/* member functions */
 	Tangle(){
-		mN_recon = 0; mN_loopkills = 0;
+		mN_recon = 0; mN_loopkills = 0; mDelayFlag = false;
 	}
 	Tangle(Filament* String1){
 		mTangle.push_back(String1);

@@ -45,8 +45,29 @@ int main(int argc, char* argv[]){
 	Tangle.mLog << Tangle.StringTime() << "\t\t\t\t\tsimulation begins" << endl;
 	while(i < N_t){
 		Tangle.mStep = i;
-		begin = Tangle.mTangle.begin();
-		end = Tangle.mTangle.end();
+		int delay_size = Tangle.mDelayedTimes.size();
+		if(Tangle.mDelayFlag == true){
+			for(int k(0); k<delay_size; k++){
+				if(i*Tangle.mDt > Tangle.mDelayedTimes[k]){
+					Tangle.mTangle.push_back(Tangle.mDelayed[k]);
+					Tangle.mDelayed.erase(Tangle.mDelayed.begin() + k);
+					Tangle.mDelayedTimes.erase(Tangle.mDelayedTimes.begin() + k);
+					delay_size--;
+					break;
+				}
+			}
+			if(delay_size == 0){Tangle.mDelayFlag = false;}
+		}
+
+		/* save positions to file every mN_f steps */
+		if(i%Tangle.mN_f==0){
+			Tangle.Output(filename, i, file_no);
+			t_temp = clock() -t;
+			printf("\t\t wrote step %6u", i);
+			Tangle.mLog << Tangle.StringTime() << "\t" << setw(10) << Tangle.mStep;
+			Tangle.mLog << "\telapsed: " << ((float)t_temp)/CLOCKS_PER_SEC << " s:\t\twrote to file " << file_no << " for time " << i*us_Dt << " us" << endl;
+			file_no++; 
+		}
 /*		if(Tangle.mN_slow == 2000){Tangle.mN_f = 100;}
 		if(Tangle.mN_slow == 5000){Tangle.mN_f = 100;}*/
 		if(Tangle.mN_f == 1
@@ -73,16 +94,6 @@ int main(int argc, char* argv[]){
 			Tangle.CalcField();			// add field contribution to charged point
 		}*/
 		Tangle.PropagatePos(Tangle.mDt);	// propagate positions
-
-		/* save positions to file every mN_f steps */
-		if(i%Tangle.mN_f==0){
-			Tangle.Output(filename, i, file_no);
-			t_temp = clock() -t;
-			printf("\t\t wrote step %6u", i);
-			Tangle.mLog << Tangle.StringTime() << "\t" << setw(10) << Tangle.mStep;
-			Tangle.mLog << "\telapsed: " << ((float)t_temp)/CLOCKS_PER_SEC << " s:\t\twrote to file " << file_no << " for time " << i*us_Dt << " us" << endl;
-			file_no++; 
-		}
 		i++;	// step forward
 
 	}
