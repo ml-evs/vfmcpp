@@ -13,8 +13,6 @@ Aftermath of off-centre ring collision.
 
 ![alt text](http://giant.gfycat.com/AmbitiousPlushBetafish.gif "4 ring reconnection")
 
-![alt text](http://giant.gfycat.com/ScratchyCorruptIbizanhound.gif "Distorted string colliding with ring")
-
 ![alt text](http://giant.gfycat.com/ZigzagDelightfulBuzzard.gif "Highly distorted string colliding with ring")
 
 
