@@ -1,13 +1,11 @@
 vfmcpp
 ==============
-vfmcpp is a C++ implementation of the vortex filament model of superfluids. 
+vfmcpp is a C++ implementation of the vortex filament model of superfluids, used to study the dynamics of ring/ring and ring/line scattering.
 
 To compile in Linux, you can use the makefile `make`; it is advised you use GCC 4.7+, as that is all that has been tested. 
 Help with initial conditions can be found by running `run.sh` with the flag `-h`. 
 
-The vague aim of this project is to model vortex ring dynamics in various configurations - including charged filaments immersed in trivial electric fields and open 'line' filaments. 
-
-The code makes use of custom linked lists (with nasty bare pointers) to allow for reconnections to be modelled efficiently. Visualisation is currently performed by a 3D matplotlib script (requires latest matplotlib version), which leaves a lot to be desired. 
+Visualisation is currently performed by a 3D matplotlib script (requires latest matplotlib version), which leaves a lot to be desired. 
 
 Aftermath of off-centre ring collision.
 
@@ -37,6 +35,8 @@ OPTIONS:
 		Recompile the code.
 	-d
 		Run the code inside the gdb debugger.
+	-b 
+		Run benchmarking and profiling versions.
 	-h
 		Show usage information.
 
@@ -57,11 +57,17 @@ INITIAL CONDITIONS:
 	resl	
 		specify the resolution of the simulation in metres, filaments will be created, default=6.28e-8 (1um radius ring w/ 100 pts) 
 
-	ring [radius, x, y, z]
-		make a closed filament, requires 4 arguments as above
+	ring [radius, x, y, z, alignment]
+		make a closed filament, requires 5 arguments as above, where the 5th is one of [0,1,2] for axis to align to.
 
-	line [length, x, y, z]
-		make an open filament, requires 4 arugments as above (easy to extend to any direction if we want to)
+	line [length, x, y, z, alignment]
+		make an open filament, requires 5 arguments as above.
+	
+	delayed_ring [radius, x, y, z, alignment, t]
+		additional argument for time t in ms to delay the addition of the ring.
+
+	lfil [path]
+		reads positions and velocities of a premade (normally distorted) line from path/pos.dat and path/vel.dat respectively.
 
 	Eext [strength, duration, direction]
 		include an external electric field, requires 3 arguments where direction is either 0, 1 or 2 for x, y or z.
@@ -79,7 +85,7 @@ EXAMPLE FILE:
 	path data/init_example
 	time 1e-3
 	resl 6.28e-8
-	ring 1e-6 0 0 5e-6
-	ring 9e-7 0 0.025e-6 0
+	ring 1e-6 0 0 5e-6 0 
+	ring 9e-7 0 0.025e-6 0 0
 	Eext 10000 1e-3 0 
-	q_pt 0 50 1.6e-19 
+	q_pt 0 50 1.6e-19

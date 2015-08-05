@@ -65,11 +65,17 @@ INITIAL CONDITIONS:
 	resl	
 		specify the resolution of the simulation in metres, filaments will be created, default=6.28e-8 (1um radius ring w/ 100 pts) 
 
-	ring [radius, x, y, z]
-		make a closed filament, requires 4 arguments as above
+	ring [radius, x, y, z, alignment]
+		make a closed filament, requires 5 arguments as above, where the 5th is one of [0,1,2] for axis to align to.
 
-	line [length, x, y, z]
-		make an open filament, requires 4 arugments as above (easy to extend to any direction if we want to)
+	line [length, x, y, z, alignment]
+		make an open filament, requires 5 arguments as above.
+	
+	delayed_ring [radius, x, y, z, alignment, t]
+		additional argument for time t in ms to delay the addition of the ring.
+
+	lfil [path]
+		reads positions and velocities of a premade (normally distorted) line from path/pos.dat and path/vel.dat respectively.
 
 	Eext [strength, duration, direction]
 		include an external electric field, requires 3 arguments where direction is either 0, 1 or 2 for x, y or z.
@@ -87,8 +93,8 @@ EXAMPLE FILE:
 	path data/init_example
 	time 1e-3
 	resl 6.28e-8
-	ring 1e-6 0 0 5e-6
-	ring 9e-7 0 0.025e-6 0
+	ring 1e-6 0 0 5e-6 0 
+	ring 9e-7 0 0.025e-6 0 0
 	Eext 10000 1e-3 0 
 	q_pt 0 50 1.6e-19 
 
