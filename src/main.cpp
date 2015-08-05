@@ -22,10 +22,6 @@ int main(int argc, char* argv[]){
 	else runfile = "NULL";
 	string filename = Tangle.Initialise(runfile);
 
-/*	string filename = "../init/init_state/015_09/015_09_rec";
-	Tangle.FromFile(filename);
-	filename = "../data/015_09_old/data_";*/
-
 	/* set number of timesteps and number of steps per save */
 	int N_t(Tangle.mTotalTime/Tangle.mDt); // number of time steps
 	Tangle.mN_f = 10000; // number of time steps per save
