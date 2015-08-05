@@ -141,6 +141,7 @@ string Tangle::Initialise(string runfile){
 			if(param[4]==1){cout << "y direction." << endl; mLog << "y direction,";}
 			if(param[4]==2){cout << "z direction." << endl; mLog << "z direction,";}
 			cout << " delayed by " << param[5] << " ms." << endl;
+			mLog << " delayed by " << param[5] << " ms." << endl;
 			for(unsigned int i(0);i<param.size(); i++) param[i] = 0;
 			line.clear();
 		}
