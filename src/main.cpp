@@ -52,6 +52,7 @@ int main(int argc, char* argv[]){
 					Tangle.mTangle.push_back(Tangle.mDelayed[k]);
 					Tangle.mDelayed.erase(Tangle.mDelayed.begin() + k);
 					Tangle.mDelayedTimes.erase(Tangle.mDelayedTimes.begin() + k);
+					Tangle.mLog << Tangle.StringTime() << "\t\t\t\t\tring added" << endl;
 					delay_size--;
 					break;
 				}
@@ -83,7 +84,15 @@ int main(int argc, char* argv[]){
 		Tangle.Reconnection();
 		/* adjust mesh until finished */
 		bool MeshFinished(false);	
-		while(MeshFinished==false) MeshFinished = Tangle.MeshAdjust(); 
+		int MeshCount(0);
+		while(MeshFinished==false){
+			MeshFinished = Tangle.MeshAdjust(); MeshCount++; 
+			if(MeshCount == 10){
+				cout << "Mesh too unruly! Exiting..." << endl;
+				Tangle.mLog	<< Tangle.StringTime() << "Mesh too unruly! Program terminated." << endl;
+				return 1;
+			}
+		}
 		/* remove rings smaller than 6 points and count them */
 		bool LoopKilled = Tangle.LoopKill(); 
 		if(LoopKilled == true) Tangle.mN_loopkills++;
