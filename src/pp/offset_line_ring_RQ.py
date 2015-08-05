@@ -8,13 +8,17 @@ kappa = 9.98e-8
 import matplotlib.pyplot as plt
 
 sigma_list = list()
-base_filename = '../../data/offset_15R_distorted_low/'
-for root, dirs, files in os.walk(base_filename):
-    for name in dirs:
-        if name[0] != 's':
-            #if os.path.isfile(base_filename + name + '/time.dat') == True:
-            if 0==0:
-                sigma_list.append(name)
+root_list = ['../../data/offset_15R_dist_t0/', '../../data/offset_15R_dist_t4/', '../../data/offset_15R_dist_t8/']
+base_filename = '../../data/offset_15R_dist_t0/'
+for base_filename in root_list:
+    for root, dirs, files in os.walk(base_filename):
+        for name in dirs:
+            if name[0] != 's':
+                #if os.path.isfile(base_filename + name + '/time.dat') == True:
+                if 0==0:
+                    sigma_list.append(base_filename + name)
+
+
 
 circumference = np.zeros(len(sigma_list),dtype=np.float64)
 impulse_rings = np.zeros(len(sigma_list),dtype=np.float64)
@@ -26,9 +30,9 @@ tot_pz_rings = 0.0
 index = 0
 killed = np.zeros(len(sigma_list))
 for sigma in sigma_list:
-    if os.path.isfile(base_filename+sigma+'/events.log') == True:
+    if os.path.isfile(sigma+'/events.log') == True:
         lastdat = 0
-        for root, dirs, files in os.walk(base_filename+sigma):
+        for root, dirs, files in os.walk(sigma):
             for name in files:
                 if(len(name.split('_'))!=1):
                     int_dat = int(name.split('_')[1])
@@ -36,7 +40,7 @@ for sigma in sigma_list:
                     lastdat = int_dat
         #lastdat = 600
         log = []
-        logfile = open(base_filename+sigma+'/events.log', 'r')
+        logfile = open(sigma+'/events.log', 'r')
         log = logfile.readlines()
         log = log[-1].split('\t')
         print(sigma)
@@ -45,9 +49,9 @@ for sigma in sigma_list:
         end = False
         J = 0
         while(end == False):
-            if os.path.isfile(base_filename+sigma+'/data_' + str(lastdat) + '_' + str(J) + '.dat') == True:
+            if os.path.isfile(sigma+'/data_' + str(lastdat) + '_' + str(J) + '.dat') == True:
                 data = []
-                datafile = open(base_filename+sigma+'/data_' + str(lastdat) + '_' + str(J) + '.dat', 'r')
+                datafile = open(sigma+'/data_' + str(lastdat) + '_' + str(J) + '.dat', 'r')
                 data = datafile.readlines()
                 data = np.delete(data,0)
                 if(data[0] == data[-1]):
@@ -57,9 +61,9 @@ for sigma in sigma_list:
                     for b in range(len(points)):
                         circumference[index] += np.sqrt(np.sum((points[b]-points[b-1])**2))
 
-                    if os.path.isfile(base_filename+sigma+'/mom_' + str(lastdat) + '_' + str(J)+'.dat') == True:
+                    if os.path.isfile(sigma+'/mom_' + str(lastdat) + '_' + str(J)+'.dat') == True:
                         momdata = []
-                        momfile = open(base_filename+sigma+'/mom_' + str(lastdat) + '_' + str(J)+'.dat', 'r')
+                        momfile = open(sigma+'/mom_' + str(lastdat) + '_' + str(J)+'.dat', 'r')
                         momdata = momfile.readlines()
                         momdata = np.delete(momdata,0)
                         momfile.close()
@@ -92,7 +96,7 @@ for sigma in sigma_list:
 sigma_array = np.zeros(len(sigma_list), dtype=np.float64)
 i = 0
 for sigma in sigma_list:
-    sigma_array[i] = sigma.split('_')[1]
+    sigma_array[i] = sigma.split('_')[-1]
     i += 1
 
 inds = sigma_array.argsort()
@@ -114,10 +118,10 @@ sigma_array_slice = np.linspace(-1,1,25)
 sigma_array_slice *= 1e-6
 theory = 2*np.sqrt((1e-6**2 - sigma_array_slice**2)) + 2*1e-6*np.arccos(sigma_array_slice/1e-6)
 
-ax.plot(-sigma_array, 1e6*(line_length+circumference),color='black', alpha=1,label='total length', lw=1.5, marker='o')
-ax.plot(-sigma_array, 1e6*circumference,       color='blue', alpha=1, label='length around rings', lw=1.5, marker='o')
-ax.plot(-sigma_array, 1e6*line_length, color='red', alpha=1, label='length of line', lw=1.5, marker='o')
-ax.plot(-sigma_array, 1e6*np.sqrt(2*np.pi*impulse_rings), color='green', alpha=1, label='effective circumference of rings', lw=1.5, marker='o')
+ax.scatter(-sigma_array, 1e6*(line_length+circumference),color='black', alpha=1,label='total length', lw=1.5, marker='o')
+ax.scatter(-sigma_array, 1e6*circumference,       color='blue', alpha=1, label='length around rings', lw=1.5, marker='o')
+ax.scatter(-sigma_array, 1e6*line_length, color='red', alpha=1, label='length of line', lw=1.5, marker='o')
+ax.scatter(-sigma_array, 1e6*np.sqrt(2*np.pi*impulse_rings), color='green', alpha=1, label='effective circumference of rings', lw=1.5, marker='o')
 ax.plot(1e6*sigma_array_slice, 1e6*theory, linestyle='--', c='magenta',label='geometric reconnection', lw=1.5)
 from matplotlib.font_manager import FontProperties
 fontP = FontProperties()
@@ -141,7 +145,7 @@ ax3.set_ylim(-18, np.max(killed)+30)
 ax3.set_yticks([0, 2,np.max(killed)])
 ax3.set_ylabel('Number of small loops killed')
 ax3.set_xlim(-2,2)
-print('Saving image '+base_filename+'analysis.png.')
-plt.savefig(base_filename+'analysis.png')
+print('Saving image '+root_list[0]+'analysis.png.')
+plt.savefig(root_list[0]+'analysis.png')
 print('image saved.')
 
