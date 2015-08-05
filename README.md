@@ -7,15 +7,6 @@ Help with initial conditions can be found by running `run.sh` with the flag `-h`
 
 Visualisation is currently performed by a 3D matplotlib script (requires latest matplotlib version), which leaves a lot to be desired. 
 
-Aftermath of off-centre ring collision.
-
-![alt text](http://www.charmedxi.co.uk/vfmcpp/img/offset_collision.gif "Post double reconnection")
-
-![alt text](http://giant.gfycat.com/AmbitiousPlushBetafish.gif "4 ring reconnection")
-
-![alt text](http://giant.gfycat.com/ZigzagDelightfulBuzzard.gif "Highly distorted string colliding with ring")
-
-
 run.sh
 ---------
 
