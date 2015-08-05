@@ -133,7 +133,7 @@ int Tangle::ReconnectionTest(){
 							double dot_tangents = pK->mSPrime[0] * pL->mSPrime[0];
 							dot_tangents += pK->mSPrime[1] * pL->mSPrime[1];
 							dot_tangents += pK->mSPrime[2] * pL->mSPrime[2];
-							if(dot_tangents > 0.9){mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tignoring parallel filaments" << endl;}
+							if(dot_tangents > 0.9){NeedRecon = false; mLog << StringTime() << "\t" << setw(10) << mStep << ":\t\tignoring parallel filaments" << endl;}
 							/* find closest point to k inside range and mark it for reconnection */
 							else if(dist2 < mindist2){
 								mindist2 = dist2; 
