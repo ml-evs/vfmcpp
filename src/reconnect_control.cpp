@@ -79,11 +79,6 @@ void Tangle::Reconnection(){
 								mLog << ":\t\tcalling Reconnect(" << P << ", " << Q << ", " << k << ", " << l_rec << ")" << endl; 
 								Reconnect(P,Q,k,l_rec);
 							}
-							string filename = "../data/debug/offset/";
-							int q(999);
-							int file_no(999);
-							Output(filename, q, file_no);
-							recon_count--;
 							/* cleanup points and recalculate mesh lengths and curvatures */
 							for(unsigned int n(0); n<mTangle.size(); n++){
 								mTangle[n]->CalcMeshLengths();	mTangle[n]->CalcSPrime(); 
