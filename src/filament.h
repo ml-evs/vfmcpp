@@ -29,7 +29,6 @@ public:
 	void CalcImpulse();
 	void CalcSPrime();
 	void CalcS2Prime();
-	void CalcVelocitySelfNL();
 	void CalcDummy();
 };
 /* ring class */

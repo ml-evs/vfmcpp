@@ -84,6 +84,7 @@ void Tangle::Reconnection(){
 								mTangle[n]->CalcMeshLengths();	mTangle[n]->CalcSPrime(); 
 								mTangle[n]->CalcS2Prime(); 
 							}
+							recon_count--;
 							goto begin;
 						}
 					}
