@@ -5,12 +5,10 @@ vfmcpp is a C++ implementation of the vortex filament model of superfluids, used
 To compile in Linux, you can use the makefile `make`; it is advised you use GCC 4.7+, as that is all that has been tested. 
 Help with initial conditions can be found by running `run.sh` with the flag `-h`. 
 
-Visualisation is currently performed by a 3D matplotlib script (requires latest matplotlib version), which leaves a lot to be desired. 
+Visualisation is currently performed by a 3D matplotlib script (requires latest matplotlib version), which leaves a lot to be desired. Below are some dated animations (with old version of reconnection) to give an example visualisations only.
 
  ![alt text](http://giant.gfycat.com/AmbitiousPlushBetafish.gif "4 ring reconnection")
- 
--![alt text](http://giant.gfycat.com/ScratchyCorruptIbizanhound.gif "Distorted string colliding with ring")
--
+
  ![alt text](http://giant.gfycat.com/ZigzagDelightfulBuzzard.gif "Highly distorted string colliding with ring")
  
 
