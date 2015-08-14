@@ -8,8 +8,8 @@ kappa = 9.98e-8
 import matplotlib.pyplot as plt
 
 sigma_list = list()
-root_list = ['../../data/offset_15R_dist_t0/', '../../data/offset_15R_dist_t4/', '../../data/offset_15R_dist_t8/']
-base_filename = '../../data/offset_15R_dist_t0/'
+root_list = ['../../data/offset_15R_dist_t0/', '../../data/offset_15R_dist_t4/', '../../data/offset_15R_dist_t8/',
+             '../../data/offset_15R_dist_t12/', '../../data/offset_15R_dist_t16/', '../../data/offset_15R_dist_t20/' ]
 for base_filename in root_list:
     for root, dirs, files in os.walk(base_filename):
         for name in dirs:
@@ -118,10 +118,10 @@ sigma_array_slice = np.linspace(-1,1,25)
 sigma_array_slice *= 1e-6
 theory = 2*np.sqrt((1e-6**2 - sigma_array_slice**2)) + 2*1e-6*np.arccos(sigma_array_slice/1e-6)
 
-ax.scatter(-sigma_array, 1e6*(line_length+circumference),color='black', alpha=1,label='total length', lw=1.5, marker='o')
-ax.scatter(-sigma_array, 1e6*circumference,       color='blue', alpha=1, label='length around rings', lw=1.5, marker='o')
-ax.scatter(-sigma_array, 1e6*line_length, color='red', alpha=1, label='length of line', lw=1.5, marker='o')
-ax.scatter(-sigma_array, 1e6*np.sqrt(2*np.pi*impulse_rings), color='green', alpha=1, label='effective circumference of rings', lw=1.5, marker='o')
+ax.scatter(-sigma_array, 1e6*(line_length+circumference),color='black', alpha=0.8,label='total length', lw=1, marker='*')
+ax.scatter(-sigma_array, 1e6*circumference,       color='blue', alpha=0.8, label='length around rings', lw=1, marker='o')
+ax.scatter(-sigma_array, 1e6*line_length, color='red', alpha=0.8, label='length of line', lw=1, marker='v')
+ax.scatter(-sigma_array, 1e6*np.sqrt(2*np.pi*impulse_rings), color='green', alpha=0.8, label='effective circumference of rings', lw=1, marker='^')
 ax.plot(1e6*sigma_array_slice, 1e6*theory, linestyle='--', c='magenta',label='geometric reconnection', lw=1.5)
 from matplotlib.font_manager import FontProperties
 fontP = FontProperties()
