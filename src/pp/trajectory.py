@@ -6,7 +6,8 @@ import matplotlib.pyplot as plt
 import sys
 
 #basest_filename = '../../data/offset_15R_hires/dat_-.8'
-basest_filename = '../../data/offset_15R/dat_-.72'
+basest_filename = '../../../vfmcppar/data/multi_ring_test_4_core'
+#basest_filename = '../../data/multi_ring_test_long'
 #basest_filename = '../../data/kin_test_0'
 #basest_filename = '../../data/kin_test_8'
 #basest_filename = '../../data/kin_test_p4'
@@ -190,7 +191,7 @@ if os.path.isfile(basest_filename+'/energy.dat') == True:
     energyfile = open(basest_filename+'/energy.dat')
     energydata = energyfile.readlines()
     energyfile.close()
-    Ekin = np.zeros((f_ind,3))
+    Ekin = np.zeros((f_ind,10))
     totEkin = np.zeros((f_ind))
     totEkin_smooth = np.zeros((f_ind))
     smooth = 16
@@ -232,9 +233,9 @@ for l in range(len(ring_L_t)):
         temp2[l] = ring_L_t[l][1]
     if(len(ring_L_t[l])>2):
         temp3[l] = ring_L_t[l][2]
-ax2.plot(temp1)
-ax2.plot(temp2)
-ax2.plot(temp3)
+# ax2.plot(temp1)
+# ax2.plot(temp2)
+# ax2.plot(temp3)
 ax2.plot(line_length,marker='')
 ax2.plot(ring_length,marker='')
 ax2.plot(total_length,marker='',c='black')
@@ -247,7 +248,7 @@ if os.path.isfile(basest_filename+'/energy.dat') == True:
     #ax3.plot(totEkin,marker='',lw=0.5,alpha=0.5, c='r')
     ax3.plot(totEkin_smooth,c='black',marker='',lw=1)
 
-    ax3.set_yticks([0,totEkin[0]])
+    #ax3.set_yticks([0,totEkin[0]])
     ax3.axhline(0,c='k')
 if os.path.isfile(basest_filename+ '/mom_0_0.dat') == True:
     #ax1.plot(tot_px_rings,c='b')
@@ -259,8 +260,7 @@ if os.path.isfile(basest_filename+ '/mom_0_0.dat') == True:
     ax1.plot(tot_p_rings,alpha=0.5,lw=0.5)
     ax1.plot(tot_p_line,alpha=0.5,lw=0.5)
     ax1.plot(total_p, c='k',lw=1)
-    ax1.set_yticks([0,total_p[0]])
-    print(np.sqrt(total_p[0]/(2*np.pi)))
+    #ax1.set_yticks([0,total_p[0]])
     #ax1.set_yticklabels(['0','1'])
     ax1.set_ylabel('Momentum $p/p_0$')
 # d = np.zeros(fmax)
@@ -271,16 +271,16 @@ if os.path.isfile(basest_filename+ '/mom_0_0.dat') == True:
 # ax5.plot(np.abs(trajx),lw=0.5,alpha=0.5)
 # ax5.plot(np.abs(trajy),lw=0.5,alpha=0.5)
 # ax5.plot(d,c='k')
-# ax5.set_yticks([d[0]])
+## ax5.set_yticks([d[0]])
 # ax5.set_yticklabels(['$d_0$'])
 # ax5.set_ylabel('Displacement from $O$')
 
 # ax6 = ax5.twinx()
 # ax6.plot(N)
 
-ax2.set_yticks([0,total_length[0]])
-ax2.set_yticklabels(['0','1'])
-ax3.set_yticklabels(['0','1'])
+#ax2.set_yticks([0,total_length[0]])
+#ax2.set_yticklabels(['0','1'])
+#ax3.set_yticklabels(['0','1'])
 ax2.set_ylabel('Vortex line length ($L/L_0$)')
 ax3.set_ylabel('Kinetic energy ($E/E_0$)')
 ax2.set_xlabel('t')
@@ -288,5 +288,6 @@ ax.axis('off')
 
 
 print('Saving image...')
-plt.savefig('trajectory.png')
+#plt.show()
+plt.savefig(basest_filename + '/trajectory.png')
 print('image saved.')
