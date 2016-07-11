@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import os.path
 import numpy as np
 import matplotlib
@@ -24,7 +26,7 @@ def getfiles():
     base_filename = str(sys.argv[1]) + '/data_'
     print(base_filename)
   else:
-    data_folder = input('Enter data folder path:')
+    data_folder = raw_input('Enter data folder path:')
     base_filename = data_folder + '/data_'
 
   end = False
@@ -37,7 +39,7 @@ def getfiles():
       file = open(filename_k+'_0.dat', 'r')
       line = file.readline()
       if f==0:
-        for i in range(150):
+        for i in range(25):
           times.append(float(line))
           files.append(filename_k)
         f=1
@@ -147,8 +149,7 @@ elif Analysis == ('g' or 'm'):
   if len(sys.argv) > 3:
     filename = '../../img/ ' + sys.argv[3]
   else:
-    filename = input('Enter the desired filename for the gif (will be saved in data folder):')
-    filename = '../../post/' + filename
+    filename = raw_input('Enter the desired filename for the gif (will be saved in data folder):')
   if Analysis == 'g':
     print (filename)
     ani.save(filename+'.gif', writer='imagemagick', fps=20, dpi=100)
