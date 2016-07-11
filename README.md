@@ -2,6 +2,8 @@ vfmcpp
 ==============
 vfmcpp is a C++ implementation of the vortex filament model of superfluids, used to study the dynamics of ring/ring and ring/line scattering.
 
+![A ring-line collision](example.gif?raw=true "A ring-line collision")
+
 To compile in Linux, you can use the makefile `make`; it is advised you use GCC 4.7+, as that is all that has been tested. 
 Help with initial conditions can be found by running `run.sh` with the flag `-h`. The OpenMP version can be found  [here](https://github.com/ml-evs/vfmcppar).
 
